@@ -59,9 +59,8 @@ const HeroSection = () => {
           </h1>
 
           <p className="mb-12 max-w-2xl font-body text-sm md:text-base text-white/60 leading-relaxed font-light">
-            <strong className="text-white/90 font-medium">WE ARE NEW OLD TO MAKE DIGITAL GOLD.</strong><br/>
-            TV Studio will create for your vision to be broadcasted. We execute the coming trend of AI, building 
-            with advanced visual and audio technology merged with a pure artistic touch.
+            <strong className="text-white/90 font-medium tracking-wider">WE ARE THE NEW OLD TO MAKE THE DIGITAL GOLD.</strong><br/>
+            TV Studios executes the coming era of AI Filmmaking—merging raw cinematic tradition with next-gen technical architecture. We build for the audience, first.
           </p>
           
           <motion.button

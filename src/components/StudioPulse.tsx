@@ -73,9 +73,12 @@ const StudioPulse = () => {
              <h2 className="font-display text-4xl sm:text-5xl md:text-6xl text-white tracking-tight uppercase">
                Studio <span className="text-zinc-600 italic font-serif">Motion</span>
              </h2>
-             <p className="mt-4 max-w-xl font-body text-[10px] sm:text-xs text-white/50 tracking-[0.3em] uppercase border-b border-white/10 pb-4">
-               SILENT PROJECTION. HOVER TO ILLUMINATE.
-             </p>
+            <p className="mt-4 max-w-xl font-body text-[10px] sm:text-xs text-white/50 tracking-[0.3em] uppercase border-b border-white/10 pb-4">
+              SILENT PROJECTION. HOVERING ILLUMINATION.
+            </p>
+            <p className="mt-2 font-mono text-[8px] text-[hsl(43_72%_55%)] uppercase tracking-[0.5em]">
+              ART. TECH. ECONOMY.
+            </p>
            </motion.div>
          </div>
 

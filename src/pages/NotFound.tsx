@@ -11,7 +11,7 @@ const NotFound = () => {
       >
         <h1 className="font-display text-8xl md:text-9xl font-bold text-gradient-gold mb-4">404</h1>
         <p className="font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground mb-8">
-          Signal Lost — Station Not Found
+          Signal Lost — TvUnit Not Found
         </p>
         <Link
           to="/"

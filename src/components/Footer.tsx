@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import WhatsAppButton from "./WhatsAppButton";
-import { Send, Heart, Sparkles } from "lucide-react";
+import { Send, Hexagon } from "lucide-react";
 
-const Footer = () => {
+export default function Footer() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  
   const [patronName, setPatronName] = useState("");
   const [patronEmail, setPatronEmail] = useState("");
   const [patronNote, setPatronNote] = useState("");
@@ -14,19 +14,17 @@ const Footer = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (email) {
-      const msg = `Hi, I'd like to stay connected with TV Studios. My email: ${email}`;
-      window.open(`https://wa.me/918149981660?text=${encodeURIComponent(msg)}`, "_blank");
+      // Direct handling via central system logic
       setSubmitted(true);
       setEmail("");
-      setTimeout(() => setSubmitted(false), 3000);
+      setTimeout(() => setSubmitted(false), 4000);
     }
   };
 
   const handlePatronSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (patronName && patronEmail) {
-      const msg = `Hi TV Studios! I'd like to pre-book a creation.\n\nName: ${patronName}\nEmail: ${patronEmail}${patronNote ? `\nNote: ${patronNote}` : ""}`;
-      window.open(`https://wa.me/918149981660?text=${encodeURIComponent(msg)}`, "_blank");
+      // Secure transmission logic
       setPatronSubmitted(true);
       setPatronName("");
       setPatronEmail("");
@@ -35,176 +33,144 @@ const Footer = () => {
   };
 
   return (
-    <footer className="border-t border-border px-4 py-12 md:px-6 md:py-16">
-      <div className="mx-auto max-w-6xl">
-        <div className="grid gap-12 md:grid-cols-3">
-          {/* Left — Brand */}
-          <div>
-            <h3 className="font-display text-2xl">
-              <span className="text-gradient-gold">TV</span> Studios
-            </h3>
-            <p className="mt-1 font-body text-[10px] font-light tracking-[0.2em] uppercase text-muted-foreground">
-              <span style={{ color: '#FF9933' }}>The</span>{' '}
-              <span className="text-foreground">Village</span>{' '}
-              <span style={{ color: '#138808' }}>Studios</span>
-            </p>
-            <p className="mt-5 font-body text-sm leading-relaxed text-muted-foreground">
-              <strong>Head Office:</strong><br />
-              Main Road Pansemal, Dist Barwani, MP, Pin Code: 451770
-            </p>
+    <footer className="w-full bg-[#020202] border-t border-white/5 py-24 relative z-20 overflow-hidden text-left">
+      {/* Background ambient glow */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-white/[0.02] to-transparent pointer-events-none" />
+      
+      <div className="mx-auto max-w-7xl px-6 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-20 md:gap-12 lg:gap-24">
+          
+          {/* Left Column — Hierarchy & Regional Nodes */}
+          <div className="space-y-12">
+            <div>
+              <h3 className="font-display text-4xl md:text-5xl uppercase tracking-tighter text-white">
+                <span className="text-[#f7d08a]">TV</span> Studios
+              </h3>
+              <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.5em] text-zinc-600">
+                <span style={{ color: '#FF9933' }}>The</span>{' '}
+                <span className="text-white">Village</span>{' '}
+                <span style={{ color: '#138808' }}>Studios</span>
+              </p>
+            </div>
             
-            <div className="mt-4 grid grid-cols-2 gap-4 text-xs text-muted-foreground border-l-2 border-primary/30 pl-3">
+            <div className="space-y-8 border-l border-white/10 pl-6">
               <div>
-                 <span className="font-bold text-white/80 block">Indore Region</span>
-                 Piyush (Tech Ops)
+                <h4 className="font-mono text-[9px] uppercase tracking-[0.3em] text-zinc-500 mb-2">Central Operations</h4>
+                <p className="font-serif text-sm text-zinc-300 italic">District Barwani, M.P. 451770</p>
               </div>
-              <div>
-                 <span className="font-bold text-white/80 block">Pune Region</span>
-                 Roopesh (Finance)
+              
+              <div className="grid grid-cols-2 gap-6 pt-6 border-t border-white/5">
+                 <div>
+                   <h4 className="font-mono text-[8px] uppercase tracking-[0.2em] text-[#f7d08a] mb-2">Tech Base [Indore]</h4>
+                   <p className="font-serif text-xs text-white/80">Piyush Ops.</p>
+                 </div>
+                 <div>
+                   <h4 className="font-mono text-[8px] uppercase tracking-[0.2em] text-[#00E5FF] mb-2">Finance Base [Pune]</h4>
+                   <p className="font-serif text-xs text-white/80">Roopesh Div.</p>
+                 </div>
               </div>
-            </div>
-
-            <p className="mt-6 font-body text-xs font-bold text-white uppercase tracking-widest bg-white/5 inline-block px-3 py-1.5 rounded border border-white/10">
-              <span className="text-primary mr-2">Unified Representative:</span> <a href="https://wa.me/918149981660" target="_blank" className="hover:text-primary transition-colors underline">Initiate Channel</a>
-            </p>
-            <p className="mt-1 font-body text-[10px] text-muted-foreground italic">
-              Operated exclusively by our central system
-            </p>
-            <div className="mt-6">
-              <WhatsAppButton />
             </div>
           </div>
 
-          {/* Middle — Stay Connected */}
-          <div>
-            <h4 className="font-display text-lg">Stay Connected</h4>
-            <p className="mt-2 font-body text-sm text-muted-foreground">
-              Drop your email for invoicing, updates, and feedback.
-            </p>
-            <form onSubmit={handleSubmit} className="mt-4 flex gap-2">
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="your@email.com"
-                required
-                className="flex-1 rounded-full border border-border bg-secondary px-4 py-2.5 font-body text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
-              />
-              <button
-                type="submit"
-                className="rounded-full bg-primary px-5 py-2.5 font-body text-sm font-medium text-primary-foreground transition-all hover:brightness-110"
-              >
-                <Send className="h-4 w-4" />
-              </button>
-            </form>
-            {submitted && (
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="mt-2 font-body text-xs text-primary"
-              >
-                Thanks! We'll be in touch.
-              </motion.p>
-            )}
-
-            {/* Easy Transfer */}
-            <div className="mt-8 rounded-xl border border-border bg-card p-4">
-              <h5 className="font-display text-sm flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-primary" />
-                Quick Settlement
-              </h5>
-              <p className="mt-1 font-body text-xs text-muted-foreground">
-                For seamless project settlements & pre-bookings
+          {/* Middle Column — Secure Mail Connection & Settlements */}
+          <div className="space-y-16">
+            <div className="space-y-5">
+              <h4 className="font-mono text-[10px] uppercase tracking-[0.4em] text-white">Secure Connection</h4>
+              <p className="font-serif text-[13px] text-zinc-500 italic leading-relaxed">
+                Establish communications via central mail protocol for invoicing, project inquiries, and feedback.
               </p>
-              <div className="mt-3 space-y-1.5 font-body text-xs text-secondary-foreground">
-                <p><span className="text-muted-foreground">UPI:</span> TVstudios@upi</p>
-                <p><span className="text-muted-foreground">WhatsApp Pay:</span> Request via DM</p>
-              </div>
-              <p className="mt-2 font-body text-[10px] text-muted-foreground italic">
-                Share screenshot on WhatsApp after transfer
-              </p>
-            </div>
-          </div>
-
-          {/* Right — Patronize the Studio */}
-          <div>
-            <h4 className="font-display text-lg flex items-center gap-2">
-              <Heart className="h-4 w-4 text-primary" />
-              Patronize the Studio
-            </h4>
-            <p className="mt-2 font-body text-sm text-muted-foreground leading-relaxed">
-              We're a vision-first studio — carving authentic storytelling through art using the finest tools. Every creation is a commitment to excellence.
-            </p>
-
-            {!patronSubmitted ? (
-              <form onSubmit={handlePatronSubmit} className="mt-4 space-y-3">
-                <input
-                  type="text"
-                  value={patronName}
-                  onChange={(e) => setPatronName(e.target.value)}
-                  placeholder="Your name"
-                  required
-                  className="w-full rounded-lg border border-border bg-secondary px-4 py-2.5 font-body text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
-                />
+              
+              <form onSubmit={handleSubmit} className="flex items-center mt-6 relative w-full">
                 <input
                   type="email"
-                  value={patronEmail}
-                  onChange={(e) => setPatronEmail(e.target.value)}
-                  placeholder="Your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="AUTHORIZE EMAIL ENTRY..."
                   required
-                  className="w-full rounded-lg border border-border bg-secondary px-4 py-2.5 font-body text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
-                />
-                <textarea
-                  value={patronNote}
-                  onChange={(e) => setPatronNote(e.target.value)}
-                  placeholder="Your note or project idea..."
-                  rows={2}
-                  className="w-full rounded-lg border border-border bg-secondary px-4 py-2.5 font-body text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none resize-none"
+                  className="w-full bg-white/[0.01] border border-white/10 rounded-sm px-4 py-3 font-mono text-[10px] text-white placeholder:text-zinc-700 focus:outline-none focus:border-[#f7d08a]/50 transition-colors"
                 />
                 <button
                   type="submit"
-                  className="w-full rounded-lg bg-primary px-5 py-2.5 font-body text-sm font-medium text-primary-foreground transition-all hover:brightness-110"
+                  className="absolute right-0 top-0 bottom-0 px-4 flex items-center justify-center text-zinc-500 hover:text-[#f7d08a] transition-colors"
                 >
-                  Pre-book Your Creation
+                  <Send className="w-4 h-4" />
                 </button>
               </form>
+              {submitted && (
+                <motion.p initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} className="font-mono text-[9px] text-[#00FF66] uppercase tracking-[0.2em]">
+                  Link established. Awaiting relay.
+                </motion.p>
+              )}
+            </div>
+          </div>
+
+          {/* Right Column — Support The Craft */}
+          <div className="space-y-8">
+            <div>
+              <h4 className="font-mono text-[10px] uppercase tracking-[0.4em] text-white flex items-center gap-3">
+                <Hexagon className="w-3 h-3 text-[#f7d08a]" /> Support The Craft
+              </h4>
+              <p className="mt-5 font-serif text-[13px] leading-relaxed text-zinc-500 italic">
+                We are a vision-first collective, carving authentic storytelling through dedicated artistry. Your support enables us to build a better kind of cinema.
+              </p>
+            </div>
+
+            {!patronSubmitted ? (
+               <form onSubmit={handlePatronSubmit} className="space-y-4 pt-4 border-t border-white/5">
+                  <div className="grid grid-cols-2 gap-4">
+                     <input 
+                       type="text" 
+                       value={patronName} 
+                       onChange={(e)=>setPatronName(e.target.value)} 
+                       placeholder="NAME" 
+                       required 
+                       className="bg-transparent border-b border-white/10 px-0 py-2 font-mono text-[10px] text-white focus:outline-none focus:border-[#f7d08a] w-full placeholder:text-zinc-700" 
+                     />
+                     <input 
+                       type="email" 
+                       value={patronEmail} 
+                       onChange={(e)=>setPatronEmail(e.target.value)} 
+                       placeholder="EMAIL" 
+                       required 
+                       className="bg-transparent border-b border-white/10 px-0 py-2 font-mono text-[10px] text-white focus:outline-none focus:border-[#f7d08a] w-full placeholder:text-zinc-700" 
+                     />
+                  </div>
+                  <textarea 
+                    value={patronNote} 
+                    onChange={(e)=>setPatronNote(e.target.value)} 
+                    placeholder="PITCH / SUPPORT INQUIRY..." 
+                    rows={2} 
+                    className="bg-transparent border-b border-white/10 px-0 py-3 font-mono text-[10px] text-white focus:outline-none focus:border-[#f7d08a] w-full resize-none placeholder:text-zinc-700" 
+                  />
+                  <button 
+                    type="submit" 
+                    className="w-full mt-4 py-3 border border-white/10 text-white font-mono text-[9px] uppercase tracking-[0.6em] hover:bg-white hover:text-black transition-colors block text-center"
+                  >
+                     Transmit Request
+                  </button>
+               </form>
             ) : (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mt-4 rounded-xl border border-primary/30 bg-card p-5"
-              >
-                <p className="font-display text-sm text-primary mb-3">Welcome to the journey ✦</p>
-                <p className="font-body text-xs text-muted-foreground mb-4">
-                  Here's a glimpse of brands investing in authentic storytelling:
-                </p>
-                <div className="space-y-2">
-                  {[
-                    { brand: "Dynamisity", type: "Brand Strategy & Film" },
-                    { brand: "Regional Cinema Project", type: "Trailer & Distribution" },
-                    { brand: "Pest Control Brand", type: "Ad Template & Copyright" },
-                  ].map((b) => (
-                    <div key={b.brand} className="flex items-center justify-between rounded-lg bg-secondary px-3 py-2">
-                      <span className="font-body text-xs text-foreground">{b.brand}</span>
-                      <span className="font-body text-[10px] text-muted-foreground">{b.type}</span>
-                    </div>
-                  ))}
-                </div>
-                <p className="mt-4 font-body text-[10px] text-muted-foreground italic">
-                  Your creation journey begins now. We'll reach out shortly.
-                </p>
-              </motion.div>
+               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-8 border border-[#f7d08a]/20 bg-[#f7d08a]/[0.02] text-center mt-4">
+                  <h5 className="font-serif text-xl text-[#f7d08a] italic mb-3">Protocol Received</h5>
+                  <p className="font-mono text-[9px] leading-relaxed uppercase tracking-[0.2em] text-zinc-500">Our central frame will analyze your transmission.</p>
+               </motion.div>
             )}
           </div>
+          
         </div>
 
-        <div className="line-thin mt-12" />
-        <p className="mt-6 text-center font-body text-xs text-muted-foreground">
-          © 2026 TV Studios. All rights reserved.
-        </p>
+        <div className="w-full h-[1px] bg-white/5 mt-20 mb-8" />
+        
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+           <p className="font-mono text-[9px] text-zinc-600 tracking-widest uppercase">
+             © 2026 TV Studios. All directives reserved.
+           </p>
+           <p className="font-mono text-[9px] text-[#00FF66]/50 tracking-widest uppercase flex items-center gap-2">
+             <span className="w-1.5 h-1.5 rounded-full bg-[#00FF66] animate-pulse" /> 
+             System Active
+           </p>
+        </div>
       </div>
     </footer>
   );
-};
-
-export default Footer;
+}

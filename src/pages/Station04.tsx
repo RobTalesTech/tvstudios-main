@@ -38,7 +38,7 @@ const Station04 = () => {
         {/* Navigation / Exit */}
         <div className="mb-12">
           <Link to="/studio-work" className="inline-flex items-center gap-2 text-white/50 hover:text-white transition-colors font-mono text-xs uppercase tracking-widest bg-white/5 px-4 py-2 rounded-md border border-white/10 hover:bg-white/10">
-            <ArrowLeft className="w-4 h-4" /> Exit Station
+            <ArrowLeft className="w-4 h-4" /> Exit TvUnit
           </Link>
         </div>
 

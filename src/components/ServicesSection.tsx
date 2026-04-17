@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
-import { Play, Disc3, MonitorPlay, Film, ShieldAlert, ArrowRight } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Play, Disc3, MonitorPlay, Film, ArrowRight } from "lucide-react";
+import StudioTVDisplay from "./StudioTVDisplay";
 
 // --- Data Models ---
 const AI_SONGS = [
@@ -11,11 +12,11 @@ const AI_SONGS = [
 ];
 
 const DJ_SERVICES = [
-  { id: "d1", title: "Corporate DJ", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" },
-  { id: "d2", title: "Residential DJ", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3" },
-  { id: "d3", title: "Event DJ", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3" },
-  { id: "d4", title: "Personal Party DJ", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" },
-  { id: "d5", title: "Festive DJ", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3" },
+  { id: "d1", title: "Corporate DJ", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3", color: "blue", speed: 0.6 },
+  { id: "d2", title: "Residential DJ", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3", color: "emerald", speed: 0.8 },
+  { id: "d3", title: "Event DJ", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3", color: "purple", speed: 1 },
+  { id: "d4", title: "Personal Party DJ", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3", color: "rose", speed: 1.2 },
+  { id: "d5", title: "Festive DJ", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3", color: "orange", speed: 1.5 },
 ];
 
 const PACKAGES = [
@@ -47,63 +48,134 @@ const REELS_DATA = [
 ];
 
 const ServicesSection = () => {
-  // Audio State
+  // Audio State (Unified Singleton Logic)
+  const [activeAudioUri, setActiveAudioUri] = useState<string | null>(null);
+  const [activeId, setActiveId] = useState<string | null>(null);
   const [audioTab, setAudioTab] = useState<"ai" | "original">("ai");
-  const [activeSong, setActiveSong] = useState<string | null>(null);
-  const activeSongObj = AI_SONGS.find(s => s.id === activeSong);
+
+  useEffect(() => {
+    const handleStop = () => {
+      setActiveId(null);
+      setActiveAudioUri(null);
+    };
+    window.addEventListener('stop-all-audio', handleStop);
+    return () => window.removeEventListener('stop-all-audio', handleStop);
+  }, []);
+
+  const toggleAudio = (id: string, url: string) => {
+    if (activeId === id) {
+      setActiveId(null);
+      setActiveAudioUri(null);
+    } else {
+      // Notify all other components to stop audio
+      window.dispatchEvent(new CustomEvent('stop-all-audio'));
+      setActiveId(id);
+      setActiveAudioUri(url);
+    }
+  };
+
+  const isAudioPlaying = (id: string) => activeId === id;
+  const isDjPlaying = activeId?.startsWith("d");
+  const isAudioProdPlaying = activeId?.startsWith("s");
   
-  // DJ State
-  const [activeDj, setActiveDj] = useState<string | null>(null);
-  const activeDjObj = DJ_SERVICES.find(d => d.id === activeDj);
+  const activeDjObj = DJ_SERVICES.find(d => d.id === activeId);
+  
+  const getColorHex = (color?: string) => {
+    switch(color) {
+      case 'blue': return '#3b82f6';
+      case 'emerald': return '#10b981';
+      case 'purple': return '#a855f7';
+      case 'rose': return '#f43f5e';
+      case 'orange': return '#f97316';
+      default: return '#71717a';
+    }
+  };
 
   // AI Video State
   const [activeReel, setActiveReel] = useState<number | null>(null);
-
-  // Package State
-  const [clickedPackages, setClickedPackages] = useState<{ [key: string]: boolean }>({});
 
   return (
     <section id="services" className="px-4 py-24 md:px-6 md:py-32 bg-[#020202] text-white selection:bg-[hsl(43_72%_55%)] selection:text-black">
       <div className="mx-auto max-w-7xl">
         
-        {/* Header */}
+         {/* Header */}
         <div className="mb-24 text-center">
           <motion.p
              initial={{ opacity: 0 }}
              whileInView={{ opacity: 1 }}
              viewport={{ once: true }}
-             className="mb-4 font-mono text-[10px] uppercase tracking-[0.4em] text-[hsl(43_72%_55%)] drop-shadow-[0_0_8px_hsla(43,72%,55%,0.6)]"
+             className="mb-12 font-mono text-[10px] uppercase tracking-[0.4em] text-[hsl(43_72%_55%)] drop-shadow-[0_0_8px_hsla(43,72%,55%,0.6)]"
           >
             Direct Pipeline Activation
           </motion.p>
-          <motion.h2 
-             initial={{ opacity: 0, y: 20 }}
-             whileInView={{ opacity: 1, y: 0 }}
+          
+          <StudioTVDisplay />
+          
+          <motion.p
+             initial={{ opacity: 0 }}
+             whileInView={{ opacity: 1 }}
              viewport={{ once: true }}
-             className="font-display text-4xl md:text-7xl font-black uppercase tracking-tight"
+             transition={{ delay: 0.2 }}
+             className="font-serif italic text-zinc-500 text-sm md:text-base tracking-[0.2em] mb-12 mt-12"
           >
-            Studio <span className="text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">Services</span>
-          </motion.h2>
+            we are creating for our display
+          </motion.p>
+
+          {/* THE PRODUCTION FLOOR ACTIVATION BLOCK */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="inline-block p-1 bg-gradient-to-r from-zinc-800 via-[hsl(43_72%_55%)] to-zinc-800 rounded-2xl mb-20"
+          >
+            <div className="bg-black/90 backdrop-blur-xl px-10 py-8 rounded-xl border border-white/5 text-center max-w-2xl">
+               <span className="text-emerald-500 font-mono text-[9px] uppercase tracking-[0.6em] mb-4 block animate-pulse">Production Floor Active</span>
+               <h3 className="text-xl md:text-2xl font-black text-white italic tracking-tighter uppercase mb-6">Current Services Open to Book</h3>
+               <p className="text-zinc-500 font-mono text-[9px] uppercase tracking-[0.2em] leading-relaxed mb-8">
+                 These services are the exact modules powering the studio's own internal productions. Every booking fuels our <span className="text-white">A.I. Technology Integration</span> and the <span className="text-[#f7d08a]">Global Studio Upgradation</span> program. Managed and owned exclusively by the Director.
+               </p>
+               <div className="flex gap-4 justify-center">
+                  <a href="https://wa.me/918149981660" className="px-6 py-2 bg-[hsl(43_72%_55%)] text-black font-black text-[9px] tracking-widest uppercase rounded-full hover:bg-white transition-all">
+                    Direct Booking
+                  </a>
+                  <div className="px-6 py-2 border border-white/10 text-white/40 font-mono text-[9px] tracking-widest uppercase rounded-full select-none cursor-default">
+                    AI Tech-Sync v.8.0
+                  </div>
+               </div>
+            </div>
+          </motion.div>
         </div>
 
         <div className="grid gap-12 lg:grid-cols-2 mb-20">
 
-          {/* 1. AUDIO PRODUCTION: RETRO SPEAKER TV */}
+          {/* 1. AUDIO PRODUCTION: THE PIANO UI */}
           <motion.div 
-             initial={{ opacity: 0, y: 20 }}
-             whileInView={{ opacity: 1, y: 0 }}
+             initial={{ opacity: 0, x: -30 }}
+             whileInView={{ opacity: 1, x: 0 }}
              viewport={{ once: true }}
-             className="relative rounded-3xl border border-[hsl(43_72%_55%)]/20 bg-black/50 p-6 md:p-8 backdrop-blur-xl shadow-[0_0_30px_hsla(43,72%,55%,0.05)] overflow-hidden"
+             className="relative rounded-3xl border border-[hsl(43_72%_55%)]/20 bg-black/50 p-6 md:p-8 backdrop-blur-xl shadow-[0_0_30px_hsla(43,72%,55%,0.05)] overflow-hidden flex flex-col"
           >
-            {/* The Tiny Grey Dotted Speaker Face Mask */}
-            <div 
-              className="absolute inset-0 z-0 opacity-[0.15]" 
+            {/* Fluid Waveform Dot Background & Staggered Timing (2s Fade / 3s Appear) */}
+            <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_50%_50%,_rgba(20,20,20,1)_0%,_rgba(10,10,10,0)_100%)] blur-[40px] opacity-60" />
+            <motion.div 
+              animate={isAudioProdPlaying ? {
+                backgroundPosition: ["0px 0px", "40px 40px", "0px 80px", "0px 0px"],
+                opacity: [0, 0, 0.3, 0.3, 0]
+              } : { opacity: 0.1 }}
+              transition={isAudioProdPlaying ? { 
+                duration: 5, 
+                repeat: Infinity, 
+                ease: "linear",
+                times: [0, 0.4, 0.6, 0.9, 1] // 0-2s (40%) is 0, 2-5s (60%) appears
+              } : { duration: 1 }}
+              className="absolute inset-0 z-0" 
               style={{
                 backgroundImage: 'radial-gradient(circle, #fff 1.5px, transparent 1.5px)',
-                backgroundSize: '8px 8px'
+                backgroundSize: '12px 12px'
               }}
             />
-            <div className="absolute top-0 right-0 w-64 h-64 bg-[hsl(43_72%_55%)]/10 blur-[100px] pointer-events-none z-0" />
+            
+            <div className={`absolute top-0 right-0 w-64 h-64 blur-[100px] pointer-events-none z-0 transition-colors duration-1000 ${isAudioProdPlaying ? "bg-[hsl(43_72%_55%)]/30" : "bg-[hsl(43_72%_55%)]/10"}`} />
             
             <div className="relative border-4 border-[#111] rounded-2xl bg-[#090909] overflow-hidden mb-6 aspect-[4/3] flex flex-col shadow-[inset_0_0_60px_rgba(0,0,0,1)] z-10">
                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[hsl(43_72%_55%)]/[0.04] to-transparent pointer-events-none z-10" />
@@ -114,30 +186,34 @@ const ServicesSection = () => {
                     <button onClick={() => setAudioTab("ai")} className={`font-mono text-xs uppercase tracking-widest transition-all ${audioTab === "ai" ? "text-[hsl(43_72%_55%)] drop-shadow-[0_0_8px_hsla(43,72%,55%,0.8)]" : "text-zinc-600 hover:text-zinc-400"}`}>
                       AI Songs
                     </button>
-                    <button onClick={() => setAudioTab("original")} className={`font-mono text-xs uppercase tracking-widest transition-all ${audioTab === "original" ? "text-[hsl(43_72%_55%)] drop-shadow-[0_0_8px_hsla(43,72%,55%,0.8)]" : "text-zinc-600 hover:text-zinc-400"}`}>
-                      Original
+                    <button onClick={() => setAudioTab("original")} className={`font-mono text-xs uppercase tracking-widest transition-all ${audioTab === "original" ? "text-[hsl(43_72%_55%)] drop-shadow-[0_0_8px_hsla(43,72%_55%,0.8)]" : "text-zinc-600 hover:text-zinc-400"}`}>
+                      Originals
                     </button>
                   </div>
 
                   {/* Playlist Content */}
                   <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
                      {audioTab === "original" ? (
-                       <div className="flex h-full items-center justify-center font-mono text-xs uppercase tracking-widest text-[hsl(43_72%_55%)]/50 animate-pulse">
-                         [ COMING SOON... ]
+                       <div className="flex flex-col h-full items-center justify-center p-6 text-center">
+                         <Play className="w-12 h-12 text-[hsl(43_72%_55%)]/20 mb-4" />
+                         <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[hsl(43_72%_55%)] leading-relaxed">
+                           Complete Service: From Lyrics and Composition to Full Creation, Mixing, and Mastering at Industry Standard Levels.
+                         </p>
+                         <p className="font-mono text-[8px] uppercase tracking-widest text-zinc-600 mt-6 animate-pulse">[ PRODUCTION FLOOR ACTIVE ]</p>
                        </div>
                      ) : (
                        <div className="space-y-2">
                          {AI_SONGS.map((song) => (
                            <button 
                              key={song.id}
-                             onClick={() => setActiveSong(activeSong === song.id ? null : song.id)}
-                             className={`w-full text-left px-4 py-3 font-mono text-xs uppercase tracking-widest rounded border transition-all flex justify-between items-center ${activeSong === song.id ? "bg-[hsl(43_72%_55%)]/10 border-[hsl(43_72%_55%)]/30 text-[hsl(43_72%_55%)]" : "bg-transparent border-transparent text-zinc-500 hover:bg-white/5 hover:text-zinc-300"}`}
+                             onClick={() => toggleAudio(song.id, song.url)}
+                             className={`w-full text-left px-4 py-3 font-mono text-xs uppercase tracking-widest rounded border transition-all flex justify-between items-center ${isAudioPlaying(song.id) ? "bg-[hsl(43_72%_55%)]/10 border-[hsl(43_72%_55%)]/30 text-[hsl(43_72%_55%)]" : "bg-transparent border-transparent text-zinc-500 hover:bg-white/5 hover:text-zinc-300"}`}
                            >
                              <div className="flex items-center gap-3">
-                               <Play className={`w-3 h-3 ${activeSong === song.id ? "fill-[hsl(43_72%_55%)]" : ""}`} />
+                               <Play className={`w-3 h-3 ${isAudioPlaying(song.id) ? "fill-[hsl(43_72%_55%)]" : ""}`} />
                                {song.title}
                              </div>
-                             {activeSong === song.id && (
+                             {isAudioPlaying(song.id) && (
                                <div className="flex items-end gap-[2px] h-3">
                                  <motion.div animate={{ height: ["20%", "100%", "40%", "80%"] }} transition={{ repeat: Infinity, duration: 0.5 }} className="w-1 bg-[hsl(43_72%_55%)]" />
                                  <motion.div animate={{ height: ["60%", "30%", "100%", "50%"] }} transition={{ repeat: Infinity, duration: 0.4 }} className="w-1 bg-[hsl(43_72%_55%)]" />
@@ -149,64 +225,141 @@ const ServicesSection = () => {
                        </div>
                      )}
                   </div>
-                  
-                  {activeSongObj && <audio src={activeSongObj.url} autoPlay loop className="hidden" />}
+               </div>
+            </div>
+
+            {/* FULL WIDTH PIANO KEYBOARD (Bottom Anchored) */}
+            <div className="absolute left-0 right-0 bottom-0 h-24 opacity-5 pointer-events-none z-0 flex items-end">
+               <div className="flex w-full h-full border-t border-white/20">
+                  {[...Array(24)].map((_, i) => (
+                     <div key={i} className="flex-1 h-full border-r border-white/20 bg-white/5 relative">
+                        {/* Black Keys */}
+                        {[1, 2, 4, 5, 6].includes(i % 7) && (
+                           <div className="absolute top-0 right-[-25%] w-1/2 h-[60%] bg-zinc-900 border border-white/10 rounded-b-sm z-10" />
+                        )}
+                     </div>
+                  ))}
                </div>
             </div>
 
             <div className="flex justify-between items-end relative z-10">
               <div>
                 <h3 className="font-display text-2xl font-bold mb-1">Audio Production</h3>
-                <p className="text-zinc-400 font-mono text-[10px] uppercase tracking-widest">Industry Standard Rendering</p>
+                <p className="text-zinc-400 font-mono text-[10px] uppercase tracking-widest leading-0 mb-0">Industry Standard Rendering</p>
+                {/* Discrete Production Contact */}
+                <a href="tel:+9167467145" className="text-[hsl(43_72%_55%)] font-mono text-[8px] uppercase tracking-widest opacity-40 hover:opacity-100 transition-opacity">Production Direct Access // Engagement Line</a>
               </div>
-              <a href="https://wa.me/918149981660?text=I'm%20interested%20in%20Audio%20Production" target="_blank" rel="noopener noreferrer" className="bg-white text-black px-6 py-2 rounded font-mono text-[10px] md:text-xs font-bold uppercase tracking-widest hover:bg-[hsl(43_72%_55%)] transition-colors inline-block text-center flex-shrink-0 ml-2">
-                Start Call
-              </a>
+              <div className="flex items-center gap-4">
+                {/* Recording Indicator */}
+                <div className="flex items-center gap-2">
+                  <motion.div 
+                    animate={{ opacity: [0.4, 1, 0.4] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                    className="w-2.5 h-2.5 rounded-full bg-red-600 shadow-[0_0_10px_rgba(220,38,38,0.8)]"
+                  />
+                  <span className="font-mono text-[8px] uppercase tracking-widest text-zinc-500 font-bold">Live</span>
+                </div>
+                
+                <div className="flex gap-2">
+                  <a href="tel:+9167467145" className="bg-zinc-900 border border-white/10 text-white p-2 rounded hover:bg-white hover:text-black transition-all">
+                    <Play className="w-3 h-3 fill-current rotate-90" />
+                  </a>
+                  <a href="https://wa.me/918149981660" target="_blank" rel="noopener noreferrer" className="bg-white text-black px-6 py-2 rounded font-mono text-[10px] md:text-xs font-bold uppercase tracking-widest hover:bg-[hsl(43_72%_55%)] transition-colors inline-block text-center select-none min-w-[100px]">
+                    {audioTab === "ai" ? "PRODUCE" : "RECORD"}
+                  </a>
+                </div>
+              </div>
             </div>
           </motion.div>
 
 
-          {/* 2. DJ SERVICES: Faded Console Deck */}
+          {/* 2. DJ SERVICES: AUTHENTIC GENRE LOGIC */}
           <motion.div 
-             initial={{ opacity: 0, y: 20 }}
-             whileInView={{ opacity: 1, y: 0 }}
+             initial={{ opacity: 0, x: 30 }}
+             whileInView={{ opacity: 1, x: 0 }}
              viewport={{ once: true }}
              transition={{ delay: 0.1 }}
-             className="relative rounded-3xl border border-white/5 bg-black p-6 md:p-8 overflow-hidden flex flex-col shadow-[inset_0_20px_40px_rgba(255,255,255,0.02)]"
+             whileHover="hover"
+             className={`relative rounded-3xl border transition-all duration-700 p-6 md:p-8 overflow-hidden flex flex-col shadow-2xl group ${isDjPlaying ? "bg-[#050510]" : "border-white/5 bg-black"}`}
+             style={isDjPlaying ? { borderColor: `${getColorHex(activeDjObj?.color)}80`, boxShadow: `0 0 50px ${getColorHex(activeDjObj?.color)}1a` } : {}}
           >
-            {/* The Deck / Physical Console Lines Background */}
-            <div className="absolute inset-0 z-0 bg-transparent opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.5) 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
+            {/* Background Piano Key depiction (Architectural fade) */}
+            <div className="absolute inset-x-0 bottom-0 h-40 opacity-[0.02] pointer-events-none z-0 flex items-end justify-center px-4">
+              {[...Array(24)].map((_, i) => (
+                <div key={i} className="flex-1 h-full border-r border-white/20" />
+              ))}
+            </div>
+
+            {/* The Console Dotted Background - Fades on hover */}
+            <motion.div 
+              variants={{
+                hover: { opacity: 0.08, scale: 1.05 }
+              }}
+              transition={{ duration: 0.5 }}
+              className="absolute inset-0 z-0 opacity-[0.03]" 
+              style={{
+                backgroundImage: 'radial-gradient(circle, #fff 1.5px, transparent 1.5px)',
+                backgroundSize: '20px 20px'
+              }}
+            />
             
-            <div className="relative border border-[#222] rounded-2xl bg-[#0a0a0a] overflow-hidden mb-6 flex-1 z-10 flex flex-col shadow-2xl">
+            <div className={`relative border rounded-2xl overflow-hidden mb-6 flex-1 z-10 flex flex-col transition-all duration-700 ${isDjPlaying ? "bg-[#08080f]" : "border-[#222] bg-[#0a0a0a]"}`} 
+              style={isDjPlaying ? { borderColor: `${getColorHex(activeDjObj?.color)}4d` } : {}}
+            >
               
-              {/* Isolated Disc Lighting header */}
-              <div className="h-32 w-full bg-[#050505] border-b border-[#222] flex items-center justify-center relative shadow-[inset_0_0_50px_rgba(0,0,0,0.8)] overflow-hidden">
-                 {/* The only neon is on the disc and surrounding glow when active */}
-                 {activeDj && <div className="absolute inset-0 bg-blue-500/10 blur-[50px]" />}
-                 
-                 {activeDj ? (
-                    <div className="relative z-10 flex gap-[4px] items-center h-16 w-32 justify-center opacity-90 mx-auto">
-                      {[...Array(12)].map((_, i) => (
-                        <motion.div key={i} animate={{ height: [Math.random() * 20 + "%", Math.random() * 100 + "%", Math.random() * 50 + "%"] }} transition={{ duration: Math.random() * 0.4 + 0.3, repeat: Infinity, repeatType: "mirror" }} className="w-2 rounded-sm bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.9)]" />
-                      ))}
-                    </div>
-                 ) : (
-                    <motion.div animate={{ rotate: 360 }} transition={{ duration: 10, ease: "linear", repeat: Infinity }}>
-                      <Disc3 className="w-16 h-16 text-zinc-800 drop-shadow-[0_0_20px_rgba(255,255,255,0.1)]" />
-                    </motion.div>
+              {/* Visualizer Display */}
+              <div className="h-40 w-full bg-[#050505] border-b border-[#222] flex flex-col items-center justify-center relative shadow-[inset_0_0_50px_rgba(0,0,0,0.8)] overflow-hidden">
+                 {isDjPlaying && (
+                   <motion.div 
+                     animate={{ opacity: [0.1, 0.2, 0.1] }} 
+                     transition={{ duration: 2, repeat: Infinity }}
+                     className="absolute inset-0 blur-[60px]" 
+                     style={{ backgroundColor: getColorHex(activeDjObj?.color) }} 
+                   />
                  )}
+                 
+                 {/* The Disc */}
+                 <motion.div 
+                    animate={isDjPlaying ? { rotate: 360, scale: [1, 1.05, 1] } : { rotate: 0 }}
+                    transition={isDjPlaying ? { rotate: { duration: 2 / (activeDjObj?.speed || 1), repeat: Infinity, ease: "linear" }, scale: { duration: 0.5 / (activeDjObj?.speed || 1), repeat: Infinity } } : {}}
+                    className="relative z-20 mb-4"
+                 >
+                    <Disc3 className={`w-16 h-16 transition-colors duration-700 ${isDjPlaying ? '' : 'text-zinc-800'}`} 
+                      style={isDjPlaying ? { color: getColorHex(activeDjObj?.color), filter: `drop-shadow(0 0 15px ${getColorHex(activeDjObj?.color)}cc)` } : {}}
+                    />
+                 </motion.div>
+
+                 {/* Digital Frequency Bars - Speed controlled by genre */}
+                 <div className="relative z-10 flex gap-[3px] items-end h-8 overflow-hidden">
+                   {[...Array(20)].map((_, i) => (
+                     <motion.div 
+                        key={i} 
+                        animate={isDjPlaying ? { 
+                          height: [Math.random() * 20 + 20 + "%", Math.random() * 100 + "%", Math.random() * 40 + "%"],
+                          opacity: [0.6, 1, 0.8]
+                        } : { height: "10%", opacity: 0.2 }} 
+                        transition={{ duration: (Math.random() * 0.3 + 0.2) / (activeDjObj?.speed || 1), repeat: Infinity, repeatType: "mirror" }} 
+                        className={`w-1.5 rounded-t-sm transition-colors duration-700 ${isDjPlaying ? "" : "bg-zinc-700"}`}
+                        style={isDjPlaying ? { backgroundColor: getColorHex(activeDjObj?.color), boxShadow: `0 0 8px ${getColorHex(activeDjObj?.color)}80` } : {}}
+                      />
+                   ))}
+                 </div>
               </div>
 
-              {/* Console Buttons */}
+              {/* Console Tracks */}
               <div className="p-4 grid grid-cols-1 sm:grid-cols-2 gap-2 bg-[#0a0a0a]">
                 {DJ_SERVICES.map((dj) => (
                   <button
                     key={dj.id}
-                    onClick={() => setActiveDj(activeDj === dj.id ? null : dj.id)}
-                    className={`font-mono text-[10px] uppercase font-bold tracking-widest py-3 px-4 rounded border transition-all text-left flex justify-between items-center ${activeDj === dj.id ? "bg-blue-900 border-blue-500 text-white shadow-[inset_0_0_10px_rgba(59,130,246,0.3)]" : "bg-[#111] text-zinc-500 border-[#222] hover:border-[#333] hover:text-zinc-400"}`}
+                    onClick={() => toggleAudio(dj.id, dj.url)}
+                    className={`font-mono text-[10px] uppercase font-bold tracking-widest py-3 px-4 rounded border transition-all text-left flex justify-between items-center ${isAudioPlaying(dj.id) ? "text-white shadow-[0_0_15px_rgba(255,255,255,0.2)]" : "bg-[#111] text-zinc-600 border-[#222] hover:border-[#333] hover:text-zinc-400"}`}
+                    style={isAudioPlaying(dj.id) ? { backgroundColor: getColorHex(dj.color), borderColor: '#fff' } : {}}
                   >
-                    {dj.title}
-                    {activeDj === dj.id && <span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-pulse shadow-[0_0_5px_rgba(59,130,246,1)]" />}
+                    <div className="flex items-center gap-2">
+                       <span className={`w-1 h-1 rounded-full ${isAudioPlaying(dj.id) ? 'bg-white' : 'bg-white/10'}`} />
+                       {dj.title}
+                    </div>
+                    {isAudioPlaying(dj.id) && <span className="w-1.5 h-1.5 bg-white rounded-full animate-ping shadow-[0_0_5px_rgba(255,255,255,1)]" />}
                   </button>
                 ))}
               </div>
@@ -214,31 +367,36 @@ const ServicesSection = () => {
 
             <div className="flex justify-between items-end relative z-10">
               <div>
-                <h3 className="font-display text-2xl font-bold mb-1">DJ Services</h3>
-                <p className="text-zinc-400 font-mono text-[10px] uppercase tracking-widest">Console Engaged</p>
+                <h3 className={`font-display text-2xl font-bold mb-1 transition-colors duration-700 ${isDjPlaying ? '' : 'text-white'}`}
+                  style={isDjPlaying ? { color: getColorHex(activeDjObj?.color) } : {}}
+                >
+                  DJ Services
+                </h3>
+                <p className="text-zinc-400 font-mono text-[10px] uppercase tracking-widest">Active Console State</p>
+                <a href="tel:+9167467145" className="text-white/20 font-mono text-[8px] uppercase tracking-widest hover:text-white/50 transition-colors">Production Registry Line</a>
               </div>
               <AnimatePresence>
-                {activeDj ? (
+                {isDjPlaying ? (
                   <motion.a 
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.9 }}
-                    href="https://wa.me/918149981660?text=I%20want%20to%20book%20a%20DJ" 
+                    href={`https://wa.me/918149981660?text=${encodeURIComponent(`Hi, I'm interested in booking the ${activeDjObj?.title}. Let's discuss the session.`)}`}
                     target="_blank" 
                     rel="noopener noreferrer" 
-                    className="bg-blue-600 border border-blue-400 text-white px-6 py-2 rounded font-mono text-[10px] md:text-xs font-bold uppercase tracking-widest hover:bg-white hover:border-white hover:text-black transition-all flex-shrink-0 ml-2"
+                    className="text-white px-6 py-2 rounded font-mono text-[10px] md:text-xs font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all flex-shrink-0 ml-2"
+                    style={{ backgroundColor: getColorHex(activeDjObj?.color), border: `1px solid ${getColorHex(activeDjObj?.color)}` }}
                   >
-                    Book This DJ
+                    Book {activeDjObj?.title.split(' ')[0]}
                   </motion.a>
                 ) : (
-                  <div className="opacity-0 px-6 py-2">Placeholder</div>
+                  <div className="bg-white/5 border border-white/10 text-zinc-600 px-6 py-2 rounded font-mono text-[10px] md:text-xs font-bold uppercase tracking-widest cursor-not-allowed">
+                    Select Genre
+                  </div>
                 )}
               </AnimatePresence>
             </div>
-            
-            {activeDjObj && <audio src={activeDjObj.url} autoPlay loop className="hidden" />}
           </motion.div>
-
 
           {/* 3. AI VIDEO PRODUCTION: Mobile Reel Format embedded */}
           <motion.div 
@@ -302,176 +460,35 @@ const ServicesSection = () => {
           </motion.div>
 
 
-          {/* 4. REAL PRODUCTION: Cinematic Equipment Theme */}
-          <motion.div 
-             initial={{ opacity: 0, y: 20 }}
-             whileInView={{ opacity: 1, y: 0 }}
-             viewport={{ once: true }}
-             transition={{ delay: 0.3 }}
-             className="relative rounded-3xl border border-zinc-800 bg-[#0a0a0a] p-6 md:p-8 overflow-hidden shadow-[inset_0_30px_50px_rgba(255,255,255,0.02)]"
-          >
-            {/* Cinematic background texture metallic */}
-            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay z-0 pointer-events-none" />
-            
-            <div className="flex flex-col mb-6 relative z-10">
+          {/* 4. REAL PRODUCTION & OG WRITING (Simplified wrappers for speed) */}
+          <div className="lg:col-span-1 space-y-12">
+            {/* Real Production */}
+            <div className="relative rounded-3xl border border-zinc-800 bg-[#0a0a0a] p-6 md:p-8 overflow-hidden">
               <h3 className="font-display text-2xl font-bold mb-1 text-white">Real Production</h3>
-              <p className="text-zinc-400 font-body text-[11px] leading-relaxed mb-4">
-                Physical camera, lighting rigs, and crew. Budget depends strictly on the level of production required for the product.
+              <p className="text-zinc-400 font-body text-[11px] leading-relaxed mb-6">
+                Physical camera, lighting rigs, and crew. Scale depends on product requirements.
               </p>
-              
-              {/* Process booking flow */}
-              <div className="flex flex-wrap items-center gap-2 font-mono text-[9px] font-bold text-zinc-500 uppercase tracking-widest bg-black border border-white/5 px-4 py-2 rounded-lg">
-                <span className="text-white">Call</span> <ArrowRight className="w-3 h-3" /> 
-                <span className="text-white">Pre-Prod</span> <ArrowRight className="w-3 h-3" /> 
-                <span className="text-white">Production</span> <ArrowRight className="w-3 h-3" /> 
-                <span className="text-white">Delivery</span>
+              <div className="space-y-3 font-mono text-[9px] text-white/40 uppercase tracking-widest">
+                <div className="flex justify-between border-b border-white/5 pb-2"><span>Status</span> <span className="text-emerald-400">Active Pipeline</span></div>
+                <div className="flex justify-between border-b border-white/5 pb-2"><span>Niche</span> <span className="text-white">High Budget MV</span></div>
               </div>
             </div>
 
-            <div className="relative border border-[#222] rounded-xl bg-black overflow-hidden mb-6 p-4 md:p-6 z-10">
-               <ul className="space-y-4">
-                 <li className="flex gap-3 items-start border-b border-white/5 pb-4">
-                    <span className="font-mono text-[10px] text-zinc-600 mt-0.5">01</span>
-                    <div>
-                      <p className="font-mono text-[10px] text-white font-bold uppercase tracking-wider mb-1">Basic Stage</p>
-                      <p className="font-body text-xs text-zinc-400">Experimental Kids Content Digital Update</p>
-                    </div>
-                 </li>
-                 <li className="flex gap-3 items-start border-b border-white/5 pb-4">
-                    <span className="font-mono text-[10px] text-zinc-600 mt-0.5">02</span>
-                    <div>
-                      <p className="font-mono text-[10px] text-white font-bold uppercase tracking-wider mb-1">Scale Stage</p>
-                      <p className="font-body text-xs text-zinc-400">HKD Webshow Cinematic Project Focus</p>
-                    </div>
-                 </li>
-                 <li className="flex gap-3 items-start border-b border-white/5 pb-4">
-                    <span className="font-mono text-[10px] text-zinc-600 mt-0.5">03</span>
-                    <div>
-                      <p className="font-mono text-[10px] text-emerald-400 font-bold uppercase tracking-wider mb-1">Ongoing Status</p>
-                      <p className="font-body text-xs text-zinc-300">High Budget Music Videos</p>
-                    </div>
-                 </li>
-                 <li className="flex gap-3 items-start">
-                    <span className="font-mono text-[10px] text-zinc-600 mt-0.5">04</span>
-                    <div>
-                      <p className="font-mono text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-1">Under Process</p>
-                      <p className="font-body text-xs text-zinc-600 italic">Advanced internal plate shots</p>
-                    </div>
-                 </li>
-               </ul>
-            </div>
-            
-            <div className="flex justify-between items-center relative z-10 pt-2 border-t border-white/10">
-              <span className="font-mono font-bold text-[9px] uppercase tracking-widest text-zinc-500">Tiered Execution</span>
-              <a href="https://wa.me/918149981660?text=I'm%20interested%20in%20Real%20Production" target="_blank" rel="noopener noreferrer" className="text-white hover:text-white font-mono text-xs uppercase tracking-widest underline underline-offset-4 transition-colors">
-                Initiate Setup
-              </a>
-            </div>
-          </motion.div>
-
-
-          {/* 5. OG WRITING: ANCIENT PAPER VS TERMINAL GLOW */}
-          <motion.div 
-             initial={{ opacity: 0, y: 20 }}
-             whileInView={{ opacity: 1, y: 0 }}
-             viewport={{ once: true }}
-             transition={{ delay: 0.4 }}
-             className="relative rounded-3xl border border-[#00FF41]/30 bg-[#050A05] p-6 md:p-8 shadow-[0_0_40px_rgba(0,255,65,0.05)] overflow-hidden lg:col-span-2"
-          >
-            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 pointer-events-none mix-blend-overlay" />
-            
-            <div className="flex flex-col md:flex-row gap-12 relative z-10">
-               {/* Left: Philosophy Pitch (Ancient Paper feel clash) */}
-               <div className="flex-1 md:pr-12">
-                 <h3 className="font-serif italic text-3xl text-zinc-300 mb-6 drop-shadow-md">
-                   OG Writer's Room
-                 </h3>
-                 
-                 <p className="font-serif text-sm md:text-base leading-relaxed text-zinc-400 mb-8 border-l-2 border-[#00FF41]/50 pl-6">
-                   The studio does <span className="text-white font-bold italic">not</span> create for the client. We carve out communication for their <span className="text-white font-bold underline underline-offset-4 decoration-[#00FF41]/50">business survival</span>.
-                 </p>
-                 
-                 <div className="bg-[#00FF41]/5 border border-[#00FF41]/20 p-4 rounded-xl">
-                   <p className="font-mono text-[10px] md:text-xs leading-relaxed text-[#00FF41] uppercase tracking-widest">
-                     // FOUNDER TO FOUNDER SERVICE.<br/>
-                     // RARE THAT A STUDIO OPERATES AT THIS LEVEL OF STRATEGIC ARCHITECTURE.
-                   </p>
-                 </div>
-               </div>
-
-               {/* Right: B&W Limited Modules vs Green Active Module */}
-               <div className="flex-1 font-mono uppercase text-[10px] md:text-xs tracking-widest flex flex-col justify-center">
-                 
-                 <div className="mb-8">
-                   <span className="text-zinc-600 block mb-3 border-b border-zinc-800 pb-2">[ RESTRICTED MONOCHROME MODULES ]</span>
-                   <div className="flex gap-2 flex-col text-zinc-500">
-                     <span className="border-l-2 border-zinc-800 pl-4 py-1 opacity-50 select-none">News Documentation</span>
-                     <span className="border-l-2 border-zinc-800 pl-4 py-1 opacity-50 select-none">Lyrics Engineering</span>
-                     <span className="border-l-2 border-zinc-800 pl-4 py-1 opacity-50 select-none">Screenplay Drafting</span>
-                   </div>
-                 </div>
-
-                 <div className="pt-2">
-                   <span className="text-[#00FF41] animate-pulse block mb-3 border-b border-[#00FF41]/20 pb-2">[ ACTIVE AVAILABLE MODULE ]</span>
-                   <div className="bg-[#00FF41]/10 border border-[#00FF41]/50 px-4 py-4 rounded-xl text-[#00FF41] font-bold flex justify-between items-center group cursor-pointer hover:bg-[#00FF41]/20 transition-all shadow-[0_0_15px_rgba(0,255,65,0.05)]">
-                      Copy Writing
-                      <a href="https://wa.me/918149981660?text=I'm%20a%20founder.%20I%20need%20copywriting." target="_blank" rel="noopener noreferrer" className="bg-[#00FF41] text-black px-4 py-2 rounded font-black group-hover:shadow-[0_0_15px_rgba(0,255,65,0.6)] transition-all flex items-center gap-2">
-                        Draft Now <ArrowRight className="w-3 h-3" />
-                      </a>
-                   </div>
-                 </div>
-               </div>
-            </div>
-          </motion.div>
-
-        </div>
-
-        {/* 6. STRUCTURED PACKAGES (Restoring exact requested bottom packages) */}
-        <div className="mt-32">
-          <div className="text-center mb-16">
-            <h2 className="font-display text-4xl md:text-5xl font-black mb-4">Baseline Output Packages</h2>
-            <p className="text-zinc-500 font-mono text-xs uppercase tracking-widest">Fixed architecture pricing. Studio remains intensely scaled.</p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-             {PACKAGES.map((pkg, idx) => (
-               <motion.div 
-                 key={idx}
-                 initial={{ opacity: 0, y: 20 }}
-                 whileInView={{ opacity: 1, y: 0 }}
-                 viewport={{ once: true }}
-                 transition={{ delay: idx * 0.1 }}
-                 className="border border-white/10 rounded-2xl bg-[#050505] p-8 flex flex-col justify-between"
-               >
-                 <div>
-                   <h4 className="font-display text-2xl font-bold mb-2 text-white">{pkg.title}</h4>
-                   <p className="text-zinc-400 font-body text-sm mb-6 min-h-[40px]">{pkg.desc}</p>
-                   
-                   <p className="font-mono text-xl md:text-3xl font-black text-white mb-2">{pkg.price} <span className="text-[10px] text-zinc-500 uppercase tracking-widest font-normal">/ Starting</span></p>
-                   
-                   <div className="border-t border-white/10 my-6" />
-                   
-                   <ul className="space-y-3 mb-8">
-                     {pkg.features.map((feat, i) => (
-                       <li key={i} className="flex gap-3 text-sm font-body text-zinc-300 items-start">
-                         <span className="text-[hsl(43_72%_55%)] mt-1">•</span> {feat}
-                       </li>
-                     ))}
-                   </ul>
-                 </div>
-                 
-                 <a
-                     href={`https://wa.me/918149981660?text=${encodeURIComponent(`Hi, I'm interested in the ${pkg.title} package (${pkg.price}). Let's discuss.`)}`}
-                     target="_blank"
-                     rel="noopener noreferrer"
-                     className="block w-full py-4 rounded font-mono text-xs font-bold uppercase tracking-widest text-center transition-all bg-white text-black hover:bg-[hsl(43_72%_55%)] hover:text-black"
-                  >
-                    Select {pkg.title}
-                  </a>
-               </motion.div>
-             ))}
+            {/* OG Writing */}
+            <div className="relative rounded-3xl border border-[#00FF41]/30 bg-[#050A05] p-6 md:p-8 overflow-hidden">
+               <h3 className="font-serif italic text-2xl text-zinc-300 mb-4">OG Writer's Room</h3>
+               <p className="font-serif text-xs md:text-sm leading-relaxed text-zinc-400 mb-6">
+                  Complete narrative architecture for business survival and branding influence.
+               </p>
+               <a href="https://wa.me/918149981660?text=I'm%20a%20founder.%20I%20need%20copywriting." target="_blank" rel="noopener noreferrer" className="bg-[#00FF41]/10 border border-[#00FF41]/50 px-4 py-3 rounded-lg text-[#00FF41] font-mono text-[10px] uppercase font-bold tracking-widest block text-center hover:bg-[#00FF41]/20 transition-all">
+                  Draft Now
+               </a>
+             </div>
           </div>
         </div>
+
+        {/* Global Hidden Audio Controller */}
+        {activeAudioUri && <audio src={activeAudioUri} autoPlay loop className="hidden" />}
 
       </div>
     </section>

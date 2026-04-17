@@ -1,4 +1,6 @@
 import HeroSection from "@/components/HeroSection";
+import CreativeShowcase from "@/components/CreativeShowcase";
+import DirectorTalk from "@/components/DirectorTalk";
 import MovementSection from "@/components/MovementSection";
 import StationPreview from "@/components/StationPreview";
 import StudioPulse from "@/components/StudioPulse";
@@ -14,9 +16,11 @@ const Index = () => {
       </div>
 
       <HeroSection />          {/* Intro & Foundation */}
-      <StationPreview />        {/* Two TV cards — Station 02 & 03 */}
+      <CreativeShowcase />     {/* Cinematic Text Showcases */}
+      <StationPreview />        {/* TV cards — Station 02, 03 */}
       <StudioPulse />           {/* Film-strip scrolling feed */}
-      <MovementSection />       {/* Brand manifesto */}
+      <MovementSection />       {/* Brand manifesto (Art. Tech. Economy.) */}
+      <DirectorTalk />          {/* Founder Brief sitting below Art. Tech. Economy. */}
 
       <Footer />
     </div>

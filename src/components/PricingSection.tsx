@@ -69,7 +69,11 @@ const PricingSection = () =>
               </ul>
             </div>
             <div className="mt-12">
-              <WhatsAppButton label="Book Sequence" className="w-full justify-center bg-white text-black hover:bg-red-600 hover:text-white" />
+              <WhatsAppButton 
+                label="Book Sequence" 
+                message={`Hi! I'm interested in the ${tier.name} package.`}
+                className="w-full justify-center bg-white text-black hover:bg-red-600 hover:text-white" 
+              />
             </div>
           </motion.div>
       )}

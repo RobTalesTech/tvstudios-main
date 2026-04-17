@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import TeamSection from "@/components/TeamSection";
+import AboutContact from "@/components/AboutContact";
 import Footer from "@/components/Footer";
 import { Mail, MapPin, Phone } from "lucide-react";
 
@@ -9,6 +10,9 @@ const TeamContact = () => {
       {/* Background aesthetics */}
       <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/10 via-background to-background pointer-events-none -z-10" />
 
+      {/* Founder Story & Profile */}
+      <AboutContact />
+      
       {/* Embedded Team Section from earlier */}
       <TeamSection />
 
