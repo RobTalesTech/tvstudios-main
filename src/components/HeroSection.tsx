@@ -1,9 +1,26 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Play, X } from "lucide-react";
 
 const HeroSection = () => {
   const [isVideoOpen, setIsVideoOpen] = useState(false);
+  const [showComingSoon, setShowComingSoon] = useState(false);
+
+  // Approximate duration of the reel - set to 55 seconds (QVak8sq8A_Q is ~56s)
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (isVideoOpen && !showComingSoon) {
+      timer = setTimeout(() => {
+        setShowComingSoon(true);
+      }, 55000); // 55 seconds
+    }
+    return () => clearTimeout(timer);
+  }, [isVideoOpen, showComingSoon]);
+
+  const handleClose = () => {
+    setIsVideoOpen(false);
+    setShowComingSoon(false);
+  };
 
   return (
     <section id="hero" className="relative flex min-h-[100dvh] w-full flex-col items-center justify-center overflow-hidden bg-background pt-24 pb-12">
@@ -76,41 +93,79 @@ const HeroSection = () => {
         </motion.div>
       </div>
 
-      {/* Cinematic Video Modal */}
+      {/* Cinematic Video Modal (PREMIUM TV PROJECTION) */}
       <AnimatePresence>
         {isVideoOpen && (
           <motion.div
-            initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
-            animate={{ opacity: 1, backdropFilter: "blur(24px)" }}
-            exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
-            transition={{ duration: 0.5 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-3xl"
           >
             <motion.button
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              onClick={() => setIsVideoOpen(false)}
-              className="absolute top-6 right-6 md:top-10 md:right-10 z-[110] rounded-full bg-white/10 p-3 text-white transition-colors hover:bg-white/20"
+              onClick={handleClose}
+              className="absolute top-8 right-8 z-[120] text-white/30 hover:text-white transition-colors"
             >
-              <X className="h-6 w-6" />
+              <X className="h-8 w-8" />
             </motion.button>
             
             <motion.div 
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className="relative aspect-video w-[90vw] max-w-6xl overflow-hidden rounded-xl border border-white/10 shadow-2xl shadow-black/50"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+              className="relative w-[85vw] md:w-[60vw] aspect-video group"
             >
-              {/* Temporary placeholder or showreel video link */}
-              <iframe
-                src="https://www.youtube.com/embed/QVak8sq8A_Q?autoplay=1&loop=1&playlist=QVak8sq8A_Q&controls=1&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&enablejsapi=1"
-                title="Demo Reel"
-                className="h-full w-full"
-                allow="autoplay; encrypted-media"
-                allowFullScreen
-              />
+              {/* Premium TV Frame */}
+              <div className="absolute -inset-1 bg-gradient-to-b from-white/10 to-white/0 rounded-lg blur-sm opacity-50" />
+              <div className="absolute -inset-[1px] bg-white/10 rounded-lg" />
+              
+              <div className="relative h-full w-full overflow-hidden rounded-md bg-black shadow-[0_0_100px_rgba(0,0,0,1)] shadow-[0_0_40px_rgba(212,175,55,0.1)]">
+                {!showComingSoon ? (
+                  <iframe
+                    src="https://www.youtube.com/embed/QVak8sq8A_Q?autoplay=1&controls=0&modestbranding=1&rel=0&iv_load_policy=3&showinfo=0&disablekb=1&enablejsapi=1"
+                    title="TV Studios Showreel"
+                    className="h-full w-full scale-[1.01]"
+                    allow="autoplay; encrypted-media"
+                    allowFullScreen
+                  />
+                ) : (
+                  <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="absolute inset-0 flex flex-col items-center justify-center bg-black z-50 text-center p-8"
+                  >
+                    <motion.div 
+                      animate={{ opacity: [0.4, 1, 0.4] }} 
+                      transition={{ duration: 2, repeat: Infinity }}
+                      className="font-display text-4xl md:text-6xl font-black uppercase tracking-[0.2em] text-white"
+                    >
+                      Coming <span className="text-[hsl(43_72%_55%)] italic font-serif lowercase">Soon</span>
+                    </motion.div>
+                    <p className="mt-6 font-mono text-[10px] uppercase tracking-[0.5em] text-white/40">The Legacy Continues</p>
+                    <button 
+                      onClick={handleClose}
+                      className="mt-12 px-8 py-3 bg-white/5 border border-white/10 rounded-full font-mono text-[9px] uppercase tracking-widest text-white/60 hover:text-white hover:bg-white/10 transition-all"
+                    >
+                      Close Projection
+                    </button>
+                  </motion.div>
+                )}
+                
+                {/* Glass Overlays to hide possible branding/UI elements */}
+                <div className="absolute inset-0 pointer-events-none bg-gradient-to-tr from-white/5 to-transparent opacity-20" />
+                <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_100px_rgba(0,0,0,0.5)]" />
+              </div>
+
+              {/* Status Tags */}
+              <div className="absolute -top-12 left-0 flex items-center gap-4">
+                 <div className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-red-600 animate-pulse" />
+                    <span className="font-mono text-[8px] uppercase tracking-[0.4em] text-white/40">Silent Projection</span>
+                 </div>
+                 <div className="h-px w-8 bg-white/10" />
+                 <span className="font-mono text-[8px] uppercase tracking-[0.4em] text-white/40">Studio Motion</span>
+              </div>
             </motion.div>
           </motion.div>
         )}

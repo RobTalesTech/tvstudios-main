@@ -87,34 +87,18 @@ const StudioPulse = () => {
            .group:hover .flex > div { animation-play-state: paused !important; }
          `}} />
          
-         <div className="flex flex-col gap-2 md:gap-4 relative group">
-           {/* Strip 1: Saffron Tint */}
-           <FilmStripRow 
-             items={FILM_STRIP_DATA} 
-             direction="left" 
-             tintClass="sepia-[.8] hue-rotate-[-30deg] saturate-150 mix-blend-luminosity opacity-40" 
-             speed={45} 
-           />
-           
-           {/* Strip 2: Blue/Cyan Tint */}
-           <FilmStripRow 
-             items={[...FILM_STRIP_DATA].reverse()} 
-             direction="right" 
-             tintClass="sepia-[.5] hue-rotate-[180deg] saturate-[2] mix-blend-color opacity-40" 
-             speed={55} 
-           />
+          <div className="flex flex-col gap-2 md:gap-4 relative group">
+            {/* Single Floating Reel: SILENT PROJECTION */}
+            <FilmStripRow 
+              items={[...FILM_STRIP_DATA, ...FILM_STRIP_DATA]} 
+              direction="left" 
+              tintClass="sepia-[.2] saturate-150 opacity-60" 
+              speed={60} 
+            />
 
-           {/* Strip 3: Emerald Tint */}
-           <FilmStripRow 
-             items={[...FILM_STRIP_DATA.slice(2), ...FILM_STRIP_DATA.slice(0, 2)]} 
-             direction="left" 
-             tintClass="sepia-[.5] hue-rotate-[90deg] saturate-[1.5] mix-blend-luminosity opacity-40" 
-             speed={40} 
-           />
-
-           {/* Central Overlay for depth (vignette) */}
-           <div className="pointer-events-none absolute inset-0 shadow-[inset_100px_0_100px_#020202,inset_-100px_0_100px_#020202]" />
-         </div>
+            {/* Central Overlay for depth (vignette) */}
+            <div className="pointer-events-none absolute inset-0 shadow-[inset_100px_0_100px_#020202,inset_-100px_0_100px_#020202]" />
+          </div>
        </div>
     </section>
   );

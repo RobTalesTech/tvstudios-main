@@ -17,9 +17,9 @@ const CinematicReel = () => {
   return (
     <section className="w-full bg-[#020202] flex flex-col py-20 border-b border-white/5 relative z-10 overflow-hidden">
       <div className="text-center px-4 mb-16 relative z-20">
-        <p className="font-body text-xs uppercase tracking-[0.4em] text-[hsl(43_72%_55%)] mb-3">Continuous Output</p>
+        <p className="font-body text-[10px] uppercase tracking-[0.5em] text-[hsl(43_72%_55%)] mb-4">Direct Pipeline Activation</p>
         <h3 className="font-display text-4xl md:text-5xl text-white tracking-widest font-black uppercase flex justify-center mt-2">
-          {"WE ARE CREATING...".split("").map((char, i) => (
+          {"WE LOVE CREATING...".split("").map((char, i) => (
             <motion.span
               key={i}
               animate={{ color: ["#333333", "#D4AF37", "#FF0055", "#00E5FF", "#333333"] }}
@@ -30,6 +30,7 @@ const CinematicReel = () => {
             </motion.span>
           ))}
         </h3>
+        <p className="mt-6 font-mono text-[9px] uppercase tracking-[0.3em] text-white/30">One By One</p>
       </div>
       
       <div className="relative flex h-[35vh] w-full items-center bg-[#020202] overflow-hidden -top-6">

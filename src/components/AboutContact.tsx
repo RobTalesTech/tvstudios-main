@@ -129,76 +129,7 @@ const AboutContact = () => {
 
         </div>
 
-        {/* FOUNDER INTELLIGENCE FACTSHEET // THE DOSSIER */}
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mt-32 pt-20 border-t border-white/5 grid grid-cols-1 md:grid-cols-3 gap-12"
-        >
-           <div className="md:col-span-1">
-              <span className="font-mono text-[9px] text-zinc-500 uppercase tracking-[0.5em] mb-4 block">Personnel Dossier</span>
-              <h3 className="font-display text-2xl text-white uppercase tracking-widest font-black">The <span className="text-[hsl(43_72%_55%)] italic">Founder</span></h3>
-              <div className="space-y-4 mt-6">
-                 <div className="flex flex-col border-l border-white/10 pl-4 py-1">
-                    <span className="font-mono text-[8px] text-zinc-600 uppercase tracking-widest mb-1">Born</span>
-                    <span className="text-white text-xs font-serif italic">23 Dec 1990 [ Pansemal, MP, India ]</span>
-                 </div>
-                 <div className="flex flex-col border-l border-white/10 pl-4 py-1">
-                    <span className="font-mono text-[8px] text-zinc-600 uppercase tracking-widest mb-1">Occupation</span>
-                    <span className="text-white text-[10px] font-serif italic uppercase leading-tight">Filmmaker / Screenwriter, <br/> Engineer / Entrepreneur</span>
-                 </div>
-                 <div className="flex flex-col border-l border-white/10 pl-4 py-1">
-                    <span className="font-mono text-[8px] text-zinc-600 uppercase tracking-widest mb-1">Work As</span>
-                    <span className="text-white text-[10px] font-serif italic uppercase leading-tight">A creator, An Art Entrepreneur, <br/> The Artist</span>
-                 </div>
-                 <div className="flex flex-col border-l border-white/10 pl-4 py-1">
-                    <span className="font-mono text-[8px] text-zinc-600 uppercase tracking-widest mb-1">Years Active</span>
-                    <span className="text-white text-xs font-serif italic">2013 — Present</span>
-                 </div>
-              </div>
-           </div>
 
-           <div className="md:col-span-1">
-              <span className="font-mono text-[9px] text-zinc-500 uppercase tracking-[0.5em] mb-4 block">Institutional Record</span>
-              <div className="space-y-6">
-                 <div className="flex flex-col">
-                    <span className="font-mono text-[8px] text-zinc-600 uppercase tracking-widest mb-2">Education</span>
-                    <a href="https://en.wikipedia.org/wiki/Yashwantrao_Chavan_College_of_Engineering" target="_blank" rel="noreferrer" className="text-white text-xs font-serif italic hover:text-[hsl(43_72%_55%)] transition-colors mb-1">B.E. Civil Engineering // YCCE</a>
-                    <a href="https://en.wikipedia.org/wiki/Jawahar_Navodaya_Vidyalaya" target="_blank" rel="noreferrer" className="text-white text-xs font-serif italic hover:text-[hsl(43_72%_55%)] transition-colors">Higher Secondary // Jawahar Navodaya Vidyalaya, M.P.</a>
-                 </div>
-                 <div className="flex flex-col">
-                    <span className="font-mono text-[8px] text-zinc-600 uppercase tracking-widest mb-2">Linguistic Profile</span>
-                    <p className="text-zinc-400 text-[10px] leading-relaxed uppercase tracking-widest">
-                       <span className="text-white">Fluent:</span> Hindi, English <br/>
-                       <span className="text-white/60">Background:</span> Marathi, Gujarati <br/>
-                       <span className="text-white/30">Flexible:</span> Urdu, Kannada
-                    </p>
-                 </div>
-              </div>
-           </div>
-
-           <div className="md:col-span-1 border border-white/5 bg-white/[0.01] p-8 rounded-xl relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-16 h-16 bg-[hsl(43_72%_55%)]/5 blur-xl group-hover:bg-[hsl(43_72%_55%)]/10 transition-all" />
-              <span className="font-mono text-[9px] text-[hsl(43_72%_55%)] uppercase tracking-[0.5em] mb-4 block font-black">Official Known For</span>
-              <ul className="space-y-4 mb-8">
-                 <li className="flex items-start gap-3">
-                    <Sparkles className="w-3 h-3 text-[hsl(43_72%_55%)] shrink-0 mt-0.5" />
-                    <span className="text-white text-xs font-serif italic">Founder of TV Studios</span>
-                 </li>
-                 <li className="flex items-start gap-3">
-                    <Sparkles className="w-3 h-3 text-[hsl(43_72%_55%)] shrink-0 mt-0.5" />
-                    <span className="text-white text-xs font-serif italic">Channelising Creational Art to the Economy.</span>
-                 </li>
-              </ul>
-              <div className="pt-6 border-t border-white/5">
-                 <div className="flex justify-between items-center text-[8px] font-mono text-zinc-500 uppercase tracking-[0.2em]">
-                    <span>Active Wiki Intelligence</span>
-                    <span className="text-[hsl(43_72%_55%)]">Established 2026</span>
-                 </div>
-              </div>
-           </div>
-        </motion.div>
       </div>
     </section>
   );
