@@ -47,8 +47,8 @@ const TeamContact = () => {
                </div>
                <h3 className="text-xl font-bold mb-2">Email Us</h3>
                <p className="text-muted-foreground mb-4">For all project inquiries</p>
-               <a href="mailto:hello@tvstudios.site" className="text-lg font-semibold hover:text-primary transition-colors">
-                 hello@tvstudios.site
+               <a href="mailto:tvstudios@proton.me" className="text-lg font-semibold hover:text-primary transition-colors">
+                 tvstudios@proton.me
                </a>
             </motion.div>
 
@@ -65,7 +65,7 @@ const TeamContact = () => {
                <h3 className="text-xl font-bold mb-2">Call Us</h3>
                <p className="text-muted-foreground mb-4">Mon-Fri, 9am to 6pm</p>
               <a href="https://wa.me/918149981660" target="_blank" rel="noopener noreferrer" className="text-lg font-semibold hover:text-[hsl(43_72%_55%)] transition-colors inline-flex items-center gap-2">
-                MESSAGE TVSSSMETRIX
+                MESSAGE team TVS
               </a>
             </motion.div>
 
@@ -80,9 +80,9 @@ const TeamContact = () => {
                  <MapPin className="w-8 h-8" />
                </div>
                <h3 className="text-xl font-bold mb-2">Our Base</h3>
-               <p className="text-muted-foreground mb-4">Operations & Creative</p>
+               <p className="text-muted-foreground mb-4">Operations & Leads</p>
                <p className="text-lg font-semibold">
-                 Mumbai, India
+                 Vashi Mumbai, India
                </p>
             </motion.div>
           </div>

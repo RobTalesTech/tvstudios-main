@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Footer from "@/components/Footer";
 import { ArrowLeft, Sparkles, Clock, Play, Camera, PenTool, Layout, Zap, MessageSquare, Star, CheckCircle2, Calendar } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
+import StationHeader from "@/components/StationHeader";
 
 const Unit01 = () => {
   const [isInView, setIsInView] = useState(false);
@@ -38,18 +39,12 @@ const Unit01 = () => {
 
       <div className="container px-6 mx-auto max-w-6xl relative z-10 pb-20">
         
-        {/* Navigation / Minimalist Return */}
-        <div className="flex justify-between items-center mb-20 border-b border-white/5 pb-8">
-          <Link to="/studio-work" className="inline-flex items-center gap-2 text-zinc-500 hover:text-[#D4AF37] transition-all font-mono text-[9px] uppercase tracking-[0.4em] group">
-            <ArrowLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform" /> 
-            Exit Unit 01
-          </Link>
-          
-          <div className="flex items-center gap-2 px-3 py-1 bg-[#D4AF37]/5 border border-[#D4AF37]/20 rounded-full">
-            <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse" />
-            <span className="font-mono text-[8px] text-[#D4AF37] uppercase tracking-widest font-black">Golden TV Branch</span>
-          </div>
-        </div>
+        <StationHeader 
+          unitNumber="UNIT_01" 
+          unitTitle="KIDS CONTENT SERVICES" 
+          status="GOLDEN TV BRANCH" 
+          statusColor="#D4AF37"
+        />
 
         {/* HEADER: PREMIUM IDENTITY WITH KIDS FOCUS */}
         <div className="mb-32 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">

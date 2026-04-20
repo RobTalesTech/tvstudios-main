@@ -1,8 +1,9 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import Footer from "@/components/Footer";
-import { ArrowLeft, Zap, Sparkles, ShieldCheck, Star, Smartphone, Play, Camera, PenTool, MessageSquare, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, Zap, Sparkles, ShieldCheck, Star, Smartphone, Play, Camera, PenTool, MessageSquare, CheckCircle2, Cpu } from "lucide-react";
 import { useState, useEffect } from "react";
+import StationHeader from "@/components/StationHeader";
 
 const FilmReelStrip = ({ position }: { position: 'top' | 'bottom' }) => {
   const [digits, setDigits] = useState("000000");
@@ -120,15 +121,13 @@ const Station05 = () => {
           {hasSeenHub && (
             <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full py-20 bg-transparent flex flex-col items-center">
               <div className="container mx-auto px-6 max-w-5xl">
-                <div className="w-full flex justify-between items-center mb-20 px-4">
-                   <Link to="/studio-work" className="inline-flex items-center gap-3 text-zinc-500 hover:text-[#f7d08a] transition-all font-mono text-[10px] uppercase tracking-[0.4em] group">
-                      <ArrowLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform" /> Exit Unit Hub
-                   </Link>
-                   <div className="px-4 py-2 bg-zinc-900 border border-white/5 rounded-full flex items-center gap-2">
-                      <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                      <span className="font-mono text-[8px] uppercase tracking-widest text-zinc-400">Protocol Unlocked</span>
-                   </div>
-                </div>
+                
+                <StationHeader 
+                  unitNumber="UNIT_05" 
+                  unitTitle="OTT PRODUCTION HUB" 
+                  status="PROTOCOL UNLOCKED" 
+                  statusColor="#10B981"
+                />
 
                 <div className="flex flex-col items-center space-y-32">
                    {/* PHASE 2 REVEAL: TITLE & POSTER */}

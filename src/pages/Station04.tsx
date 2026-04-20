@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import Footer from "@/components/Footer";
 import { ArrowLeft, Film, Music, Tv, BookOpen } from "lucide-react";
+import StationHeader from "@/components/StationHeader";
 
 const sponsorships = [
   {
@@ -35,23 +36,15 @@ const Station04 = () => {
     <div className="min-h-screen bg-background pt-32 selection:bg-purple-500/30 selection:text-white">
       <div className="container px-4 mx-auto max-w-5xl relative z-10">
         
-        {/* Navigation / Exit */}
-        <div className="mb-12">
-          <Link to="/studio-work" className="inline-flex items-center gap-2 text-white/50 hover:text-white transition-colors font-mono text-xs uppercase tracking-widest bg-white/5 px-4 py-2 rounded-md border border-white/10 hover:bg-white/10">
-            <ArrowLeft className="w-4 h-4" /> Exit TvUnit
-          </Link>
-        </div>
+        <StationHeader 
+          unitNumber="UNIT_04" 
+          unitTitle="BRANDING & ADVERTISEMENTS" 
+          status="ACTIVE PIPELINE SHOWCASE" 
+          statusColor="#A855F7"
+        />
 
         {/* Header */}
         <div className="text-center mb-24">
-          <motion.div
-             initial={{ opacity: 0, scale: 0.95 }}
-             animate={{ opacity: 1, scale: 1 }}
-             className="inline-flex items-center gap-2 bg-purple-500/10 text-purple-400 border border-purple-500/30 px-4 py-2 rounded-full text-[10px] font-mono font-bold uppercase tracking-[0.2em] mb-8"
-          >
-            <span className="w-2 h-2 rounded-full bg-purple-500 animate-[pulse_1.5s_ease-in-out_infinite]" />
-            Active Pipeline Showcase
-          </motion.div>
 
           <h1 className="text-4xl md:text-7xl font-black uppercase tracking-tight mb-8 text-white">
             Branding & <span className="text-purple-400 italic font-serif lowercase">Advertisements</span>

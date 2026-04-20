@@ -5,6 +5,7 @@ import { ArrowLeft, Target, Globe, Music2, BrainCircuit, Activity, MonitorPlay, 
 import llbp2 from "@/assets/LLBP2.jpg";
 import llbp1 from "@/assets/LLBP1.png";
 import { useState } from "react";
+import StationHeader from "@/components/StationHeader";
 
 /* ─── Audition Block ─────────────────────────────────────── */
 const AuditionBlock = () => {
@@ -117,24 +118,15 @@ const LiveCampaign = () => {
     <div className="min-h-screen bg-background pt-32 selection:bg-blue-500/30 selection:text-white">
       <div className="container px-4 mx-auto max-w-5xl relative z-10">
 
-        {/* Navigation / Exit */}
-        <div className="mb-12">
-          <Link to="/studio-work" className="inline-flex items-center gap-2 text-white/50 hover:text-white transition-colors font-mono text-xs uppercase tracking-widest bg-white/5 px-4 py-2 rounded-md border border-white/10 hover:bg-white/10">
-            <ArrowLeft className="w-4 h-4" /> Exit TvUnit
-          </Link>
-        </div>
+        <StationHeader 
+          unitNumber="UNIT_03" 
+          unitTitle="TV KHANDESHI // DIGITAL BROADCAST" 
+          status="DIGITAL CHANNEL LIVE" 
+          statusColor="#D4AF37"
+        />
 
         {/* ─── 1. PROJECT HEADER ─────────────────────────────── */}
         <div className="text-center mb-16">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="inline-flex items-center gap-2 bg-[hsl(43_72%_55%)]/10 text-[hsl(43_72%_55%)] border border-[hsl(43_72%_55%)]/30 px-4 py-2 rounded-full text-[10px] font-mono font-bold uppercase tracking-[0.2em] mb-6"
-          >
-            <span className="w-2 h-2 rounded-full bg-[hsl(43_72%_55%)] animate-pulse" />
-            🔴 Digital Channel Live — TV KHANDESHI
-          </motion.div>
-
           <h1 className="text-5xl md:text-8xl font-black uppercase tracking-tight mb-6">
             TV <span className="text-[hsl(43_72%_55%)] italic font-serif lowercase">Khandeshi</span>
           </h1>

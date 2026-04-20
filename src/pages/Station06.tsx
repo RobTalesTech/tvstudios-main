@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import Footer from "@/components/Footer";
-import { ArrowLeft, PlayCircle, Heart, MessageSquare, Fingerprint, Activity, Code, Eye } from "lucide-react";
+import { ArrowLeft, PlayCircle, Heart, MessageSquare, Fingerprint, Activity, Code, Eye, Zap } from "lucide-react";
 import { useEffect, useState } from "react";
+import StationHeader from "@/components/StationHeader";
 
 const Station06 = () => {
   const [likes, setLikes] = useState(2504);
@@ -34,24 +35,12 @@ const Station06 = () => {
       <div className="relative z-10 w-full pt-28 pb-10">
         <div className="container mx-auto px-6 max-w-[1400px]">
           
-          {/* TOP NAVIGATION & STATUS */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-24 border-b border-white/10 pb-8 gap-6">
-            <Link to="/studio-work" className="inline-flex items-center gap-3 text-zinc-500 hover:text-[#00FF66] transition-all font-mono text-[10px] uppercase tracking-[0.4em] group">
-              <ArrowLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform" /> 
-              Exit Innovation Hub
-            </Link>
-            
-            <div className="flex flex-wrap items-center gap-6">
-               <div className="flex items-center gap-2">
-                 <Activity className="w-3 h-3 text-[#00FF66]" />
-                 <span className="font-mono text-[9px] text-zinc-400 uppercase tracking-[0.3em]">AI R&D Lab</span>
-               </div>
-               <div className="flex items-center gap-2 bg-[#00FF66]/10 px-3 py-1 rounded border border-[#00FF66]/20">
-                 <span className="w-1.5 h-1.5 rounded-full bg-[#00FF66] animate-pulse" />
-                 <span className="font-mono text-[8px] text-[#00FF66] font-black uppercase tracking-[0.3em]">System Generative Status: Online</span>
-               </div>
-            </div>
-          </div>
+          <StationHeader 
+            unitNumber="UNIT_06" 
+            unitTitle="AI R&D LAB // GENERATIVE CINEMA" 
+            status="GENERATIVE STATUS: ONLINE" 
+            statusColor="#00FF66"
+          />
 
           {/* SECTION I: THE MISSION (EDITORIAL PRINT ART STYLE) */}
           <section className="mb-40 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-0 relative">
