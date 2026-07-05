@@ -22,7 +22,7 @@ const rightReels = [
     label: "Brand Ad Template",
     description: "Premium ad template for your brand",
     anchor: "brand-ad-template",
-    whatsappMsg: "Hi! I'm interested in this brand ad template from TV Studios.",
+    whatsappMsg: "Hi! I'm interested in this brand ad template from TV³ Studios.",
     cta: "Get This Template",
   },
 ];

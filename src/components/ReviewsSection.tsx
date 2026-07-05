@@ -60,7 +60,7 @@ const BrandEmpireSection = () => {
             The Branding <span className="text-gradient-gold">Empire (AI)</span>
           </h2>
           <p className="mt-4 font-body text-sm leading-relaxed text-muted-foreground max-w-3xl mx-auto">
-            Founded by an engineer with 14 years of cinematic filmmaking experience, TV Studios is built for the coming era of digital content. We are pioneering a new global standard: authentic AI Filmmaking. When the world looks for the absolute best in AI video production, our deep roots in real filmmaking make us the unquestionable authority in this category. We leverage this technology to fund, scale, and execute epic, high-budget productions—partnering with visionary brands to treat content not as mere marketing, but as a monumental cultural investment.
+            Founded by an engineer with 14 years of cinematic filmmaking experience, TV³ Studios is built for the coming era of digital content. We are pioneering a new global standard: authentic AI Filmmaking. When the world looks for the absolute best in AI video production, our deep roots in real filmmaking make us the unquestionable authority in this category. We leverage this technology to fund, scale, and execute epic, high-budget productions—partnering with visionary brands to treat content not as mere marketing, but as a monumental cultural investment.
           </p>
         </div>
 
@@ -79,7 +79,7 @@ const BrandEmpireSection = () => {
               A brand shows its interest in Art and enjoys the process of creation.
               They serve delight."
             </p>
-            <p className="mt-4 font-body text-xs uppercase tracking-[0.2em] text-primary">— TV Studios Philosophy</p>
+            <p className="mt-4 font-body text-xs uppercase tracking-[0.2em] text-primary">— TV³ Studios Philosophy</p>
           </div>
         </motion.div>
 
@@ -120,7 +120,7 @@ const BrandEmpireSection = () => {
               The Branding <span className="text-gradient-gold">Bomb Attack</span>
             </h3>
             <p className="mt-3 font-body text-sm text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              230 Million – 333 Million people in the direct impact zone. The first brand campaign of TV Studios
+              230 Million – 333 Million people in the direct impact zone. The first brand campaign of TV³ Studios
               targeting a specific cultural region with sure-shot results. This is just the beginning.
             </p>
           </div>
@@ -135,7 +135,7 @@ const BrandEmpireSection = () => {
               {/* Poster */}
               <img
                 src={laginBiginPoster}
-                alt="LAGIN BIGIN - Khandeshi Musical Album Series | First Brand Campaign by TV Studios"
+                alt="LAGIN BIGIN - Khandeshi Musical Album Series | First Brand Campaign by TV³ Studios"
                 className="w-full object-cover"
               />
             </div>

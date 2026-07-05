@@ -169,7 +169,7 @@ const Unit02 = () => {
                            Exclusive learning alignment for filmmaking interns. Only strictly disciplined creatives ready to complete the project.
                         </p>
                         <a 
-                           href="mailto:careers@thevillagestudios.com" 
+                           href="mailto:tv3studios@proton.me" 
                            onClick={(e) => e.stopPropagation()}
                            className="shrink-0 inline-flex items-center justify-between px-6 py-4 bg-emerald-500/10 border border-emerald-500/30 text-emerald-500 font-mono uppercase tracking-widest text-[9px] hover:bg-emerald-500 hover:text-black transition-all rounded-full"
                         >

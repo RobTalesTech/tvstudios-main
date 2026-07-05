@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import Footer from "@/components/Footer";
-import { ArrowLeft, Zap, Sparkles, ShieldCheck, Star, Smartphone, Play, Camera, PenTool, MessageSquare, CheckCircle2, Cpu } from "lucide-react";
+import { ArrowLeft, Zap, Sparkles, ShieldCheck, Star, Smartphone, Play, Camera, PenTool, MessageSquare, CheckCircle2, Cpu, Eye, EyeOff } from "lucide-react";
 import { useState, useEffect } from "react";
 import StationHeader from "@/components/StationHeader";
 
@@ -20,7 +20,7 @@ const FilmReelStrip = ({ position }: { position: 'top' | 'bottom' }) => {
         {[...Array(10)].map((_, i) => (
           <div key={i} className="flex items-center gap-12 px-6">
             <div className="flex gap-1.5">{[...Array(6)].map((_, j) => (<div key={j} className="w-2.5 h-1 border border-white/10 rounded-[1px]" />))}</div>
-            <span className="font-mono text-[7px] font-black text-white/20 tracking-[0.4em] uppercase">TV STUDIOS // PHASE: EXECUTION // SYNC_{digits}</span>
+            <span className="font-mono text-[7px] font-black text-white/20 tracking-[0.4em] uppercase">TV³ STUDIOS // PHASE: EXECUTION // SYNC_{digits}</span>
             <div className="flex gap-1.5 text-[#f7d08a]/20"><Zap className="w-2 h-2" /><Sparkles className="w-2 h-2" /></div>
           </div>
         ))}
@@ -34,6 +34,7 @@ const Station05 = () => {
   const [isZoomed, setIsZoomed] = useState(false);
   const [showKeyModal, setShowKeyModal] = useState(false);
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [zoomScale, setZoomScale] = useState(1);
   const [isProtocolDeclassified, setIsProtocolDeclassified] = useState(false);
   const [isSynopsisExpanded, setIsSynopsisExpanded] = useState(false);
@@ -102,7 +103,7 @@ const Station05 = () => {
         {!hasSeenHub && (
           <section className="h-[90vh] flex flex-col items-center justify-center text-center px-4">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center">
-               <span className="font-mono text-[10px] uppercase tracking-[0.9em] text-[#f7d08a] font-black opacity-80 mb-14 border-b border-[#f7d08a]/20 pb-2">THE FIRST OTT PRODUCTION FROM TV STUDIOS</span>
+               <span className="font-mono text-[10px] uppercase tracking-[0.9em] text-[#f7d08a] font-black opacity-80 mb-14 border-b border-[#f7d08a]/20 pb-2">THE FIRST OTT PRODUCTION FROM TV³ STUDIOS</span>
                <div className="flex flex-col items-center mb-10 select-none">
                   <h1 className="font-display text-[4rem] md:text-[7rem] font-bold uppercase tracking-tighter leading-[0.8] m-0 gold-chrome">OTT SHOW,</h1>
                   <h1 className="font-display text-[5rem] md:text-[8.5rem] font-bold text-white lowercase tracking-tight leading-[0.8] -mt-2 md:-mt-6">Youth Drama <span className="text-[#ff2e63] font-black uppercase text-[2.5rem] md:text-[5rem] mr-2">18+</span><span className="text-[#ff2e63]">..</span></h1>
@@ -110,9 +111,9 @@ const Station05 = () => {
                </div>
                <div className="flex flex-col items-center gap-6 mb-12">
                   <p className="font-mono text-[9px] text-zinc-500 uppercase tracking-[0.4em]">Openings available for Assistant Direction and Production Team.</p>
-                  <a href="mailto:careers@thevillagestudios.com" className="px-8 py-3 border border-white/10 rounded-full font-mono text-[9px] uppercase tracking-widest text-[#f7d08a] hover:bg-[#f7d08a] hover:text-black transition-all">Submit Resume</a>
+                  <a href="mailto:tv3studios@proton.me" className="px-8 py-3 border border-white/10 rounded-full font-mono text-[9px] uppercase tracking-widest text-[#f7d08a] hover:bg-[#f7d08a] hover:text-black transition-all">Submit Resume</a>
                </div>
-                <button onClick={() => setShowKeyModal(true)} className="bg-[#D4AF37] text-black px-12 py-4 rounded-full font-black uppercase tracking-[0.4em] text-[11px] hover:bg-white transition-all shadow-[0_20px_60px_rgba(212,175,55,0.2)]">Enter Production Hub</button>
+                <button onClick={() => { setShowKeyModal(true); setShowPassword(false); }} className="bg-[#D4AF37] text-black px-12 py-4 rounded-full font-black uppercase tracking-[0.4em] text-[11px] hover:bg-white transition-all shadow-[0_20px_60px_rgba(212,175,55,0.2)]">Enter Production Hub</button>
             </motion.div>
           </section>
         )}
@@ -159,7 +160,7 @@ const Station05 = () => {
                            <ShieldCheck className="w-12 h-12 text-[#f7d08a] mx-auto opacity-30" />
                            <h4 className="text-2xl font-black text-white italic tracking-tighter uppercase leading-none">Deep Protocol Locked</h4>
                            <p className="font-serif text-sm text-zinc-500 italic leading-relaxed">System boards, technical reports, and Director's collectives are currently encrypted. Provide password to declassify.</p>
-                           <button onClick={() => setShowKeyModal(true)} className="px-10 py-5 bg-white text-black font-black uppercase tracking-[0.4em] text-[10px] rounded-full hover:bg-[#f7d08a] transition-all">Declassify Full Report</button>
+                           <button onClick={() => { setShowKeyModal(true); setShowPassword(false); }} className="px-10 py-5 bg-white text-black font-black uppercase tracking-[0.4em] text-[10px] rounded-full hover:bg-[#f7d08a] transition-all">Declassify Full Report</button>
                         </motion.div>
                       ) : (
                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full space-y-48 pt-20 pb-40">
@@ -203,7 +204,7 @@ const Station05 = () => {
                            <div className="max-w-4xl mx-auto p-16 bg-white/[0.01] border border-white/10 rounded-[4rem] space-y-12 relative overflow-hidden">
                               <span className="font-mono text-[8px] text-[#f7d08a] uppercase tracking-widest absolute top-6 right-10">Dossier Beta // Statistics</span>
                               <div className="grid grid-cols-2 md:grid-cols-3 gap-12">
-                                 <div className="space-y-2"><span className="font-mono text-[8px] text-zinc-600 uppercase tracking-widest block">Project Code</span><span className="text-white font-black text-xs uppercase tracking-widest">TVS_ANC_01</span></div>
+                                 <div className="space-y-2"><span className="font-mono text-[8px] text-zinc-600 uppercase tracking-widest block">Project Code</span><span className="text-white font-black text-xs uppercase tracking-widest">TV³_ANC_01</span></div>
                                  <div className="space-y-2"><span className="font-mono text-[8px] text-zinc-600 uppercase tracking-widest block">Episodes</span><span className="text-white font-black text-xs uppercase tracking-widest">10 Episodes</span></div>
                                  <div className="space-y-2"><span className="font-mono text-[8px] text-zinc-600 uppercase tracking-widest block">Season</span><span className="text-white font-black text-xs uppercase tracking-widest">01 / Master</span></div>
                                  <div className="space-y-2"><span className="font-mono text-[8px] text-zinc-600 uppercase tracking-widest block">Crossover</span><span className="text-white font-black text-xs uppercase tracking-widest">MP / Mumbai</span></div>
@@ -290,7 +291,7 @@ const Station05 = () => {
                                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 text-center pt-8">
                                     <div className="space-y-2"><h5 className="font-mono text-[8px] text-zinc-600 uppercase tracking-widest">Protocol Director</h5><p className="text-xl font-black text-white italic uppercase">[OPERATIVE_01]</p></div>
                                     <div className="space-y-2"><h5 className="font-mono text-[8px] text-[#f7d08a] uppercase tracking-widest">Associate Producer</h5><p className="text-xl font-black text-[#f7d08a] italic uppercase">Avinash Badgujar</p></div>
-                                    <div className="space-y-2"><h5 className="font-mono text-[8px] text-zinc-600 uppercase tracking-widest">Cinema Diagnostic</h5><p className="text-xl font-black text-white italic uppercase">TVS Visual Unit</p></div>
+                                    <div className="space-y-2"><h5 className="font-mono text-[8px] text-zinc-600 uppercase tracking-widest">Cinema Diagnostic</h5><p className="text-xl font-black text-white italic uppercase">TV³ Visual Unit</p></div>
                                  </div>
                               </div>
                               <div className="text-center group p-12 hover:bg-white/[0.01] transition-all rounded-[3rem] max-w-4xl mx-auto">
@@ -331,7 +332,22 @@ const Station05 = () => {
             <div className="max-w-md w-full p-12 bg-white/[0.02] border border-white/5 rounded-[4rem] space-y-10 flex flex-col items-center">
                <ShieldCheck className="w-12 h-12 text-[#f7d08a] opacity-40" />
                <h3 className="text-2xl font-black text-white italic tracking-tighter uppercase">{hasSeenHub ? 'Deep Protocol Authorization' : 'Authorized Access Only'}</h3>
-               <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Entry Protocol..." className="w-full bg-black border border-white/10 p-6 rounded-2xl text-center font-mono text-[#f7d08a] focus:border-[#f7d08a] transition-all" />
+               <div className="relative w-full">
+                 <input 
+                   type={showPassword ? "text" : "password"} 
+                   value={password} 
+                   onChange={(e) => setPassword(e.target.value)} 
+                   placeholder="Entry Protocol..." 
+                   className="w-full bg-black border border-white/10 p-6 pl-16 pr-16 rounded-2xl text-center font-mono text-[#f7d08a] focus:border-[#f7d08a] transition-all" 
+                 />
+                 <button 
+                   type="button" 
+                   onClick={() => setShowPassword(!showPassword)} 
+                   className="absolute right-6 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white transition-colors focus:outline-none"
+                 >
+                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                 </button>
+               </div>
                <div className="flex gap-4 w-full"><button onClick={checkPassword} className="flex-1 py-5 bg-white text-black font-black uppercase tracking-[0.4em] text-[10px] rounded-full hover:bg-[#f7d08a] transition-all">Authenticate</button></div>
             </div>
           </motion.div>

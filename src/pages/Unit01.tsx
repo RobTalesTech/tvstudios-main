@@ -213,7 +213,7 @@ const Unit01 = () => {
                           <iframe 
                              className="absolute inset-0 w-full h-full scale-[1.3] pointer-events-none"
                              src="https://www.youtube.com/embed/J7frG5iJqzc?autoplay=1&loop=1&playlist=J7frG5iJqzc&controls=0&modestbranding=1&rel=0&iv_load_policy=3&showinfo=0"
-                             title="TVS Recruitment Signal"
+                             title="TV³ Recruitment Signal"
                              allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
                           />
                        )}

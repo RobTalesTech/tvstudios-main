@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ServicesSection from "@/components/ServicesSection";
 import CinematicReel from "@/components/CinematicReel";
 import Footer from "@/components/Footer";
@@ -68,7 +68,7 @@ const servicesData: Record<Category, ServiceFeature[]> = {
     {
       name: "Brand Manifesto",
       price: "$1,200",
-      description: "Establishing your brand's voice and core ideological message.",
+      description: "Establishing your brand's voice and core identity message.",
       features: ["Core Philosophy Document", "Taglines & Slogans", "Origin Story Copy", "Tone of Voice Guide"],
       featured: true
     },
@@ -92,6 +92,8 @@ const RealProductionCalculator = () => {
   });
   const [isFlashed, setIsFlashed] = useState(false);
   const [showBook, setShowBook] = useState(false);
+  const [calculatorEmail, setCalculatorEmail] = useState("");
+  const [calculatorNotes, setCalculatorNotes] = useState("");
 
   const categories = Object.keys(values);
   const score = Object.values(values).reduce((a, b) => a + b, 0);
@@ -225,15 +227,59 @@ const RealProductionCalculator = () => {
                  LIGHTS, CAMERA, ACTION
                </button>
              ) : (
-               <motion.a
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  href={`mailto:tvstudios@upi?subject=${encodeURIComponent(`New Project Scale: ${prod.type}`)}&body=${encodeURIComponent(`Production Score: ${score}/30\nCategory: ${prod.type}\nSetup: ${prod.setup}\n\nFader Breakdown:\n${categories.map(c => `${c}: ${getStepLabel(c, values[c])}`).join('\n')}`)}`}
-                  className="w-full py-4 bg-[#D4AF37] text-black font-mono text-[10px] uppercase font-bold tracking-[0.3em] flex items-center justify-center gap-3 hover:shadow-[0_0_30px_rgba(212,175,55,0.4)] transition-all"
-               >
-                 BOOK THIS SCALE
-               </motion.a>
-             )}
+                <div className="space-y-4">
+                  {/* Email Input */}
+                  <div className="space-y-1 text-left">
+                    <label className="font-mono text-[8px] uppercase tracking-widest text-zinc-500 block">Your Email Address</label>
+                    <input 
+                      type="email"
+                      value={calculatorEmail}
+                      onChange={(e) => setCalculatorEmail(e.target.value)}
+                      placeholder="name@company.com"
+                      className="w-full bg-[#111] border border-white/10 rounded px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-[#D4AF37]/50 transition-colors placeholder:text-zinc-700"
+                    />
+                  </div>
+
+                  {/* Additional Notes Input */}
+                  <div className="space-y-1 text-left">
+                    <label className="font-mono text-[8px] uppercase tracking-widest text-zinc-500 block">Project Location, Deadline, or Notes</label>
+                    <textarea 
+                      value={calculatorNotes}
+                      onChange={(e) => setCalculatorNotes(e.target.value)}
+                      placeholder="e.g. Shoot in Mumbai next month, launch by end of year..."
+                      rows={2}
+                      className="w-full bg-[#111] border border-white/10 rounded px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-[#D4AF37]/50 transition-colors placeholder:text-zinc-700 resize-none"
+                    />
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      if (!calculatorEmail || !calculatorEmail.includes('@') || !calculatorEmail.includes('.')) {
+                        alert("Please enter a valid email address.");
+                        return;
+                      }
+
+                      const emailSubject = `New Project Scale: ${prod.type}`;
+                      const emailBody = `Production Score: ${score}/30\nCategory: ${prod.type}\nSetup: ${prod.setup}\nClient Email: ${calculatorEmail}\n\nProject Notes:\n${calculatorNotes}\n\nFader Breakdown:\n${categories.map(c => `${c}: ${getStepLabel(c, values[c])}`).join('\n')}`;
+                      
+                      const whatsappMessage = `Hi TV³ Studios,\n\nI want to book the *${prod.type}* scale.\n\n*Email:* ${calculatorEmail}\n*Setup:* ${prod.setup}\n*Notes:* ${calculatorNotes}\n\n*Fader Breakdown:*\n${categories.map(c => `- ${c}: ${getStepLabel(c, values[c])}`).join('\n')}`;
+
+                      // 1. Mailto Link
+                      const mailtoUrl = `mailto:tv3studios@proton.me?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+                      window.location.href = mailtoUrl;
+
+                      // 2. WhatsApp Link after delay
+                      setTimeout(() => {
+                        const waUrl = `https://wa.me/918149981660?text=${encodeURIComponent(whatsappMessage)}`;
+                        window.open(waUrl, '_blank');
+                      }, 800);
+                    }}
+                    className="w-full py-4 bg-[#D4AF37] text-black font-mono text-[10px] uppercase font-bold tracking-[0.3em] flex items-center justify-center gap-3 hover:shadow-[0_0_30px_rgba(212,175,55,0.4)] transition-all font-black"
+                  >
+                    SUBMIT DUAL INTAKE PIPELINE
+                  </button>
+                </div>
+              )}
           </div>
         </div>
       </div>
@@ -243,6 +289,23 @@ const RealProductionCalculator = () => {
 
 const Services = () => {
   const [activeCategory, setActiveCategory] = useState<Category>("Visual Production");
+  const [showBrandStoryModal, setShowBrandStoryModal] = useState(false);
+  const [brandStoryTier, setBrandStoryTier] = useState<"Standard" | "Premium" | "Consultation">("Consultation");
+  const [brandStoryName, setBrandStoryName] = useState("");
+  const [brandStoryCompany, setBrandStoryCompany] = useState("");
+  const [brandStoryGoals, setBrandStoryGoals] = useState("");
+  const [brandStoryEmail, setBrandStoryEmail] = useState("");
+
+  useEffect(() => {
+    if (window.location.hash) {
+      const element = document.getElementById(window.location.hash.substring(1));
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: "smooth", block: "center" });
+        }, 300);
+      }
+    }
+  }, []);
 
   return (
     <div className="min-h-screen bg-background pt-20 selection:bg-[hsl(43_72%_55%)] selection:text-black">
@@ -334,9 +397,11 @@ const Services = () => {
                     {/* Connecting line on desktop */}
                     <div className="hidden md:block absolute top-[40px] -left-12 -right-12 h-px bg-gradient-to-r from-transparent via-[hsl(43_72%_55%)]/40 to-transparent -z-10" />
                     
-                    <a
-                      href={`https://wa.me/918149981660?text=${encodeURIComponent("I'd like to book a Founder to Founder meeting for Brand Story.")}`}
-                      target="_blank" rel="noopener noreferrer"
+                    <button
+                      onClick={() => {
+                        setBrandStoryTier("Consultation");
+                        setShowBrandStoryModal(true);
+                      }}
                       className="group relative inline-flex items-center gap-4 px-10 py-5 rounded-md font-mono text-[10px] font-black uppercase tracking-[0.3em] overflow-hidden transition-all z-10"
                       style={{
                         background: "linear-gradient(to right, #000 0%, #000 15%, #fff 15%, #fff 17%, #000 17%, #000 32%, #fff 32%, #fff 34%, #000 34%, #000 49%, #fff 49%, #fff 51%, #000 51%, #000 66%, #fff 66%, #fff 68%, #000 68%, #000 83%, #fff 83%, #fff 85%, #000 85%, #000 100%)",
@@ -371,10 +436,10 @@ const Services = () => {
                         START CALL
                         <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                       </span>
-                    </a>
+                    </button>
                   </div>
 
-                  {/* Chair 2 - TV Studios */}
+                  {/* Chair 2 - TV³ Studios */}
                   <div className="flex flex-col items-center gap-4 flex-1">
                     <div className="relative group">
                       <div className="absolute -inset-2 bg-[hsl(43_72%_55%)]/5 auto-blur-xl group-hover:bg-white/10 transition-colors" />
@@ -383,7 +448,7 @@ const Services = () => {
                       </div>
                     </div>
                     <div className="text-center">
-                      <p className="font-mono text-[11px] font-bold uppercase tracking-widest text-white drop-shadow-[0_0_5px_rgba(255,255,255,0.2)]">TV Studios</p>
+                      <p className="font-mono text-[11px] font-bold uppercase tracking-widest text-white drop-shadow-[0_0_5px_rgba(255,255,255,0.2)]">TV³ Studios</p>
                       <p className="font-mono text-[9px] uppercase tracking-widest text-zinc-600 mt-1">The Storytellers</p>
                     </div>
                   </div>
@@ -391,137 +456,234 @@ const Services = () => {
                 </div>
               </div>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href={`https://wa.me/918149981660?text=${encodeURIComponent("I'm interested in the Standard Brand Story package.")}`} target="_blank" rel="noopener noreferrer" className="flex-1 sm:max-w-xs text-center border border-[hsl(43_72%_55%)]/30 bg-[hsl(43_72%_55%)]/5 text-[hsl(43_72%_55%)] px-8 py-4 rounded-xl font-mono text-[10px] font-black uppercase tracking-[0.25em] hover:bg-[hsl(43_72%_55%)]/10 transition-all">Standard</a>
-                <a href={`https://wa.me/918149981660?text=${encodeURIComponent("I want the Premium Brand Story — full cinematic narrative.")}`} target="_blank" rel="noopener noreferrer" className="flex-1 sm:max-w-xs text-center bg-[hsl(43_72%_55%)] text-black px-8 py-4 rounded-xl font-mono text-[10px] font-black uppercase tracking-[0.25em] hover:bg-white transition-all shadow-[0_0_20px_rgba(212,175,55,0.15)]">Premium</a>
+                <button 
+                  onClick={() => {
+                    setBrandStoryTier("Standard");
+                    setShowBrandStoryModal(true);
+                  }}
+                  className="flex-1 sm:max-w-xs text-center border border-[hsl(43_72%_55%)]/30 bg-[hsl(43_72%_55%)]/5 text-[hsl(43_72%_55%)] px-8 py-4 rounded-xl font-mono text-[10px] font-black uppercase tracking-[0.25em] hover:bg-[hsl(43_72%_55%)]/10 transition-all"
+                >
+                  Standard
+                </button>
+                <button 
+                  onClick={() => {
+                    setBrandStoryTier("Premium");
+                    setShowBrandStoryModal(true);
+                  }}
+                  className="flex-1 sm:max-w-xs text-center bg-[hsl(43_72%_55%)] text-black px-8 py-4 rounded-xl font-mono text-[10px] font-black uppercase tracking-[0.25em] hover:bg-white transition-all shadow-[0_0_20px_rgba(212,175,55,0.15)]"
+                >
+                  Premium
+                </button>
               </div>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* ── HOW WE WORK ─────────────────────────────────────── */}
-      <section className="py-24 md:py-32 bg-[#020202] relative border-t border-white/5">
-        <div className="absolute inset-0 pointer-events-none opacity-[0.07]" style={{ backgroundImage: "radial-gradient(circle at 2px 2px, rgba(255,255,255,0.15) 1px, transparent 0)", backgroundSize: "48px 48px" }} />
+      {/* ── HOW WE WORK (INFOMERCIAL PLATE) ──────────────────────── */}
+      <section className="py-24 bg-[#020202] border-t border-white/5">
+        <div className="container px-4 mx-auto max-w-5xl">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="relative rounded-3xl border border-white/5 bg-[#060606] overflow-hidden shadow-[inset_0_0_80px_rgba(0,0,0,1)]"
+          >
+            <div className="absolute top-0 right-0 w-96 h-96 bg-[hsl(43_72%_55%)]/[0.02] blur-[120px] pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-64 h-64 bg-red-600/[0.01] blur-[100px] pointer-events-none" />
+            
+            <div className="relative z-10 p-8 md:p-14">
+              {/* Header */}
+              <div className="flex items-center gap-3 mb-10">
+                <div className="h-px flex-1 bg-white/5" />
+                <span className="font-mono text-[9px] uppercase tracking-[0.4em] text-[hsl(43_72%_55%)] font-black flex-shrink-0">
+                  HOW WE WORK • OPERATIONAL SYSTEM
+                </span>
+                <div className="h-px flex-1 bg-white/5" />
+              </div>
 
-        <div className="container px-4 mx-auto max-w-5xl relative z-10">
+              <div className="mb-14 text-center max-w-3xl mx-auto">
+                <h3 className="font-display text-3xl md:text-5xl font-black uppercase tracking-tight text-white mb-6 leading-none">
+                  We Don't Sell <span className="text-zinc-500 italic font-serif lowercase">Packages.</span> <br/>
+                  We Structure <span className="text-[hsl(43_72%_55%)]">Projects</span> to Channelise.
+                </h3>
+                <p className="text-zinc-400 text-xs md:text-sm leading-relaxed">
+                  Every project that enters TV³ Studios is treated as a channel — not a transaction. We map the creative, the operational, and the strategic into one unified execution. The discipline changes. The standard never does.
+                </p>
+              </div>
 
-          {/* Header */}
-          <div className="mb-20">
-            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-[hsl(43_72%_55%)] mb-6">How We Work</p>
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-display text-white tracking-tight mb-8 leading-none">
-              We Don't Sell <span className="italic text-white/30">Packages.</span><br />
-              We Structure <span className="text-[hsl(43_72%_55%)]">Projects</span> to Channelise.
-            </h2>
-            <p className="text-zinc-400 text-sm md:text-base leading-relaxed max-w-2xl border-l-2 border-[hsl(43_72%_55%)]/30 pl-6">
-              Every project that enters TV Studios is treated as a channel — not a transaction. We map the creative, the operational, and the strategic into one unified execution. The discipline changes. The standard never does.
-            </p>
-          </div>
-
-          {/* Three Disciplines */}
-          <div className="space-y-6">
-
-            {/* Visual Production */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="group relative border border-white/5 rounded-2xl p-8 md:p-10 bg-white/[0.01] hover:border-[hsl(43_72%_55%)]/20 hover:bg-[hsl(43_72%_55%)]/[0.02] transition-all duration-500 overflow-hidden"
-            >
-              <div className="absolute top-0 right-0 font-display text-[120px] font-black text-white/[0.02] leading-none pointer-events-none select-none pr-6">01</div>
-              <div className="relative z-10 flex flex-col md:flex-row md:items-center gap-8">
-                <div className="flex-1">
-                  <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-[hsl(43_72%_55%)]/60 mb-3">Visual Production</p>
-                  <h3 className="text-2xl md:text-3xl font-display font-black text-white uppercase mb-4">Identity Architecture</h3>
-                  <p className="text-zinc-500 text-sm leading-relaxed max-w-xl">
+              {/* Three Disciplines Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-8 border-t border-white/5">
+                
+                {/* Visual Production */}
+                <div className="space-y-3 text-left">
+                  <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-[hsl(43_72%_55%)]/60">// 01 Visual Production</p>
+                  <h4 className="text-lg font-display font-black text-white uppercase">Identity Architecture</h4>
+                  <p className="text-zinc-500 text-xs leading-relaxed">
                     From the first mark to the full visual system — we build brand identities that hold authority. Logo, typography, motion, color. Every element is a decision. We make them with intent, so your brand can hold space in any room it enters.
                   </p>
                 </div>
-                <a
-                  href={`https://wa.me/918149981660?text=${encodeURIComponent("I want to discuss a Visual Production project.")}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-shrink-0 border border-[hsl(43_72%_55%)]/30 text-[hsl(43_72%_55%)] px-8 py-3 rounded-xl font-mono text-[10px] uppercase font-bold tracking-[0.2em] hover:bg-[hsl(43_72%_55%)] hover:text-black transition-all whitespace-nowrap"
-                >
-                  Start a Project
-                </a>
-              </div>
-            </motion.div>
 
-            {/* Video Production */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="group relative border border-white/5 rounded-2xl p-8 md:p-10 bg-white/[0.01] hover:border-[hsl(43_72%_55%)]/20 hover:bg-[hsl(43_72%_55%)]/[0.02] transition-all duration-500 overflow-hidden"
-            >
-              <div className="absolute top-0 right-0 font-display text-[120px] font-black text-white/[0.02] leading-none pointer-events-none select-none pr-6">02</div>
-              <div className="relative z-10 flex flex-col md:flex-row md:items-center gap-8">
-                <div className="flex-1">
-                  <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-[hsl(43_72%_55%)]/60 mb-3">Video Production</p>
-                  <h3 className="text-2xl md:text-3xl font-display font-black text-white uppercase mb-4">Moving Picture Power</h3>
-                  <p className="text-zinc-500 text-sm leading-relaxed max-w-xl">
+                {/* Video Production */}
+                <div className="space-y-3 text-left">
+                  <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-[hsl(43_72%_55%)]/60">// 02 Video Production</p>
+                  <h4 className="text-lg font-display font-black text-white uppercase">Moving Picture Power</h4>
+                  <p className="text-zinc-500 text-xs leading-relaxed">
                     From viral social content to broadcast-grade films — we channel your story into motion. AI-enhanced, human-directed. We don't produce videos. We produce moments that change how your audience sees you. Every frame is working for you.
                   </p>
                 </div>
-                <a
-                  href={`https://wa.me/918149981660?text=${encodeURIComponent("I want to discuss a Video Production project.")}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-shrink-0 border border-[hsl(43_72%_55%)]/30 text-[hsl(43_72%_55%)] px-8 py-3 rounded-xl font-mono text-[10px] uppercase font-bold tracking-[0.2em] hover:bg-[hsl(43_72%_55%)] hover:text-black transition-all whitespace-nowrap"
-                >
-                  Start a Project
-                </a>
-              </div>
-            </motion.div>
 
-            {/* Copywriting */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className="group relative border border-white/5 rounded-2xl p-8 md:p-10 bg-white/[0.01] hover:border-[hsl(43_72%_55%)]/20 hover:bg-[hsl(43_72%_55%)]/[0.02] transition-all duration-500 overflow-hidden"
-            >
-              <div className="absolute top-0 right-0 font-display text-[120px] font-black text-white/[0.02] leading-none pointer-events-none select-none pr-6">03</div>
-              <div className="relative z-10 flex flex-col md:flex-row md:items-center gap-8">
-                <div className="flex-1">
-                  <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-[hsl(43_72%_55%)]/60 mb-3">Copywriting & Narrative</p>
-                  <h3 className="text-2xl md:text-3xl font-display font-black text-white uppercase mb-4">Words That Command</h3>
-                  <p className="text-zinc-500 text-sm leading-relaxed max-w-xl">
+                {/* Copywriting */}
+                <div className="space-y-3 text-left">
+                  <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-[hsl(43_72%_55%)]/60">// 03 Copywriting & Narrative</p>
+                  <h4 className="text-lg font-display font-black text-white uppercase">Words That Command</h4>
+                  <p className="text-zinc-500 text-xs leading-relaxed">
                     Copy is not content. Copy is architecture. Every word in your brand's language is either working or working against you. We write the manifesto, the scripts, the hooks, and the voice — so that when your brand speaks, it's impossible to ignore.
                   </p>
                 </div>
-                <a
-                  href={`https://wa.me/918149981660?text=${encodeURIComponent("I want to discuss a Copywriting / Narrative project.")}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-shrink-0 border border-[hsl(43_72%_55%)]/30 text-[hsl(43_72%_55%)] px-8 py-3 rounded-xl font-mono text-[10px] uppercase font-bold tracking-[0.2em] hover:bg-[hsl(43_72%_55%)] hover:text-black transition-all whitespace-nowrap"
-                >
-                  Start a Project
-                </a>
+
               </div>
-            </motion.div>
 
-          </div>
-
-          {/* Bottom CTA */}
-          <div className="text-center mt-20 pt-16 border-t border-white/5">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-zinc-600 mb-4">Ready to channelise?</p>
-            <a
-              href={`https://wa.me/918149981660?text=${encodeURIComponent("I have a project in mind. I'd like to discuss how TV Studios can channelise it.")}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 bg-white text-black px-12 py-5 rounded-md font-mono text-xs uppercase font-bold tracking-[0.3em] hover:bg-[hsl(43_72%_55%)] transition-all shadow-[0_0_40px_rgba(255,255,255,0.1)] hover:shadow-[0_0_40px_rgba(212,175,55,0.3)]"
-            >
-              Let's Build a Project
-            </a>
-          </div>
-
+            </div>
+          </motion.div>
         </div>
       </section>
 
       <Footer />
+
+      {/* ── BRAND STORY INTAKE MODAL ── */}
+      <AnimatePresence>
+        {showBrandStoryModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowBrandStoryModal(false)}
+              className="absolute inset-0 bg-black/80 backdrop-blur-md"
+            />
+
+            {/* Modal Body */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ type: "spring", duration: 0.5 }}
+              className="relative w-full max-w-lg overflow-hidden rounded-2xl border border-white/10 bg-[#0c0c0c] p-6 md:p-8 shadow-[0_0_50px_rgba(212,175,55,0.15)] z-10"
+            >
+              {/* Gold Top bar */}
+              <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-[hsl(43_72%_55%)] to-transparent" />
+
+              <h3 className="font-display text-2xl font-black text-white uppercase tracking-tight mb-2">
+                Brand Story Requirements
+              </h3>
+              <p className="font-mono text-[9px] uppercase tracking-widest text-[hsl(43_72%_55%)] mb-6 text-left">
+                F2F Intake — {brandStoryTier} Package
+              </p>
+
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  
+                  if (!brandStoryName || !brandStoryCompany || !brandStoryEmail || !brandStoryGoals) {
+                    alert("Please fill in all requirements.");
+                    return;
+                  }
+
+                  const emailSubject = `Brand Story F2F Intake: ${brandStoryCompany}`;
+                  const emailBody = `Founder/Client: ${brandStoryName}\nCompany/Industry: ${brandStoryCompany}\nSelected Tier: ${brandStoryTier}\nClient Email: ${brandStoryEmail}\n\nGoals & Timeline:\n${brandStoryGoals}`;
+                  
+                  const whatsappMessage = `Hi TV³ Studios,\n\nI want to book a *Brand Story F2F* meeting.\n\n*Founder Name:* ${brandStoryName}\n*Company:* ${brandStoryCompany}\n*Email:* ${brandStoryEmail}\n*Tier:* ${brandStoryTier}\n\n*Goals & Timeline:*\n${brandStoryGoals}`;
+
+                  // 1. Mailto Link
+                  const mailtoUrl = `mailto:tv3studios@proton.me?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+                  window.location.href = mailtoUrl;
+
+                  // 2. WhatsApp Link after delay
+                  setTimeout(() => {
+                    const waUrl = `https://wa.me/918149981660?text=${encodeURIComponent(whatsappMessage)}`;
+                    window.open(waUrl, '_blank');
+                  }, 800);
+
+                  setShowBrandStoryModal(false);
+                  // Clear form
+                  setBrandStoryName("");
+                  setBrandStoryCompany("");
+                  setBrandStoryGoals("");
+                  setBrandStoryEmail("");
+                }}
+                className="space-y-4 text-left"
+              >
+                <div>
+                  <label className="font-mono text-[9px] uppercase tracking-widest text-zinc-500 block mb-1">Founder / Client Name</label>
+                  <input
+                    type="text"
+                    required
+                    value={brandStoryName}
+                    onChange={(e) => setBrandStoryName(e.target.value)}
+                    placeholder="e.g. John Doe"
+                    className="w-full bg-[#111] border border-white/10 rounded px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-[hsl(43_72%_55%)]/50 transition-colors"
+                  />
+                </div>
+
+                <div>
+                  <label className="font-mono text-[9px] uppercase tracking-widest text-zinc-500 block mb-1">Company Name / Industry</label>
+                  <input
+                    type="text"
+                    required
+                    value={brandStoryCompany}
+                    onChange={(e) => setBrandStoryCompany(e.target.value)}
+                    placeholder="e.g. TechCorp / FinTech"
+                    className="w-full bg-[#111] border border-white/10 rounded px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-[hsl(43_72%_55%)]/50 transition-colors"
+                  />
+                </div>
+
+                <div>
+                  <label className="font-mono text-[9px] uppercase tracking-widest text-zinc-500 block mb-1">Your Email Address</label>
+                  <input
+                    type="email"
+                    required
+                    value={brandStoryEmail}
+                    onChange={(e) => setBrandStoryEmail(e.target.value)}
+                    placeholder="name@company.com"
+                    className="w-full bg-[#111] border border-white/10 rounded px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-[hsl(43_72%_55%)]/50 transition-colors"
+                  />
+                </div>
+
+                <div>
+                  <label className="font-mono text-[9px] uppercase tracking-widest text-zinc-500 block mb-1">Story Goals & Timeline</label>
+                  <textarea
+                    required
+                    value={brandStoryGoals}
+                    onChange={(e) => setBrandStoryGoals(e.target.value)}
+                    placeholder="Describe your brand narrative timeline, objectives..."
+                    rows={3}
+                    className="w-full bg-[#111] border border-white/10 rounded px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-[hsl(43_72%_55%)]/50 transition-colors resize-none"
+                  />
+                </div>
+
+                <div className="flex gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowBrandStoryModal(false)}
+                    className="flex-1 py-3 border border-white/10 text-white font-mono text-[10px] uppercase font-bold tracking-[0.2em] hover:bg-white/5 transition-all rounded-md"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 py-3 bg-[hsl(43_72%_55%)] text-black font-mono text-[10px] uppercase font-bold tracking-[0.2em] hover:shadow-[0_0_20px_rgba(212,175,55,0.3)] hover:bg-white transition-all rounded-md font-black"
+                  >
+                    SUBMIT INTAKE
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

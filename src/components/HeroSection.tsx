@@ -71,13 +71,13 @@ const HeroSection = () => {
           </p>
           
           <h1 className="mb-8 flex flex-col items-center justify-center font-display text-7xl sm:text-8xl md:text-9xl lg:text-[10rem] tracking-tighter leading-none select-none">
-            <span className="text-gradient-gold block pb-2 md:pb-4">TV</span>
+            <span className="text-gradient-gold block pb-2 md:pb-4">TV³</span>
             <span className="text-foreground block mt-[-10px] md:mt-[-30px]">Studios</span>
           </h1>
 
           <p className="mb-12 max-w-2xl font-body text-sm md:text-base text-white/60 leading-relaxed font-light">
             <strong className="text-white/90 font-medium tracking-wider">WE ARE THE NEW OLD TO MAKE THE DIGITAL GOLD.</strong><br/>
-            TV Studios executes the coming era of AI Filmmaking—merging raw cinematic tradition with next-gen technical architecture. We build for the audience, first.
+            TV³ Studios executes the coming era of AI Filmmaking—merging raw cinematic tradition with next-gen technical architecture. We build for the audience, first.
           </p>
           
           <motion.button
@@ -124,7 +124,7 @@ const HeroSection = () => {
                 {!showComingSoon ? (
                   <iframe
                     src="https://www.youtube.com/embed/QVak8sq8A_Q?autoplay=1&controls=0&modestbranding=1&rel=0&iv_load_policy=3&showinfo=0&disablekb=1&enablejsapi=1"
-                    title="TV Studios Showreel"
+                    title="TV³ Studios Showreel"
                     className="h-full w-full scale-[1.01]"
                     allow="autoplay; encrypted-media"
                     allowFullScreen

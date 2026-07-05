@@ -1,4 +1,4 @@
-# TV STUDIOS // OPERATIVE MANIFEST
+# TV³ STUDIOS // OPERATIVE MANIFEST
 ## Station 05 // Visionary Hub // Master Blueprint
 
 ### 1. MISSION CRITICAL CREDENTIALS

@@ -11,7 +11,7 @@ const Navbar = () => {
     { name: "Home", path: "/" },
     { name: "Services", path: "/services" },
     { name: "Studio Work", path: "/studio-work" },
-    { name: "Team & Contact", path: "/team" },
+    { name: "About & Contact", path: "/team" },
   ];
 
   // Close menu on route change
@@ -31,7 +31,7 @@ const Navbar = () => {
               <span className="font-display text-2xl font-thin uppercase tracking-widest text-shadow-sm">
                 <span className="text-[#FF9933]">T</span>
                 <span className="text-white">V</span>
-                <span className="text-[#138808]">S</span>
+                <span className="text-[#138808]">³</span>
               </span>
             </Link>
 

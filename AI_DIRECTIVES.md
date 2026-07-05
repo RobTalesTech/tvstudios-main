@@ -1,6 +1,6 @@
 # AI MASTER DIRECTIVES [TVSSSMETRIX]
 
-**CRITICAL INSTRUCTION TO AI:** Before beginning any new task or structural expansion on this project, you must read this document to understand the foundational Rules of Engagement, Brand Philosophy, and Technical Architecture of TV Studios.
+**CRITICAL INSTRUCTION TO AI:** Before beginning any new task or structural expansion on this project, you must read this document to understand the foundational Rules of Engagement, Brand Philosophy, and Technical Architecture of TV³ Studios.
 
 ## 1. BRAND CORE & PHILOSOPHY
 - **The Phrase:** "WE ARE NEW OLD TO MAKE DIGITAL GOLD."

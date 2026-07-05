@@ -31,7 +31,7 @@ const TeamContact = () => {
               Get In <span className="text-primary">Touch</span>
             </motion.h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Ready to broadcast your brand? Connect with the team today.
+              Ready to broadcast your brand? Connect with us today.
             </p>
           </div>
 
@@ -47,8 +47,8 @@ const TeamContact = () => {
                </div>
                <h3 className="text-xl font-bold mb-2">Email Us</h3>
                <p className="text-muted-foreground mb-4">For all project inquiries</p>
-               <a href="mailto:tvstudios@proton.me" className="text-lg font-semibold hover:text-primary transition-colors">
-                 tvstudios@proton.me
+               <a href="mailto:tv3studios@gmail.com" className="text-lg font-semibold hover:text-primary transition-colors">
+                 tv3studios@gmail.com
                </a>
             </motion.div>
 
@@ -63,9 +63,9 @@ const TeamContact = () => {
                  <Phone className="w-8 h-8" />
                </div>
                <h3 className="text-xl font-bold mb-2">Call Us</h3>
-               <p className="text-muted-foreground mb-4">Mon-Fri, 9am to 6pm</p>
+               <p className="text-muted-foreground mb-4">Mon-Fri, 11am to 6pm</p>
               <a href="https://wa.me/918149981660" target="_blank" rel="noopener noreferrer" className="text-lg font-semibold hover:text-[hsl(43_72%_55%)] transition-colors inline-flex items-center gap-2">
-                MESSAGE team TVS
+                MESSAGE TV³
               </a>
             </motion.div>
 

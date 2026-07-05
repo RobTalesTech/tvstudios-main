@@ -195,7 +195,7 @@ const LiveCampaign = () => {
             <span className="text-blue-500 italic font-serif lowercase">Bomb Attack</span>
           </h2>
           <p className="text-muted-foreground text-sm md:text-base leading-relaxed max-w-2xl mx-auto">
-            230 Million – 333 Million people in the direct impact zone. The first brand campaign of TV Studios targeting a specific cultural region with sure-shot results. This is just the beginning.
+            230 Million – 333 Million people in the direct impact zone. The first brand campaign of TV³ Studios targeting a specific cultural region with sure-shot results. This is just the beginning.
           </p>
         </div>
 

@@ -69,7 +69,7 @@ const MovementSection = () => {
 
           <div className="max-w-3xl mx-auto space-y-8">
              <p className="font-serif text-white/50 text-base md:text-lg leading-relaxed uppercase border-x border-white/10 px-10">
-                TV Studios executes the coming era of AI Filmmaking—merging raw cinematic tradition with next-gen technical architecture. We build for the audience, first.
+                TV³ Studios executes the coming era of AI Filmmaking—merging raw cinematic tradition with next-gen technical architecture. We build for the audience, first.
              </p>
              
              <button className="flex items-center gap-4 mx-auto group cursor-pointer">

@@ -44,11 +44,11 @@ export default function Footer() {
           <div className="space-y-12">
             <div>
               <h3 className="font-display text-4xl md:text-5xl uppercase tracking-tighter text-white">
-                <span className="text-[#f7d08a]">TV</span> Studios
+                <span className="text-[#f7d08a]">TV³</span> Studios
               </h3>
               <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.5em] text-zinc-600">
                 <span style={{ color: '#FF9933' }}>The</span>{' '}
-                <span className="text-white">Village</span>{' '}
+                <span className="text-white">V³</span>{' '}
                 <span style={{ color: '#138808' }}>Studios</span>
               </p>
             </div>
@@ -57,17 +57,6 @@ export default function Footer() {
               <div>
                 <h4 className="font-mono text-[9px] uppercase tracking-[0.3em] text-zinc-500 mb-2">Central Operations</h4>
                 <p className="font-serif text-sm text-zinc-300 italic">District Barwani, M.P. 451770</p>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-6 pt-6 border-t border-white/5">
-                 <div>
-                   <h4 className="font-mono text-[8px] uppercase tracking-[0.2em] text-[#f7d08a] mb-2">Tech Base [Indore]</h4>
-                   <p className="font-serif text-xs text-white/80">Piyush Ops.</p>
-                 </div>
-                 <div>
-                   <h4 className="font-mono text-[8px] uppercase tracking-[0.2em] text-[#00E5FF] mb-2">Finance Base [Pune]</h4>
-                   <p className="font-serif text-xs text-white/80">Roopesh Div.</p>
-                 </div>
               </div>
             </div>
           </div>
@@ -163,7 +152,7 @@ export default function Footer() {
         
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
            <p className="font-mono text-[9px] text-zinc-600 tracking-widest uppercase">
-             © 2026 TV Studios. All directives reserved.
+             © 2026 TV³ Studios. All directives reserved.
            </p>
            <p className="font-mono text-[9px] text-[#00FF66]/50 tracking-widest uppercase flex items-center gap-2">
              <span className="w-1.5 h-1.5 rounded-full bg-[#00FF66] animate-pulse" /> 

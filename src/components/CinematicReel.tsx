@@ -30,30 +30,29 @@ const CinematicReel = () => {
             </motion.span>
           ))}
         </h3>
-        <p className="mt-6 font-mono text-[9px] uppercase tracking-[0.3em] text-white/30">One By One</p>
       </div>
       
-      <div className="relative flex h-[35vh] w-full items-center bg-[#020202] overflow-hidden -top-6">
+      <div className="relative flex h-[12vh] w-full items-center bg-[#020202] overflow-hidden -top-2">
         {/* Edge fading to black */}
         <div className="absolute left-0 top-0 bottom-0 z-10 w-24 md:w-64 bg-gradient-to-r from-[#020202] to-transparent pointer-events-none"></div>
         <div className="absolute right-0 top-0 bottom-0 z-10 w-24 md:w-64 bg-gradient-to-l from-[#020202] to-transparent pointer-events-none"></div>
         
         <motion.div
           animate={{ x: ["0%", "-50%"] }}
-          transition={{ repeat: Infinity, ease: "linear", duration: 40 }}
-          className="flex whitespace-nowrap pt-8 pb-8"
+          transition={{ repeat: Infinity, ease: "linear", duration: 25 }}
+          className="flex whitespace-nowrap pt-4 pb-4"
         >
           {[...reelItems, ...reelItems, ...reelItems, ...reelItems].map((item, i) => (
-            <div key={i} className="flex items-center px-12 md:px-24 group cursor-default">
+            <div key={i} className="flex items-center px-8 md:px-12 group cursor-default">
               
               <div className="relative flex items-center justify-center transition-transform duration-500 group-hover:scale-[1.03]">
                 {/* Hollow Base Text (Maintains Symmetry & Scroll Alignment) */}
-                <span className="font-display text-5xl md:text-[120px] font-black uppercase tracking-tighter text-transparent flex items-center" 
+                <span className="font-display text-3xl md:text-5xl font-black uppercase tracking-tighter text-transparent flex items-center" 
                       style={{ WebkitTextStroke: "1px rgba(255,255,255,0.2)" }}>
                   {item.text === "AI VIDEOS" ? (
                     <span className="flex items-center">
-                       <span className="font-serif italic mr-2 md:mr-4">A</span>
-                       <span className="font-mono font-black mr-6 md:mr-12">I</span>
+                       <span className="font-serif italic mr-1.5 md:mr-3">A</span>
+                       <span className="font-mono font-black mr-3 md:mr-6">I</span>
                        <span className="font-display font-black tracking-tighter">VIDEOS</span>
                     </span>
                   ) : item.text}
@@ -61,13 +60,13 @@ const CinematicReel = () => {
 
                 {/* Glowing Overlay Text (Only visible on hover) */}
                 <span 
-                  className="absolute inset-x-0 inset-y-0 flex items-center justify-center font-display text-5xl md:text-[120px] font-black uppercase tracking-tighter opacity-0 transition-opacity duration-500 group-hover:opacity-100 mix-blend-screen pointer-events-none"
+                  className="absolute inset-x-0 inset-y-0 flex items-center justify-center font-display text-3xl md:text-5xl font-black uppercase tracking-tighter opacity-0 transition-opacity duration-500 group-hover:opacity-100 mix-blend-screen pointer-events-none"
                   style={item.text !== "AI VIDEOS" ? { color: item.color, textShadow: item.glow } : undefined}
                 >
                   {item.text === "AI VIDEOS" ? (
                     <div className="flex items-center" style={{ textShadow: "0 0 40px rgba(255,255,255,0.5)" }}>
-                       <span className="font-serif italic text-[#00E5FF] drop-shadow-[0_0_20px_#00E5FF] mr-2 md:mr-4">A</span>
-                       <span className="font-mono font-black text-[#FF0055] drop-shadow-[0_0_20px_#FF0055] mr-6 md:mr-12">I</span>
+                       <span className="font-serif italic text-[#00E5FF] drop-shadow-[0_0_20px_#00E5FF] mr-1.5 md:mr-3">A</span>
+                       <span className="font-mono font-black text-[#FF0055] drop-shadow-[0_0_20px_#FF0055] mr-3 md:mr-6">I</span>
                        <span className="font-display font-black tracking-tighter text-[#CCFF00] drop-shadow-[0_0_20px_#CCFF00]">VIDEOS</span>
                     </div>
                   ) : item.text}
@@ -75,7 +74,7 @@ const CinematicReel = () => {
               </div>
 
               {/* Spacing dot */}
-              <span className="mx-12 md:mx-24 h-3 w-3 md:h-6 md:w-6 rounded-full bg-white/10 group-hover:bg-white/40 transition-colors duration-500"></span>
+              <span className="mx-8 md:mx-12 h-1.5 w-1.5 md:h-2 md:w-2 rounded-full bg-white/10 group-hover:bg-white/40 transition-colors duration-500"></span>
             </div>
           ))}
         </motion.div>
