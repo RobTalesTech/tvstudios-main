@@ -207,7 +207,7 @@ const ServicesSection = () => {
 
     // 2. Trigger WhatsApp after delay
     setTimeout(() => {
-      const waUrl = `https://wa.me/918149981660?text=${encodeURIComponent(whatsappMessage)}`;
+      const waUrl = `https://wa.me/919588627190?text=${encodeURIComponent(whatsappMessage)}`;
       window.open(waUrl, '_blank');
     }, 800);
   };
@@ -434,7 +434,7 @@ const ServicesSection = () => {
                     <span className="text-[9px] text-zinc-500 block font-mono">fixed price</span>
                   </div>
                   <a
-                    href={`https://wa.me/918149981660?text=${encodeURIComponent("Hi TV³ Studios,\n\nI want to book the Standard Single UGC Hero Reel (₹5,000). Please share details!")}`}
+                    href={`https://wa.me/919588627190?text=${encodeURIComponent("Hi TV³ Studios,\n\nI want to book the Standard Single UGC Hero Reel (₹5,000). Please share details!")}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-full flex items-center justify-center gap-2 bg-white hover:bg-zinc-200 text-black font-mono text-[9px] uppercase font-bold tracking-widest py-3 px-4 rounded-xl transition-all duration-300 shadow-[0_4px_15px_rgba(255,255,255,0.05)] hover:shadow-none"
@@ -463,7 +463,7 @@ const ServicesSection = () => {
                     <span className="text-[9px] text-zinc-500 line-through font-mono">₹25,000</span>
                   </div>
                   <a
-                    href={`https://wa.me/918149981660?text=${encodeURIComponent("Hi TV³ Studios,\n\nI want to book the 5x Scale UGC Campaign Package at the introductory 40% off rate (₹15,000 total / ₹3,000 per reel). Please share details!")}`}
+                    href={`https://wa.me/919588627190?text=${encodeURIComponent("Hi TV³ Studios,\n\nI want to book the 5x Scale UGC Campaign Package at the introductory 40% off rate (₹15,000 total / ₹3,000 per reel). Please share details!")}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-full flex items-center justify-center gap-2 bg-[hsl(43_72%_55%)] hover:bg-white text-black font-mono text-[9px] uppercase font-bold tracking-widest py-3 px-4 rounded-xl transition-all duration-300 shadow-[0_4px_15px_rgba(212,175,55,0.15)] hover:shadow-none"

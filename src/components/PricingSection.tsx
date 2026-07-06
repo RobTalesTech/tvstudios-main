@@ -92,7 +92,7 @@ const PricingSection = () =>
         </p>
         <div className="mt-6">
           <a
-            href="https://wa.me/918149981660?text=Hi!%20I'd%20like%20to%20settle%20payment%20for%20my%20project%20with%20TV%20Studios."
+            href="https://wa.me/919588627190?text=Hi!%20I'd%20like%20to%20settle%20payment%20for%20my%20project%20with%20TV%20Studios."
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 rounded-full border border-primary bg-card px-6 py-3 font-body text-sm font-medium text-primary transition-all hover:bg-primary hover:text-primary-foreground hover:scale-105"

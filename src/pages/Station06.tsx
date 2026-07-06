@@ -226,11 +226,11 @@ const Station06 = () => {
                          </p>
                          
                          <div className="flex flex-col gap-4">
-                            <a href="https://wa.me/918149981660" target="_blank" rel="noreferrer" className="flex items-center justify-between px-8 py-5 bg-white text-black font-black uppercase tracking-[0.2em] text-[10px] w-full hover:bg-[#00FF66] transition-all group/btn">
+                            <a href="https://wa.me/919588627190" target="_blank" rel="noreferrer" className="flex items-center justify-between px-8 py-5 bg-white text-black font-black uppercase tracking-[0.2em] text-[10px] w-full hover:bg-[#00FF66] transition-all group/btn">
                                <span>Fund Pilot Episode</span>
                                <PlayCircle className="w-4 h-4 group-hover/btn:scale-125 transition-transform" />
                             </a>
-                            <a href="https://wa.me/918149981660" target="_blank" rel="noreferrer" className="flex items-center justify-between px-8 py-5 border border-white/10 text-white font-black uppercase tracking-[0.2em] text-[10px] w-full hover:border-[#00FF66]/40 hover:bg-[#00FF66]/5 transition-all">
+                            <a href="https://wa.me/919588627190" target="_blank" rel="noreferrer" className="flex items-center justify-between px-8 py-5 border border-white/10 text-white font-black uppercase tracking-[0.2em] text-[10px] w-full hover:border-[#00FF66]/40 hover:bg-[#00FF66]/5 transition-all">
                                <span>Join Discord / Studio Hub</span>
                                <MessageSquare className="w-4 h-4 text-[#00FF66]" />
                             </a>

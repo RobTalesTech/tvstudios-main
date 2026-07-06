@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
-import { Lock, ShieldAlert, Cpu, Database, Users, Banknote, Navigation, FileText, Trash2 } from "lucide-react";
+import { Lock, ShieldAlert, Cpu, Database, Users, Banknote, Navigation, FileText, Trash2, MessageSquare } from "lucide-react";
 
 const AdminVault = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -9,6 +9,7 @@ const AdminVault = () => {
   const [error, setError] = useState(false);
   const [activeTab, setActiveTab] = useState("strategy");
   const [intakeApps, setIntakeApps] = useState<any[]>([]);
+  const [whatsappLeads, setWhatsappLeads] = useState<any[]>([]);
 
   useEffect(() => {
     const loadApplications = async () => {
@@ -20,7 +21,6 @@ const AdminVault = () => {
             .order('timestamp', { ascending: false });
           if (data) {
             setIntakeApps(data);
-            return;
           }
         } catch (err) {
           console.error("Supabase select error:", err);
@@ -35,7 +35,32 @@ const AdminVault = () => {
       }
     };
 
+    const loadWhatsAppLeads = async () => {
+      if (supabase) {
+        try {
+          const { data, error } = await supabase
+            .from('tv3_whatsapp_leads')
+            .select('*')
+            .order('timestamp', { ascending: false });
+          if (data) {
+            setWhatsappLeads(data);
+            return;
+          }
+        } catch (err) {
+          console.error("Supabase leads select error:", err);
+        }
+      }
+
+      const existing = localStorage.getItem("tv3_whatsapp_leads");
+      if (existing) {
+        setWhatsappLeads(JSON.parse(existing));
+      } else {
+        setWhatsappLeads([]);
+      }
+    };
+
     loadApplications();
+    loadWhatsAppLeads();
   }, [activeTab]);
 
   const clearApplications = async () => {
@@ -47,6 +72,19 @@ const AdminVault = () => {
         await supabase.from('tv3_intake_applications').delete().neq('id', '');
       } catch (err) {
         console.error("Supabase delete error:", err);
+      }
+    }
+  };
+
+  const clearLeads = async () => {
+    localStorage.removeItem("tv3_whatsapp_leads");
+    setWhatsappLeads([]);
+
+    if (supabase) {
+      try {
+        await supabase.from('tv3_whatsapp_leads').delete().neq('id', '');
+      } catch (err) {
+        console.error("Supabase leads delete error:", err);
       }
     }
   };
@@ -153,6 +191,12 @@ const AdminVault = () => {
               className={`w-full flex items-center gap-3 p-4 rounded-xl text-sm font-bold uppercase tracking-widest transition-all ${activeTab === "intake" ? "bg-[hsl(43_72%_55%)] text-black" : "bg-white/5 text-white hover:bg-white/10"}`}
             >
               <FileText className="w-5 h-5" /> Scout Intake ({intakeApps.length})
+            </button>
+            <button 
+              onClick={() => setActiveTab("leads")}
+              className={`w-full flex items-center gap-3 p-4 rounded-xl text-sm font-bold uppercase tracking-widest transition-all ${activeTab === "leads" ? "bg-[hsl(43_72%_55%)] text-black" : "bg-white/5 text-white hover:bg-white/10"}`}
+            >
+              <MessageSquare className="w-5 h-5" /> WhatsApp Leads ({whatsappLeads.length})
             </button>
           </div>
 
@@ -434,6 +478,60 @@ const AdminVault = () => {
                       ))}
                     </div>
                   )}
+                </motion.div>
+              )}
+
+              {activeTab === "leads" && (
+                <motion.div 
+                   key="leads"
+                   initial={{ opacity: 0, x: 20 }}
+                   animate={{ opacity: 1, x: 0 }}
+                   exit={{ opacity: 0, x: -20 }}
+                   className="bg-card/20 border border-white/10 rounded-2xl p-8"
+                >
+                  <div className="flex justify-between items-center mb-6 border-b border-white/10 pb-4">
+                    <h2 className="text-2xl font-black uppercase tracking-widest">WhatsApp Lead Logs</h2>
+                    {whatsappLeads.length > 0 && (
+                      <button
+                        onClick={clearLeads}
+                        className="flex items-center gap-2 bg-red-950/40 border border-red-800/30 hover:bg-red-900/40 text-red-400 font-mono text-[9px] uppercase font-bold tracking-widest px-3 py-1.5 rounded-lg transition-all"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" /> Clear All Logs
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+                    {whatsappLeads.map((lead) => (
+                      <div key={lead.id} className="bg-zinc-950/40 border border-white/5 p-5 rounded-xl space-y-3 relative overflow-hidden group hover:border-primary/20 transition-all text-left">
+                        <div className="flex justify-between items-center">
+                          <span className="text-[8px] font-mono text-zinc-500 uppercase tracking-widest">
+                            Lead ID: {lead.id}
+                          </span>
+                          <span className="text-[8px] font-mono text-primary uppercase tracking-widest font-bold">
+                            {new Date(lead.timestamp).toLocaleString()}
+                          </span>
+                        </div>
+                        <div className="h-px bg-white/5 w-full" />
+                        <div>
+                          <span className="text-[7px] font-mono text-zinc-600 uppercase tracking-widest block mb-1">Inquiry Content</span>
+                          <p className="text-xs text-zinc-300 whitespace-pre-line leading-relaxed font-mono bg-black/40 border border-white/5 p-4 rounded-lg text-justify">
+                            {lead.message}
+                          </p>
+                        </div>
+                        <div className="flex justify-between items-center text-[7px] font-mono text-zinc-500 uppercase tracking-widest pt-2">
+                          <span>Routed To: {lead.target_number} (Manager)</span>
+                          <span>Bypassed Status: CC Owner Verified</span>
+                        </div>
+                      </div>
+                    ))}
+
+                    {whatsappLeads.length === 0 && (
+                      <div className="text-center py-16 border border-dashed border-white/5 rounded-2xl">
+                        <p className="text-zinc-500 font-mono text-xs uppercase tracking-widest">No WhatsApp lead logs available</p>
+                      </div>
+                    )}
+                  </div>
                 </motion.div>
               )}
 

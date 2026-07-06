@@ -130,7 +130,7 @@ export default function PostProductionSelector() {
     }).join('\n');
     
     const message = `Hi TV³ Studios,\n\nI want to place a Post-Production Pipeline Order with these specifications:\n\nProject Duration: ${activeDuration.text}\n\nSelected Modules:\n${stepLines}\n\nEstimated Cost: ₹${currentTotal.toLocaleString('en-IN')}\n\nLet's discuss and book the service!`;
-    return `https://wa.me/918149981660?text=${encodeURIComponent(message)}`;
+    return `https://wa.me/919588627190?text=${encodeURIComponent(message)}`;
   };
 
   return (

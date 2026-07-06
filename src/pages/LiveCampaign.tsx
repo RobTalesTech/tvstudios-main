@@ -16,7 +16,7 @@ const AuditionBlock = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const msg = `🎤 AUDITION — LAGIN BIGIN\n\nName: ${form.name}\nRole: ${form.role}\nProfile/Link: ${form.link}\nNote: ${form.note}`;
-    window.open(`https://wa.me/918149981660?text=${encodeURIComponent(msg)}`, "_blank");
+    window.open(`https://wa.me/919588627190?text=${encodeURIComponent(msg)}`, "_blank");
     setSent(true);
   };
 

@@ -270,7 +270,7 @@ const RealProductionCalculator = () => {
 
                       // 2. WhatsApp Link after delay
                       setTimeout(() => {
-                        const waUrl = `https://wa.me/918149981660?text=${encodeURIComponent(whatsappMessage)}`;
+                        const waUrl = `https://wa.me/919588627190?text=${encodeURIComponent(whatsappMessage)}`;
                         window.open(waUrl, '_blank');
                       }, 800);
                     }}
@@ -603,7 +603,7 @@ const Services = () => {
 
                   // 2. WhatsApp Link after delay
                   setTimeout(() => {
-                    const waUrl = `https://wa.me/918149981660?text=${encodeURIComponent(whatsappMessage)}`;
+                    const waUrl = `https://wa.me/919588627190?text=${encodeURIComponent(whatsappMessage)}`;
                     window.open(waUrl, '_blank');
                   }, 800);
 

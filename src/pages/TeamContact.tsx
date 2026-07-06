@@ -64,7 +64,7 @@ const TeamContact = () => {
                </div>
                <h3 className="text-xl font-bold mb-2">Call Us</h3>
                <p className="text-muted-foreground mb-4">Mon-Fri, 11am to 6pm</p>
-              <a href="https://wa.me/918149981660" target="_blank" rel="noopener noreferrer" className="text-lg font-semibold hover:text-[hsl(43_72%_55%)] transition-colors inline-flex items-center gap-2">
+              <a href="https://wa.me/919588627190" target="_blank" rel="noopener noreferrer" className="text-lg font-semibold hover:text-[hsl(43_72%_55%)] transition-colors inline-flex items-center gap-2">
                 MESSAGE TV³
               </a>
             </motion.div>
