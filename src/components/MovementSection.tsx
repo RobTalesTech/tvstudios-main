@@ -115,25 +115,24 @@ const MovementSection = () => {
                             transform: 'translate(-50%, -50%)'
                          }}
                        >
-                          {/* PULSE SIGNAL */}
-                          {station.isBase && (
-                            <motion.div 
-                              animate={{ scale: [1, 3, 1], opacity: [0.6, 0, 0.6] }}
-                              transition={{ duration: 2, repeat: Infinity }}
-                              className="absolute inset-0 w-8 h-8 -translate-x-1/2 -translate-y-1/2 rounded-full border border-red-500 opacity-20"
-                            />
-                          )}
-
-                          <div className="flex flex-col items-center">
-                             <div 
-                               className={`w-1.5 h-1.5 rounded-full ${station.isBase ? 'w-3 h-3 bg-red-600 shadow-[0_0_15px_red]' : 'bg-[#D4AF37]'}`}
-                             />
-                             {/* HUD TYPOGRAPHY (TECHNICAL WELCH) */}
-                             <div className="mt-2 text-center flex flex-col items-center">
-                                <span className="font-mono text-white text-[9px] font-black uppercase tracking-[0.2em] whitespace-nowrap drop-shadow-md">{station.name}</span>
-                                <span className={`font-mono ${station.isBase ? 'text-red-500' : 'text-[#D4AF37]'} text-[8px] font-black tracking-widest mt-0.5`}>[ST {station.id}]</span>
-                             </div>
-                          </div>
+                           <div className="flex flex-col items-center">
+                              <div 
+                                className={`relative w-1.5 h-1.5 rounded-full ${station.isBase ? 'w-3 h-3 bg-red-600 shadow-[0_0_15px_red]' : 'bg-[#D4AF37]'}`}
+                              >
+                                 {station.isBase && (
+                                   <motion.div 
+                                     animate={{ scale: [1, 3, 1], opacity: [0.6, 0, 0.6] }}
+                                     transition={{ duration: 2, repeat: Infinity }}
+                                     className="absolute top-1/2 left-1/2 w-8 h-8 -translate-x-1/2 -translate-y-1/2 rounded-full border border-red-500 pointer-events-none opacity-60"
+                                   />
+                                 )}
+                              </div>
+                              {/* HUD TYPOGRAPHY (TECHNICAL WELCH) */}
+                              <div className="mt-2 text-center flex flex-col items-center">
+                                 <span className="font-mono text-white text-[9px] font-black uppercase tracking-[0.2em] whitespace-nowrap drop-shadow-md">{station.name}</span>
+                                 <span className={`font-mono ${station.isBase ? 'text-red-500' : 'text-[#D4AF37]'} text-[8px] font-black tracking-widest mt-0.5`}>[ST {station.id}]</span>
+                              </div>
+                           </div>
                        </motion.div>
                     ))}
                  </div>
