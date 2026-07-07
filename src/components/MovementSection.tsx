@@ -123,7 +123,14 @@ const MovementSection = () => {
                                    <motion.div 
                                      animate={{ scale: [1, 3, 1], opacity: [0.6, 0, 0.6] }}
                                      transition={{ duration: 2, repeat: Infinity }}
-                                     className="absolute top-1/2 left-1/2 w-8 h-8 -translate-x-1/2 -translate-y-1/2 rounded-full border border-red-500 pointer-events-none opacity-60"
+                                     className="absolute rounded-full border border-red-500 pointer-events-none opacity-60"
+                                     style={{
+                                       width: "32px",
+                                       height: "32px",
+                                       left: "-10px",
+                                       top: "-10px",
+                                       transformOrigin: "center"
+                                     }}
                                    />
                                  )}
                               </div>
