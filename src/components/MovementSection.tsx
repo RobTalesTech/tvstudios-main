@@ -3,11 +3,12 @@ import { useRef, useState, useEffect } from "react";
 import { Play } from "lucide-react";
 
 const STATIONS = [
-  { id: "00", name: "PANSEMAL", x: 50, y: 50, color: "#ff0000", isBase: true }, 
-  { id: "01", name: "VASHI", x: 44, y: 68, color: "#D4AF37" },
-  { id: "02", name: "AHMEDABAD", x: 38, y: 46, color: "#D4AF37" },
-  { id: "03", name: "INDORE", x: 58, y: 38, color: "#D4AF37" },
-  { id: "04", name: "SURAT", x: 40, y: 56, color: "#D4AF37" },
+  { id: "00", name: "PANSEMAL [MP]", x: 50, y: 50, color: "#ff0000", isBase: true }, 
+  { id: "01", name: "VASHI [MH]", x: 44, y: 68, color: "#D4AF37" },
+  { id: "02", name: "INDORE [MP]", x: 58, y: 38, color: "#D4AF37" },
+  { id: "03", name: "NAGPUR [MH]", x: 68, y: 52, color: "#D4AF37" },
+  { id: "04", name: "AHMEDABAD [GJ]", x: 38, y: 46, color: "#D4AF37" },
+  { id: "05", name: "SURAT [GJ]", x: 40, y: 56, color: "#D4AF37" },
 ];
 
 const MovementSection = () => {
