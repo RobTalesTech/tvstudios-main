@@ -4,6 +4,7 @@ import CinematicReel from "@/components/CinematicReel";
 import Footer from "@/components/Footer";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle2, Film, MonitorPlay, ArrowRight, Mic2 } from "lucide-react";
+import { handleWhatsAppRedirect } from "@/utils/whatsapp";
 
 type Category = "Visual Production" | "Video Production" | "Copywriting";
 
@@ -270,8 +271,7 @@ const RealProductionCalculator = () => {
 
                       // 2. WhatsApp Link after delay
                       setTimeout(() => {
-                        const waUrl = `https://wa.me/919588627190?text=${encodeURIComponent(whatsappMessage)}`;
-                        window.open(waUrl, '_blank');
+                        handleWhatsAppRedirect(whatsappMessage);
                       }, 800);
                     }}
                     className="w-full py-4 bg-[#D4AF37] text-black font-mono text-[10px] uppercase font-bold tracking-[0.3em] flex items-center justify-center gap-3 hover:shadow-[0_0_30px_rgba(212,175,55,0.4)] transition-all font-black"
@@ -603,8 +603,7 @@ const Services = () => {
 
                   // 2. WhatsApp Link after delay
                   setTimeout(() => {
-                    const waUrl = `https://wa.me/919588627190?text=${encodeURIComponent(whatsappMessage)}`;
-                    window.open(waUrl, '_blank');
+                    handleWhatsAppRedirect(whatsappMessage);
                   }, 800);
 
                   setShowBrandStoryModal(false);
