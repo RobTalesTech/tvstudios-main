@@ -4,9 +4,22 @@ import { Play, X } from "lucide-react";
 
 const HeroSection = () => {
   const [isVideoOpen, setIsVideoOpen] = useState(false);
+  const [showComingSoon, setShowComingSoon] = useState(false);
+
+  // Approximate duration of the reel - set to 55 seconds (QVak8sq8A_Q is ~56s)
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (isVideoOpen && !showComingSoon) {
+      timer = setTimeout(() => {
+        setShowComingSoon(true);
+      }, 55000); // 55 seconds
+    }
+    return () => clearTimeout(timer);
+  }, [isVideoOpen, showComingSoon]);
 
   const handleClose = () => {
     setIsVideoOpen(false);
+    setShowComingSoon(false);
   };
 
   return (
@@ -108,27 +121,36 @@ const HeroSection = () => {
               <div className="absolute -inset-[1px] bg-white/10 rounded-lg" />
               
               <div className="relative h-full w-full overflow-hidden rounded-md bg-black shadow-[0_0_100px_rgba(0,0,0,1)] shadow-[0_0_40px_rgba(212,175,55,0.1)]">
-                <iframe
-                  src="https://drive.google.com/file/d/13NLDaOngekg6P45uWLfcVCtUCCe21w80/preview"
-                  title="TV³ Studios Showreel"
-                  className="h-full w-full scale-[1.01]"
-                  allow="autoplay; encrypted-media; fullscreen"
-                  allowFullScreen
-                />
-                
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 bg-black/85 backdrop-blur border border-white/10 px-4 py-2 rounded-full text-center max-w-[90%] shadow-2xl">
-                  <p className="font-mono text-[9px] text-zinc-300 uppercase tracking-widest">
-                    Google Drive video not loading?{" "}
-                    <a 
-                      href="https://drive.google.com/file/d/13NLDaOngekg6P45uWLfcVCtUCCe21w80/view?usp=sharing" 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="text-primary underline font-bold hover:text-white transition-colors ml-1"
+                {!showComingSoon ? (
+                  <iframe
+                    src="https://www.youtube.com/embed/QVak8sq8A_Q?autoplay=1&controls=0&modestbranding=1&rel=0&iv_load_policy=3&showinfo=0&disablekb=1&enablejsapi=1"
+                    title="TV³ Studios Showreel"
+                    className="h-full w-full scale-[1.01]"
+                    allow="autoplay; encrypted-media"
+                    allowFullScreen
+                  />
+                ) : (
+                  <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="absolute inset-0 flex flex-col items-center justify-center bg-black z-50 text-center p-8"
+                  >
+                    <motion.div 
+                      animate={{ opacity: [0.4, 1, 0.4] }} 
+                      transition={{ duration: 2, repeat: Infinity }}
+                      className="font-display text-4xl md:text-6xl font-black uppercase tracking-[0.2em] text-white"
                     >
-                      Open in New Tab ↗
-                    </a>
-                  </p>
-                </div>
+                      Coming <span className="text-[hsl(43_72%_55%)] italic font-serif lowercase">Soon</span>
+                    </motion.div>
+                    <p className="mt-6 font-mono text-[10px] uppercase tracking-[0.5em] text-white/40">The Legacy Continues</p>
+                    <button 
+                      onClick={handleClose}
+                      className="mt-12 px-8 py-3 bg-white/5 border border-white/10 rounded-full font-mono text-[9px] uppercase tracking-widest text-white/60 hover:text-white hover:bg-white/10 transition-all"
+                    >
+                      Close Projection
+                    </button>
+                  </motion.div>
+                )}
                 
                 {/* Glass Overlays to hide possible branding/UI elements */}
                 <div className="absolute inset-0 pointer-events-none bg-gradient-to-tr from-white/5 to-transparent opacity-20" />
