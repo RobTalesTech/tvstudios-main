@@ -23,7 +23,7 @@ export default function BrandedContent() {
 
     // Voice the announcement aloud using Web Speech API
     try {
-      const utterance = new SpeechSynthesisUtterance("Sorry, I'm Poster AI. Our automated branding services will be coming soon to post for you!");
+      const utterance = new SpeechSynthesisUtterance("I am currently in training. Coming soon to automate your brand's posting!");
       utterance.rate = 1.0;
       utterance.pitch = 1.1;
       window.speechSynthesis.cancel();
@@ -97,7 +97,7 @@ export default function BrandedContent() {
             animate={{ opacity: 1, y: 0 }}
             className="font-mono text-xs uppercase tracking-[0.3em] text-[#D4AF37] drop-shadow-[0_0_8px_hsla(43,72%,55%,0.3)]"
           >
-            Branding, on autopilot
+            Poster Boy for Brands
           </motion.p>
           
           <motion.h1 
@@ -106,7 +106,7 @@ export default function BrandedContent() {
             transition={{ delay: 0.1 }}
             className="font-display text-4xl md:text-6xl font-black uppercase tracking-tight leading-none"
           >
-            Your brand's next <span className="text-gradient-gold italic font-serif lowercase">100 posts</span>, made and published without you touching a design tool.
+            I am here to <span className="text-gradient-gold italic font-serif lowercase">post for you.</span>
           </motion.h1>
           
           <motion.p 
@@ -115,8 +115,75 @@ export default function BrandedContent() {
             transition={{ delay: 0.2 }}
             className="text-zinc-400 text-base md:text-lg max-w-2xl mx-auto leading-relaxed"
           >
-            Upload your logo and colors once. Get on-brand posts every week, auto-scheduled to your channels — fully reviewed by you before anything goes live.
+            Meet Poster Boy — our automated AI tool designed to post directly on behalf of your brand once you select a campaign plan. Configure your brand colors and assets once, and let him run your publishing schedule on autopilot.
           </motion.p>
+
+          {/* Hero Mascot Showcase */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.25 }}
+            className="flex flex-col items-center gap-3 pt-2"
+          >
+            {/* Speech Bubble */}
+            <div className="bg-black border border-[#D4AF37]/60 text-[#D4AF37] font-mono text-[9px] uppercase font-bold tracking-widest px-3 py-2 rounded-xl shadow-[0_0_15px_rgba(212,175,55,0.1)] relative">
+              I am here to post for you! 🎙️
+              <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-black border-r border-b border-[#D4AF37]/60 transform rotate-45" />
+            </div>
+            {/* SVG Mascot holding microphone */}
+            <div className="filter drop-shadow-[0_10px_25px_rgba(212,175,55,0.25)]">
+              <svg width="70" height="70" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                {/* Antennas */}
+                <path d="M22 18L14 8" stroke="#D4AF37" strokeWidth="2.5" strokeLinecap="round"/>
+                <circle cx="13" cy="7" r="3" fill="#D4AF37"/>
+                <path d="M38 18L46 8" stroke="#D4AF37" strokeWidth="2.5" strokeLinecap="round"/>
+                <circle cx="47" cy="7" r="3" fill="#D4AF37"/>
+
+                {/* TV Casing */}
+                <rect x="8" y="16" width="44" height="34" rx="8" fill="#1F1E24" stroke="#D4AF37" strokeWidth="2.75"/>
+                
+                {/* Screen */}
+                <rect x="13" y="21" width="30" height="24" rx="4" fill="#0C0B0E" stroke="#D4AF37" strokeWidth="1" strokeOpacity="0.4"/>
+                
+                {/* Scanlines */}
+                <line x1="13" y1="25" x2="43" y2="25" stroke="#D4AF37" strokeWidth="0.5" strokeOpacity="0.15"/>
+                <line x1="13" y1="29" x2="43" y2="29" stroke="#D4AF37" strokeWidth="0.5" strokeOpacity="0.15"/>
+                <line x1="13" y1="33" x2="43" y2="33" stroke="#D4AF37" strokeWidth="0.5" strokeOpacity="0.15"/>
+                <line x1="13" y1="37" x2="43" y2="37" stroke="#D4AF37" strokeWidth="0.5" strokeOpacity="0.15"/>
+
+                {/* Face: Eyes */}
+                <motion.ellipse 
+                  animate={{ scaleY: [1, 1, 0, 1, 1] }}
+                  transition={{ duration: 4, repeat: Infinity, repeatDelay: 1.5 }}
+                  cx="21" cy="30" rx="2.5" ry="3.5" fill="#D4AF37"
+                  style={{ originX: "21px", originY: "30px" }}
+                />
+                <motion.ellipse 
+                  animate={{ scaleY: [1, 1, 0, 1, 1] }}
+                  transition={{ duration: 4, repeat: Infinity, repeatDelay: 1.5 }}
+                  cx="31" cy="30" rx="2.5" ry="3.5" fill="#D4AF37"
+                  style={{ originX: "31px", originY: "30px" }}
+                />
+
+                {/* Smile */}
+                <path d="M22 36Q26 40 30 36" stroke="#D4AF37" strokeWidth="2.5" strokeLinecap="round"/>
+
+                {/* Dials */}
+                <circle cx="47" cy="24" r="2" fill="#D4AF37" />
+                <circle cx="47" cy="31" r="2" fill="#D4AF37" />
+
+                {/* Cute little arms holding microphone */}
+                <path d="M7 36 Q 3 40 6 44" stroke="#D4AF37" strokeWidth="2.2" strokeLinecap="round"/>
+                <path d="M53 36 Q 57 40 51 43" stroke="#D4AF37" strokeWidth="2.2" strokeLinecap="round"/>
+                <path d="M51 43 L 43 41" stroke="#D4AF37" strokeWidth="2.2" strokeLinecap="round"/>
+                
+                {/* Mic stand/body in the middle */}
+                <line x1="40" y1="34" x2="36" y2="44" stroke="#D4AF37" strokeWidth="2" strokeLinecap="round"/>
+                {/* Mic mesh head */}
+                <circle cx="40.5" cy="32.5" r="3" fill="#D4AF37"/>
+              </svg>
+            </div>
+          </motion.div>
 
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
@@ -367,7 +434,7 @@ export default function BrandedContent() {
                 style={{ transform: "translateZ(30px)" }}
                 className="bg-black border-2 border-[#D4AF37] text-[#D4AF37] font-mono text-[9px] uppercase font-black tracking-widest px-4 py-3 rounded-2xl shadow-[0_15px_40px_rgba(212,175,55,0.3)] text-center max-w-[200px] relative border-double border-4"
               >
-                Sorry, I'm Poster AI — our automated branding services will be coming soon! Pick a plan later, I will get started for you then. 📺
+                I'm currently in training. Coming soon to automate your brand's posting! 🎙️
                 {/* Speech Bubble Arrow */}
                 <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3.5 h-3.5 bg-black border-r-2 border-b-2 border-[#D4AF37] transform rotate-45" />
               </div>
@@ -424,6 +491,16 @@ export default function BrandedContent() {
 
                   {/* Face Smile */}
                   <path d="M22 36Q26 40 30 36" stroke="#D4AF37" strokeWidth="2.5" strokeLinecap="round"/>
+
+                  {/* Cute little arms holding microphone */}
+                  <path d="M7 36 Q 3 40 6 44" stroke="#D4AF37" strokeWidth="2.2" strokeLinecap="round"/>
+                  <path d="M53 36 Q 57 40 51 43" stroke="#D4AF37" strokeWidth="2.2" strokeLinecap="round"/>
+                  <path d="M51 43 L 43 41" stroke="#D4AF37" strokeWidth="2.2" strokeLinecap="round"/>
+                  
+                  {/* Mic stand/body in the middle */}
+                  <line x1="40" y1="34" x2="36" y2="44" stroke="#D4AF37" strokeWidth="2" strokeLinecap="round"/>
+                  {/* Mic mesh head */}
+                  <circle cx="40.5" cy="32.5" r="3" fill="#D4AF37"/>
                 </svg>
               </div>
             </motion.div>
