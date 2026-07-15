@@ -5,6 +5,68 @@ import Footer from "@/components/Footer";
 import { ArrowRight, Check, Sparkles, Send, Eye, Calendar, ShieldCheck, Palette, RefreshCw, Zap } from "lucide-react";
 
 export default function BrandedContent() {
+  const [clickInterceptor, setClickInterceptor] = useState<{
+    x: number;
+    y: number;
+    show: boolean;
+  }>({ x: 0, y: 0, show: false });
+  const [interceptionComplete, setInterceptionComplete] = useState(false);
+
+  const isInteractive = (el: HTMLElement | null): boolean => {
+    if (!el) return false;
+    const tag = el.tagName.toLowerCase();
+    if (["a", "button", "input", "select", "textarea"].includes(tag)) return true;
+    if (el.getAttribute("role") === "button") return true;
+
+    // Check if it has classes indicating pointer cursor
+    const className = el.className || "";
+    if (typeof className === "string" && (
+      className.includes("cursor-pointer") || 
+      className.includes("hover:") ||
+      className.includes("btn")
+    )) {
+      return true;
+    }
+
+    // Bubble up to parent
+    return isInteractive(el.parentElement);
+  };
+
+  const handlePageClickCapture = (e: React.MouseEvent) => {
+    if (interceptionComplete) return;
+
+    if (!clickInterceptor.show) {
+      // Check if they clicked an interactive element
+      if (isInteractive(e.target as HTMLElement)) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        setClickInterceptor({
+          x: e.clientX,
+          y: e.clientY,
+          show: true
+        });
+
+        // Speak using web speech api
+        try {
+          const utterance = new SpeechSynthesisUtterance("Sorry, I'm Poster AI — coming soon to post for you!");
+          utterance.rate = 1.0;
+          utterance.pitch = 1.1;
+          window.speechSynthesis.cancel();
+          window.speechSynthesis.speak(utterance);
+        } catch (err) {
+          console.error("SpeechSynthesis error:", err);
+        }
+      }
+    } else {
+      // Dismiss popup and let normal clicks pass through henceforth
+      e.preventDefault();
+      e.stopPropagation();
+      setClickInterceptor({ x: 0, y: 0, show: false });
+      setInterceptionComplete(true);
+    }
+  };
+
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
     if (el) {
@@ -56,7 +118,10 @@ export default function BrandedContent() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white font-body selection:bg-primary selection:text-black pt-28">
+    <div 
+      onClickCapture={handlePageClickCapture}
+      className="min-h-screen bg-[#050505] text-white font-body selection:bg-primary selection:text-black pt-28"
+    >
       {/* Grid Scanlines */}
       <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,_rgba(0,0,0,0.25)_50%),_linear-gradient(90deg,_rgba(255,255,255,0.02),_rgba(0,255,0,0.005),_rgba(0,0,255,0.02))] bg-[size:100%_4px,_6px_100%] pointer-events-none z-0" />
 
@@ -304,6 +369,106 @@ export default function BrandedContent() {
       </div>
       <Footer />
       <PosterBoy />
+
+      {/* 3D Intercept Mascot Overlay */}
+      <AnimatePresence>
+        {clickInterceptor.show && (
+          <>
+            {/* Clickable Backdrop to dismiss */}
+            <div 
+              className="fixed inset-0 z-[9998] cursor-default bg-black/10" 
+              onClick={(e) => {
+                e.stopPropagation();
+                setClickInterceptor({ x: 0, y: 0, show: false });
+                setInterceptionComplete(true);
+              }}
+            />
+            
+            <motion.div
+              initial={{ opacity: 0, scale: 0, rotateY: -45, rotateX: -30, y: 40 }}
+              animate={{ opacity: 1, scale: 1.25, rotateY: 15, rotateX: 10, y: 0 }}
+              exit={{ opacity: 0, scale: 0, rotateY: -45, rotateX: -30, y: 40 }}
+              transition={{ type: "spring", stiffness: 220, damping: 14 }}
+              style={{
+                position: 'fixed',
+                left: `${clickInterceptor.x}px`,
+                top: `${clickInterceptor.y - 80}px`, // Offset upwards so he sits above the finger/mouse pointer
+                transform: 'translate(-50%, -100%)',
+                perspective: 1200,
+                transformStyle: "preserve-3d",
+                zIndex: 9999,
+                pointerEvents: 'none'
+              }}
+              className="flex flex-col items-center gap-3 select-none"
+            >
+              {/* Gold Speech Bubble */}
+              <div 
+                style={{ transform: "translateZ(30px)" }}
+                className="bg-black border-2 border-[#D4AF37] text-[#D4AF37] font-mono text-[9px] uppercase font-black tracking-widest px-4 py-3 rounded-2xl shadow-[0_15px_40px_rgba(212,175,55,0.3)] text-center max-w-[200px] relative border-double border-4"
+              >
+                Sorry, I'm Poster AI — coming soon to post for you!
+                {/* Speech Bubble Arrow */}
+                <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3.5 h-3.5 bg-black border-r-2 border-b-2 border-[#D4AF37] transform rotate-45" />
+              </div>
+
+              {/* 3D-styled SVG Mascot */}
+              <div 
+                style={{ 
+                  transform: "translateZ(10px)",
+                  filter: "drop-shadow(0 25px 35px rgba(212,175,55,0.45)) drop-shadow(0 10px 15px rgba(0,0,0,0.8))"
+                }}
+                className="relative"
+              >
+                <svg width="70" height="70" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  {/* Antennas */}
+                  <path d="M22 18L14 8" stroke="#D4AF37" strokeWidth="2.5" strokeLinecap="round"/>
+                  <circle cx="13" cy="7" r="3" fill="#D4AF37"/>
+                  
+                  <path d="M38 18L46 8" stroke="#D4AF37" strokeWidth="2.5" strokeLinecap="round"/>
+                  <circle cx="47" cy="7" r="3" fill="#D4AF37"/>
+
+                  {/* TV Outer Shell with highlight gradients */}
+                  <rect x="8" y="16" width="44" height="34" rx="8" fill="#1F1E24" stroke="#D4AF37" strokeWidth="3"/>
+                  {/* Bevel highlight */}
+                  <rect x="10" y="18" width="40" height="30" rx="6" fill="none" stroke="white" strokeWidth="1" strokeOpacity="0.1"/>
+                  
+                  {/* Screen Inner Shell */}
+                  <rect x="13" y="21" width="30" height="24" rx="4" fill="#0C0B0E" stroke="#D4AF37" strokeWidth="1.5" strokeOpacity="0.5"/>
+                  
+                  {/* CRT Scanline Overlay */}
+                  <line x1="13" y1="24" x2="43" y2="24" stroke="#D4AF37" strokeWidth="0.75" strokeOpacity="0.2"/>
+                  <line x1="13" y1="28" x2="43" y2="28" stroke="#D4AF37" strokeWidth="0.75" strokeOpacity="0.2"/>
+                  <line x1="13" y1="32" x2="43" y2="32" stroke="#D4AF37" strokeWidth="0.75" strokeOpacity="0.2"/>
+                  <line x1="13" y1="36" x2="43" y2="36" stroke="#D4AF37" strokeWidth="0.75" strokeOpacity="0.2"/>
+                  <line x1="13" y1="40" x2="43" y2="40" stroke="#D4AF37" strokeWidth="0.75" strokeOpacity="0.2"/>
+
+                  {/* Dials (Right Side) */}
+                  <circle cx="47" cy="24" r="2.5" fill="#D4AF37" />
+                  <circle cx="47" cy="31" r="2.5" fill="#D4AF37" />
+                  <rect x="45" y="38" width="4" height="2.5" rx="1" fill="#D4AF37" />
+
+                  {/* Blink Eyes */}
+                  <motion.ellipse 
+                    animate={{ scaleY: [1, 1, 0, 1, 1] }}
+                    transition={{ duration: 4, repeat: Infinity, repeatDelay: 1 }}
+                    cx="21" cy="30" rx="2.5" ry="3.5" fill="#D4AF37" 
+                    style={{ originX: "21px", originY: "30px" }}
+                  />
+                  <motion.ellipse 
+                    animate={{ scaleY: [1, 1, 0, 1, 1] }}
+                    transition={{ duration: 4, repeat: Infinity, repeatDelay: 1 }}
+                    cx="31" cy="30" rx="2.5" ry="3.5" fill="#D4AF37"
+                    style={{ originX: "31px", originY: "30px" }}
+                  />
+
+                  {/* Face Smile */}
+                  <path d="M22 36Q26 40 30 36" stroke="#D4AF37" strokeWidth="2.5" strokeLinecap="round"/>
+                </svg>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
