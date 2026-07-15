@@ -7,6 +7,8 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import TeamContact from "./pages/TeamContact";
 import Services from "./pages/Services";
+import BrandedContent from "./pages/BrandedContent";
+import GetStarted from "./pages/GetStarted";
 import StudioWork from "./pages/StudioWork";
 import FounderStory from "./pages/FounderStory";
 import AdminVault from "./pages/AdminVault";
@@ -40,6 +42,8 @@ const AppContent = () => {
         <Route path="/" element={<Index />} />
         <Route path="/team" element={<TeamContact />} />
         <Route path="/services" element={<Services />} />
+        <Route path="/branded-content" element={<BrandedContent />} />
+        <Route path="/get-started" element={<GetStarted />} />
         <Route path="/studio-work" element={<StudioWork />} />
         <Route path="/founder-story" element={<FounderStory />} />
         <Route path="/admin-vault" element={<AdminVault />} />
