@@ -16,7 +16,7 @@ export default function BrandedContent() {
       id: "starter",
       name: "Starter",
       for: "For one channel, getting consistent",
-      price: "₹9,999",
+      price: "₹999",
       features: [
         "20 branded posts per month",
         "1 social platform connected",

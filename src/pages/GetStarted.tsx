@@ -16,7 +16,7 @@ interface PlanDetails {
 const planDetails: Record<PlanId, PlanDetails> = {
   starter: {
     name: "Starter Plan",
-    price: "₹9,999",
+    price: "₹999",
     desc: "For one channel, getting consistent"
   },
   growth: {

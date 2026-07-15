@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
-import { Lock, ShieldAlert, Cpu, Database, Users, Banknote, Navigation, FileText, Trash2, MessageSquare } from "lucide-react";
+import { Lock, ShieldAlert, Cpu, Database, Users, Banknote, Navigation, FileText, Trash2, MessageSquare, Sparkles } from "lucide-react";
 
 const AdminVault = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -10,6 +10,7 @@ const AdminVault = () => {
   const [activeTab, setActiveTab] = useState("strategy");
   const [intakeApps, setIntakeApps] = useState<any[]>([]);
   const [whatsappLeads, setWhatsappLeads] = useState<any[]>([]);
+  const [brandingIntakes, setBrandingIntakes] = useState<any[]>([]);
 
   useEffect(() => {
     const loadApplications = async () => {
@@ -44,7 +45,6 @@ const AdminVault = () => {
             .order('timestamp', { ascending: false });
           if (data) {
             setWhatsappLeads(data);
-            return;
           }
         } catch (err) {
           console.error("Supabase leads select error:", err);
@@ -59,8 +59,33 @@ const AdminVault = () => {
       }
     };
 
+    const loadBrandingIntakes = async () => {
+      if (supabase) {
+        try {
+          const { data, error } = await supabase
+            .from('tv3_branding_intake')
+            .select('*')
+            .order('timestamp', { ascending: false });
+          if (data) {
+            setBrandingIntakes(data);
+            return;
+          }
+        } catch (err) {
+          console.error("Supabase branding intakes select error:", err);
+        }
+      }
+
+      const existing = localStorage.getItem("tv3_branding_intake");
+      if (existing) {
+        setBrandingIntakes(JSON.parse(existing));
+      } else {
+        setBrandingIntakes([]);
+      }
+    };
+
     loadApplications();
     loadWhatsAppLeads();
+    loadBrandingIntakes();
   }, [activeTab]);
 
   const clearApplications = async () => {
@@ -85,6 +110,19 @@ const AdminVault = () => {
         await supabase.from('tv3_whatsapp_leads').delete().neq('id', '');
       } catch (err) {
         console.error("Supabase leads delete error:", err);
+      }
+    }
+  };
+
+  const clearBranding = async () => {
+    localStorage.removeItem("tv3_branding_intake");
+    setBrandingIntakes([]);
+
+    if (supabase) {
+      try {
+        await supabase.from('tv3_branding_intake').delete().neq('id', '');
+      } catch (err) {
+        console.error("Supabase branding delete error:", err);
       }
     }
   };
@@ -197,6 +235,12 @@ const AdminVault = () => {
               className={`w-full flex items-center gap-3 p-4 rounded-xl text-sm font-bold uppercase tracking-widest transition-all ${activeTab === "leads" ? "bg-[hsl(43_72%_55%)] text-black" : "bg-white/5 text-white hover:bg-white/10"}`}
             >
               <MessageSquare className="w-5 h-5" /> WhatsApp Leads ({whatsappLeads.length})
+            </button>
+            <button 
+              onClick={() => setActiveTab("branding")}
+              className={`w-full flex items-center gap-3 p-4 rounded-xl text-sm font-bold uppercase tracking-widest transition-all ${activeTab === "branding" ? "bg-[hsl(43_72%_55%)] text-black" : "bg-white/5 text-white hover:bg-white/10"}`}
+            >
+              <Sparkles className="w-5 h-5" /> Branding Intakes ({brandingIntakes.length})
             </button>
           </div>
 
@@ -529,6 +573,87 @@ const AdminVault = () => {
                     {whatsappLeads.length === 0 && (
                       <div className="text-center py-16 border border-dashed border-white/5 rounded-2xl">
                         <p className="text-zinc-500 font-mono text-xs uppercase tracking-widest">No WhatsApp lead logs available</p>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+
+              {activeTab === "branding" && (
+                <motion.div 
+                   key="branding"
+                   initial={{ opacity: 0, x: 20 }}
+                   animate={{ opacity: 1, x: 0 }}
+                   exit={{ opacity: 0, x: -20 }}
+                   className="bg-card/20 border border-white/10 rounded-2xl p-8"
+                >
+                  <div className="flex justify-between items-center mb-6 border-b border-white/10 pb-4">
+                    <h2 className="text-2xl font-black uppercase tracking-widest">Branding Profile Submissions</h2>
+                    {brandingIntakes.length > 0 && (
+                      <button
+                        onClick={clearBranding}
+                        className="flex items-center gap-2 bg-red-950/40 border border-red-800/30 hover:bg-red-900/40 text-red-400 font-mono text-[9px] uppercase font-bold tracking-widest px-3 py-1.5 rounded-lg transition-all"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" /> Clear All Submissions
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="space-y-6 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+                    {brandingIntakes.map((intake) => (
+                      <div key={intake.id} className="bg-zinc-950/40 border border-white/5 p-6 rounded-xl space-y-4 relative overflow-hidden group hover:border-primary/20 transition-all text-left">
+                        <div className="flex justify-between items-center">
+                          <div>
+                            <span className="text-[10px] font-mono text-primary uppercase tracking-widest font-bold block">
+                              {intake.business_name}
+                            </span>
+                            <span className="text-[8px] font-mono text-zinc-500 uppercase tracking-widest mt-0.5 block">
+                              Ingest ID: {intake.id} • {intake.plan}
+                            </span>
+                          </div>
+                          <span className="text-[8px] font-mono text-zinc-400 uppercase tracking-widest">
+                            {new Date(intake.timestamp).toLocaleString()}
+                          </span>
+                        </div>
+                        
+                        <div className="h-px bg-white/5 w-full" />
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                          <div>
+                            <span className="text-[8px] font-mono text-zinc-600 uppercase tracking-widest block mb-0.5">Contact Email</span>
+                            <span className="text-zinc-300 font-mono">{intake.contact_email}</span>
+                          </div>
+                          <div>
+                            <span className="text-[8px] font-mono text-zinc-600 uppercase tracking-widest block mb-0.5">Brand Colors</span>
+                            <span className="text-zinc-300 font-mono">{intake.brand_colors || "None specified"}</span>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2 text-xs">
+                          <div>
+                            <span className="text-[8px] font-mono text-zinc-600 uppercase tracking-widest block mb-0.5">Logo Specifications</span>
+                            <p className="text-zinc-300 bg-white/[0.01] p-3 rounded-lg border border-white/5 whitespace-pre-line font-mono">{intake.logo_details || "N/A"}</p>
+                          </div>
+                          <div>
+                            <span className="text-[8px] font-mono text-zinc-600 uppercase tracking-widest block mb-0.5">Core Product / What they sell</span>
+                            <p className="text-zinc-300 bg-white/[0.01] p-3 rounded-lg border border-white/5 whitespace-pre-line font-mono">{intake.product_details || "N/A"}</p>
+                          </div>
+                          <div>
+                            <span className="text-[8px] font-mono text-zinc-600 uppercase tracking-widest block mb-0.5">Target Audience</span>
+                            <p className="text-zinc-300 bg-white/[0.01] p-3 rounded-lg border border-white/5 whitespace-pre-line font-mono">{intake.audience_details || "N/A"}</p>
+                          </div>
+                        </div>
+
+                        <div className="border-t border-white/5 pt-3 mt-3 flex justify-between items-center text-[8px] font-mono text-zinc-500 uppercase tracking-widest">
+                          <span className="text-primary font-bold">UPI Note Reference: {intake.payment_ref}</span>
+                          <span>Ingestion Buffer Active</span>
+                        </div>
+                      </div>
+                    ))}
+
+                    {brandingIntakes.length === 0 && (
+                      <div className="text-center py-16 border border-dashed border-white/5 rounded-2xl">
+                        <p className="text-zinc-500 font-mono text-xs uppercase tracking-widest">No brand profile submissions available</p>
                       </div>
                     )}
                   </div>
