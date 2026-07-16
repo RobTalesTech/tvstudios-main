@@ -186,7 +186,7 @@ const ServicesSection = () => {
     }
   }, [isOriginalRecording, isOriginalPaused]);
 
-  const handleIntakeSubmit = (
+  const handleIntakeSubmit = async (
     serviceName: string, 
     email: string, 
     details: string, 
@@ -202,14 +202,25 @@ const ServicesSection = () => {
     
     const whatsappMessage = `Hi TV³ Studios,\n\nI want to book the *${serviceName}* service.\n\n*My Email:* ${email}\n*Project Details:* ${details}\n\n${additionalData}`;
 
-    // 1. Trigger Mailto
-    const mailtoUrl = `mailto:tv3studios@proton.me?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
-    window.location.href = mailtoUrl;
+    // 1. Trigger WhatsApp redirect immediately (synchronous to click event to prevent Safari popup block)
+    handleWhatsAppRedirect(whatsappMessage);
 
-    // 2. Trigger WhatsApp after delay
-    setTimeout(() => {
-      handleWhatsAppRedirect(whatsappMessage);
-    }, 800);
+    // 2. Send email via serverless function silently in the background
+    try {
+      await fetch('/api/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          to: 'tv3studios@gmail.com',
+          subject: emailSubject,
+          body: emailBody
+        })
+      });
+    } catch (err) {
+      console.error("Direct email dispatch failed:", err);
+    }
   };
 
   useEffect(() => {

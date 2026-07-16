@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import Footer from "@/components/Footer";
@@ -9,21 +9,40 @@ export default function BrandedContent() {
     show: boolean;
     x: number;
     y: number;
-  }>({ show: false, x: 0, y: 0 });
+    planId: string;
+  }>({ show: false, x: 0, y: 0, planId: "growth" });
 
-  const handleGetStartedClick = (e: React.MouseEvent) => {
+  useEffect(() => {
+    if (!mascotPopup.show) {
+      window.speechSynthesis.cancel();
+    }
+    return () => {
+      window.speechSynthesis.cancel();
+    };
+  }, [mascotPopup.show]);
+
+  const handleGetStartedClick = (e: React.MouseEvent, planId: string) => {
     e.preventDefault();
     e.stopPropagation();
 
     setMascotPopup({
       show: true,
       x: e.clientX,
-      y: e.clientY
+      y: e.clientY,
+      planId: planId
     });
+
+    const dynamicMessages: Record<string, string> = {
+      starter: "Starter plan selected! Training my design models for your first channel. Tap the link below to preview the beta intake form!",
+      growth: "Growth plan selected! Setting up automated multi-channel scheduling. Tap below to preview the beta intake form!",
+      agency: "Agency plan selected! Provisioning secure keys for multi-brand workspaces. Tap below to preview the beta intake form!"
+    };
+
+    const speechText = dynamicMessages[planId] || "I am currently in training. Coming soon to automate your brand's posting!";
 
     // Voice the announcement aloud using Web Speech API
     try {
-      const utterance = new SpeechSynthesisUtterance("I am currently in training. Coming soon to automate your brand's posting!");
+      const utterance = new SpeechSynthesisUtterance(speechText);
       
       const voices = window.speechSynthesis.getVoices();
       // Look for a voice containing common male voice name indicators or designations
@@ -355,7 +374,7 @@ export default function BrandedContent() {
 
                 <div className="mt-8 pt-4 border-t border-white/5">
                   <button 
-                    onClick={handleGetStartedClick}
+                    onClick={(e) => handleGetStartedClick(e, plan.id)}
                     className={`w-full text-center py-4 rounded-xl font-mono text-xs uppercase tracking-widest font-black transition-all flex items-center justify-center gap-2 hover:scale-[1.02] ${
                       plan.featured 
                         ? "bg-primary text-black hover:bg-white" 
@@ -428,7 +447,7 @@ export default function BrandedContent() {
               className="fixed inset-0 z-[9998] cursor-default bg-black/10" 
               onClick={(e) => {
                 e.stopPropagation();
-                setMascotPopup({ show: false, x: 0, y: 0 });
+                setMascotPopup({ show: false, x: 0, y: 0, planId: mascotPopup.planId });
               }}
             />
             
@@ -445,16 +464,26 @@ export default function BrandedContent() {
                 perspective: 1200,
                 transformStyle: "preserve-3d",
                 zIndex: 9999,
-                pointerEvents: 'none'
+                pointerEvents: 'auto'
               }}
               className="flex flex-col items-center gap-3 select-none animate-scanline"
             >
               {/* Gold Speech Bubble */}
               <div 
                 style={{ transform: "translateZ(30px)" }}
-                className="bg-black border-2 border-[#D4AF37] text-[#D4AF37] font-mono text-[9px] uppercase font-black tracking-widest px-4 py-3 rounded-2xl shadow-[0_15px_40px_rgba(212,175,55,0.3)] text-center max-w-[200px] relative border-double border-4"
+                className="bg-black border-2 border-[#D4AF37] text-[#D4AF37] font-mono text-[9px] uppercase font-black tracking-widest px-4 py-3 rounded-2xl shadow-[0_15px_40px_rgba(212,175,55,0.3)] text-center max-w-[210px] relative border-double border-4"
               >
-                I'm currently in training. Coming soon to automate your brand's posting! 🎙️
+                <p className="mb-2 text-[9px] leading-relaxed">
+                  {mascotPopup.planId === "starter" && "Starter plan selected! Training my design models for your first channel. 🎙️"}
+                  {mascotPopup.planId === "growth" && "Growth plan selected! Setting up automated multi-channel scheduling. 🎙️"}
+                  {mascotPopup.planId === "agency" && "Agency plan selected! Provisioning secure keys for multi-brand workspaces. 🎙️"}
+                </p>
+                <Link
+                  to={`/get-started?plan=${mascotPopup.planId}`}
+                  className="inline-block mt-2 bg-[#D4AF37] hover:bg-white text-black font-mono text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded border border-[#D4AF37] hover:scale-105 transition-all text-center cursor-pointer"
+                >
+                  Open Beta Intake →
+                </Link>
                 {/* Speech Bubble Arrow */}
                 <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3.5 h-3.5 bg-black border-r-2 border-b-2 border-[#D4AF37] transform rotate-45" />
               </div>

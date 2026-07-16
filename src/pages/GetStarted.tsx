@@ -106,6 +106,26 @@ export default function GetStarted() {
       console.error("LocalStorage write error:", err);
     }
 
+    // 3. Send email details via serverless function
+    const emailSubject = `Branding Intake Submission [${subId}]: ${businessName}`;
+    const emailBody = `Branded Content Intake Submission\n---------------------\nIngest ID: ${subId}\nPlan: ${activePlan.name}\nBusiness Name: ${businessName}\nContact Email: ${contactEmail}\n\nBrand Colors:\n${brandColors || "N/A"}\n\nLogo Details:\n${logoDetails || "N/A"}\n\nProduct Details:\n${productDetails || "N/A"}\n\nAudience/Buyer Profile:\n${audienceDetails || "N/A"}\n\nUPI Payment Reference:\n${paymentRef}\n---------------------\nSubmitted via TV³ Studios Onboarding Portal.`;
+
+    try {
+      await fetch('/api/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          to: 'tv3studios@gmail.com',
+          subject: emailSubject,
+          body: emailBody
+        })
+      });
+    } catch (err) {
+      console.error("Direct email dispatch failed:", err);
+    }
+
     setSubmissionId(subId);
     setIsSubmitting(false);
     setIsSuccess(true);

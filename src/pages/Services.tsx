@@ -661,6 +661,19 @@ const Services = () => {
                     console.error("Localstorage lead write error:", err);
                   }
 
+                  // Dispatch email via serverless function
+                  fetch('/api/send-email', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                      to: 'tv3studios@gmail.com',
+                      subject: emailSubject,
+                      body: emailBody
+                    })
+                  }).catch(err => {
+                    console.error("Direct email dispatch failed:", err);
+                  });
+
                   // Set visual success feedback and close modal
                   alert("Success! Your Face-to-Face meeting request has been registered. A secure notification was sent to tv3studios@gmail.com.");
 
