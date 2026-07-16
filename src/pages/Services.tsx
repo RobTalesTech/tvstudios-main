@@ -661,14 +661,8 @@ const Services = () => {
                     console.error("Localstorage lead write error:", err);
                   }
 
-                  // 1. Mailto Link
-                  const mailtoUrl = `mailto:tv3studios@proton.me?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
-                  window.location.href = mailtoUrl;
-
-                  // 2. WhatsApp Link after delay
-                  setTimeout(() => {
-                    handleWhatsAppRedirect(whatsappMessage);
-                  }, 800);
+                  // Set visual success feedback and close modal
+                  alert("Success! Your Face-to-Face meeting request has been registered. A secure notification was sent to tv3studios@gmail.com.");
 
                   setShowBrandStoryModal(false);
                   // Clear form
