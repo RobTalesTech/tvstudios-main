@@ -169,6 +169,39 @@ export default function GetStarted() {
                 </p>
               </div>
 
+              {/* Beta Benefits Explanation */}
+              <div className="border border-[#D4AF37]/30 bg-[#D4AF37]/5 rounded-2xl p-6 md:p-8 space-y-4 text-left">
+                <div className="flex items-center gap-2.5">
+                  <Sparkles className="w-4.5 h-4.5 text-[#D4AF37] shrink-0" />
+                  <h3 className="font-mono text-xs uppercase font-bold text-[#D4AF37] tracking-wider">
+                    Why are we in Private Beta?
+                  </h3>
+                </div>
+                <p className="text-zinc-300 text-xs leading-relaxed">
+                  <strong>Poster Boy AI</strong> is currently running in a controlled <strong>Private Beta</strong> release. We are restricting intake access to a limited group of brands to calibrate our custom design models. By joining the beta, you receive:
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+                  <div className="space-y-1">
+                    <span className="text-[#D4AF37] font-mono text-[9px] uppercase tracking-wider block font-bold">1. Beta Pricing</span>
+                    <p className="text-[10px] text-zinc-400 leading-normal">
+                      Secure our introductory launch pricing (50% off) locked in forever.
+                    </p>
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-[#D4AF37] font-mono text-[9px] uppercase tracking-wider block font-bold">2. Co-Create Style</span>
+                    <p className="text-[10px] text-zinc-400 leading-normal">
+                      Directly shape how our generative engines render assets for your brand.
+                    </p>
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-[#D4AF37] font-mono text-[9px] uppercase tracking-wider block font-bold">3. Early Access</span>
+                    <p className="text-[10px] text-zinc-400 leading-normal">
+                      Get your custom-branded posts designed and scheduled before the public release.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
               {/* STEP 1: PAY VIA UPI */}
               <div className="border border-white/5 bg-zinc-950/20 rounded-2xl p-6 md:p-8 space-y-4">
                 <div className="flex gap-4 items-start">

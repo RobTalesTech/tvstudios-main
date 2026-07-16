@@ -85,7 +85,9 @@ export default function BrandedContent() {
       utterance.rate = 1.05;  // Energetic and motivating pacing
 
       window.speechSynthesis.cancel();
-      window.speechSynthesis.speak(utterance);
+      setTimeout(() => {
+        window.speechSynthesis.speak(utterance);
+      }, 50);
     } catch (err) {
       console.error("SpeechSynthesis error:", err);
     }
@@ -490,18 +492,21 @@ export default function BrandedContent() {
               {/* Gold Speech Bubble */}
               <div 
                 style={{ transform: "translateZ(30px)" }}
-                className="bg-black border-2 border-[#D4AF37] text-[#D4AF37] font-mono text-[9px] uppercase font-black tracking-widest px-4 py-3 rounded-2xl shadow-[0_15px_40px_rgba(212,175,55,0.3)] text-center max-w-[210px] relative border-double border-4"
+                className="bg-black border-2 border-[#D4AF37] text-[#D4AF37] font-mono text-[9px] uppercase font-black tracking-widest px-4 py-3 rounded-2xl shadow-[0_15px_40px_rgba(212,175,55,0.3)] text-center max-w-[220px] relative border-double border-4"
               >
                 <p className="mb-2 text-[9px] leading-relaxed">
                   {mascotPopup.planId === "starter" && "Starter plan selected! Training my design models for your first channel. 🎙️"}
                   {mascotPopup.planId === "growth" && "Growth plan selected! Setting up automated multi-channel scheduling. 🎙️"}
                   {mascotPopup.planId === "agency" && "Agency plan selected! Provisioning secure keys for multi-brand workspaces. 🎙️"}
                 </p>
+                <p className="mb-3 text-[7.5px] text-zinc-400 normal-case leading-normal">
+                  Join our Private Beta to lock in 50% discount and get custom graphics co-created with AI.
+                </p>
                 <Link
                   to={`/get-started?plan=${mascotPopup.planId}`}
-                  className="inline-block mt-2 bg-[#D4AF37] hover:bg-white text-black font-mono text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded border border-[#D4AF37] hover:scale-105 transition-all text-center cursor-pointer"
+                  className="inline-block bg-[#D4AF37] hover:bg-white text-black font-mono text-[8px] font-black uppercase tracking-widest px-2.5 py-1.5 rounded border border-[#D4AF37] hover:scale-105 transition-all text-center cursor-pointer"
                 >
-                  Open Beta Intake →
+                  Join Private Beta →
                 </Link>
                 {/* Speech Bubble Arrow */}
                 <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3.5 h-3.5 bg-black border-r-2 border-b-2 border-[#D4AF37] transform rotate-45" />
