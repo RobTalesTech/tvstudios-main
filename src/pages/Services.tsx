@@ -628,8 +628,11 @@ const Services = () => {
                     return;
                   }
 
-                  const emailSubject = `Welcome to TV³ Studios! Face-to-Face Meeting Requested: ${brandStoryCompany}`;
-                  const emailBody = `Hi ${brandStoryName},\n\nThank you for requesting a Face-to-Face meeting with TV³ Studios! Your intake information has been received successfully.\n\nHere is a summary of what you pitched:\n---------------------\nFounder Name: ${brandStoryName}\nCompany/Industry: ${brandStoryCompany}\nSelected Package: Brand Story F2F (${brandStoryTier})\nClient Contact Email: ${brandStoryEmail}\n\nGoals & Timeline:\n${brandStoryGoals}\n---------------------\n\nWhat happens next:\nOur team will verify the details of your requested F2F tier. Within 24 hours, we will reach out to you via email or WhatsApp to schedule the calendar invite and coordinate the location/call link.\n\nWe are excited to help you tell your brand's story! If you have any questions, feel free to reply directly to this email or reach out on WhatsApp.\n\nBest regards,\nTV³ Studios Team`;
+                  const adminSubject = `[New Lead] Brand Story F2F Intake: ${brandStoryCompany}`;
+                  const adminBody = `New Brand Story F2F Intake Submission\n---------------------\nFounder/Client: ${brandStoryName}\nCompany/Industry: ${brandStoryCompany}\nSelected Tier: ${brandStoryTier}\nClient Email: ${brandStoryEmail}\n\nGoals & Timeline:\n${brandStoryGoals}\n---------------------\nSubmitted via TV³ Studios Intake Gateway.`;
+
+                  const clientSubject = `Welcome to TV³ Studios! Face-to-Face Meeting Requested: ${brandStoryCompany}`;
+                  const clientBody = `Hi ${brandStoryName},\n\nThank you for requesting a Face-to-Face meeting with TV³ Studios! Your intake information has been received successfully.\n\nHere is a summary of what you pitched:\n---------------------\nFounder Name: ${brandStoryName}\nCompany/Industry: ${brandStoryCompany}\nSelected Package: Brand Story F2F (${brandStoryTier})\nClient Contact Email: ${brandStoryEmail}\n\nGoals & Timeline:\n${brandStoryGoals}\n---------------------\n\nWhat happens next:\n1. Escrow Verification: Our team will verify the details of your requested F2F tier.\n2. Scheduling Invite: Within 24 hours, we will reach out to you via email or WhatsApp to schedule the calendar invite and coordinate the location/call link.\n\nWe are excited to help you tell your brand's story! If you have any questions, feel free to reply directly to this email or reach out on WhatsApp.\n\nBest regards,\nTV³ Studios Team`;
                   
                   const whatsappMessage = `Hi TV³ Studios,\n\nI want to book a *Brand Story F2F* meeting.\n\n*Founder Name:* ${brandStoryName}\n*Company:* ${brandStoryCompany}\n*Email:* ${brandStoryEmail}\n*Tier:* ${brandStoryTier}\n\n*Goals & Timeline:*\n${brandStoryGoals}`;
 
@@ -668,8 +671,11 @@ const Services = () => {
                     body: JSON.stringify({
                       to: 'tv3studios@gmail.com',
                       replyTo: brandStoryEmail,
-                      subject: emailSubject,
-                      body: emailBody
+                      subject: adminSubject,
+                      body: adminBody,
+                      clientEmail: brandStoryEmail,
+                      clientSubject: clientSubject,
+                      clientBody: clientBody
                     })
                   }).catch(err => {
                     console.error("Direct email dispatch failed:", err);

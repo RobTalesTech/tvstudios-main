@@ -12,6 +12,8 @@ export default function BrandedContent() {
     planId: string;
   }>({ show: false, x: 0, y: 0, planId: "growth" });
 
+  const [isSpeaking, setIsSpeaking] = useState(false);
+
   useEffect(() => {
     // Warm up speech synthesis voices on mount for Safari/Chrome
     if (typeof window !== "undefined" && window.speechSynthesis) {
@@ -27,9 +29,11 @@ export default function BrandedContent() {
   useEffect(() => {
     if (!mascotPopup.show) {
       window.speechSynthesis.cancel();
+      setIsSpeaking(false);
     }
     return () => {
       window.speechSynthesis.cancel();
+      setIsSpeaking(false);
     };
   }, [mascotPopup.show]);
 
@@ -43,6 +47,7 @@ export default function BrandedContent() {
       y: e.clientY,
       planId: planId
     });
+    setIsSpeaking(true);
 
     const dynamicMessages: Record<string, string> = {
       starter: "Starter plan selected! Training my design models for your first channel. Tap the link below to preview the beta intake form!",
@@ -55,6 +60,13 @@ export default function BrandedContent() {
     // Voice the announcement aloud using Web Speech API
     try {
       const utterance = new SpeechSynthesisUtterance(speechText);
+
+      utterance.onend = () => {
+        setIsSpeaking(false);
+      };
+      utterance.onerror = () => {
+        setIsSpeaking(false);
+      };
       
       const voices = window.speechSynthesis.getVoices();
       
@@ -90,6 +102,7 @@ export default function BrandedContent() {
       }, 50);
     } catch (err) {
       console.error("SpeechSynthesis error:", err);
+      setIsSpeaking(false);
     }
   };
 
@@ -468,6 +481,7 @@ export default function BrandedContent() {
               className="fixed inset-0 z-[9998] cursor-default bg-black/10" 
               onClick={(e) => {
                 e.stopPropagation();
+                if (isSpeaking) return;
                 setMascotPopup({ show: false, x: 0, y: 0, planId: mascotPopup.planId });
               }}
             />

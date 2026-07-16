@@ -106,9 +106,12 @@ export default function GetStarted() {
       console.error("LocalStorage write error:", err);
     }
 
-    // 3. Send email details via serverless function
-    const emailSubject = `Welcome to TV³ Studios! Brand Intake Received: ${businessName}`;
-    const emailBody = `Hi ${businessName},\n\nThank you for choosing TV³ Studios! Your brand profile and onboarding intake for the ${activePlan.name} plan have been successfully received.\n\nHere is a summary of what you pitched:\n---------------------\nPlan Tier: ${activePlan.name}\nClient Contact Email: ${contactEmail}\n\n1. Brand Colors:\n${brandColors || "Not specified"}\n\n2. Logo & Visual Details:\n${logoDetails || "Not specified"}\n\n3. Product/Service Description:\n${productDetails || "Not specified"}\n\n4. Target Audience:\n${audienceDetails || "Not specified"}\n\n5. UPI Subscription Payment Reference:\n${paymentRef}\n---------------------\n\nWhat happens next:\n1. Escrow Verification: Our operations team will verify your UPI transaction reference note.\n2. Design System Alignment: We will configure our custom creative models to match your logo, brand colors, and aesthetic notes.\n3. First Calendar Release: Within 24 to 48 hours, you will receive your first draft content calendar for review. No posts will go live on your socials without your explicit sign-off.\n\nWe are excited to build your brand's digital presence on autopilot! If you have any questions, feel free to reply directly to this email or reach out on WhatsApp.\n\nBest regards,\nTV³ Studios Ingestion Engine`;
+    // 3. Send email details via serverless function (dual-email configuration)
+    const emailSubject = `[New Lead] Branded Content Intake: ${businessName} (${activePlan.name})`;
+    const emailBody = `New Branded Content Intake Submission\n---------------------\nIngest ID: ${subId}\nPlan: ${activePlan.name}\nBusiness Name: ${businessName}\nContact Email: ${contactEmail}\n\nBrand Colors:\n${brandColors || "Not specified"}\n\nLogo Details:\n${logoDetails || "Not specified"}\n\nProduct Details:\n${productDetails || "Not specified"}\n\nAudience Details:\n${audienceDetails || "Not specified"}\n\nUPI Payment Reference:\n${paymentRef}\n---------------------\nSubmitted via TV³ Studios Onboarding Portal.`;
+
+    const clientSubject = `Welcome to TV³ Studios! Brand Intake Received: ${businessName}`;
+    const clientBody = `Hi ${businessName},\n\nThank you for choosing TV³ Studios! Your brand profile and onboarding intake for the ${activePlan.name} plan have been successfully received.\n\nHere is a summary of what you pitched:\n---------------------\nPlan Tier: ${activePlan.name}\nClient Contact Email: ${contactEmail}\n\n1. Brand Colors:\n${brandColors || "Not specified"}\n\n2. Logo & Visual Details:\n${logoDetails || "Not specified"}\n\n3. Product/Service Description:\n${productDetails || "Not specified"}\n\n4. Target Audience:\n${audienceDetails || "Not specified"}\n\n5. UPI Subscription Payment Reference:\n${paymentRef}\n---------------------\n\nWhat happens next:\n1. Escrow Verification: Our operations team will verify your UPI transaction reference note.\n2. Design System Alignment: We will configure our custom creative models to match your logo, brand colors, and aesthetic notes.\n3. First Calendar Release: Within 24 to 48 hours, you will receive your first draft content calendar for review. No posts will go live on your socials without your explicit sign-off.\n\nWe are excited to build your brand's digital presence on autopilot! If you have any questions, feel free to reply directly to this email or reach out on WhatsApp.\n\nBest regards,\nTV³ Studios Team`;
 
     try {
       await fetch('/api/send-email', {
@@ -120,7 +123,10 @@ export default function GetStarted() {
           to: 'tv3studios@gmail.com',
           replyTo: contactEmail,
           subject: emailSubject,
-          body: emailBody
+          body: emailBody,
+          clientEmail: contactEmail,
+          clientSubject: clientSubject,
+          clientBody: clientBody
         })
       });
     } catch (err) {

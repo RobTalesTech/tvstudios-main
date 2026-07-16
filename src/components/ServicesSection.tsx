@@ -197,8 +197,11 @@ const ServicesSection = () => {
       return;
     }
 
-    const emailSubject = `Welcome to TV³ Studios! Service Booking Request: ${serviceName}`;
-    const emailBody = `Hi,\n\nThank you for your service inquiry at TV³ Studios! We have received your booking request for the "${serviceName}" package.\n\nHere are the details you provided:\n---------------------\nSelected Service: ${serviceName}\nClient Contact Email: ${email}\n\nProject Brief & Intake Details:\n${details}\n\n${additionalData ? `Additional Specifications:\n${additionalData}\n` : ""}---------------------\n\nWhat happens next:\nOur production leads will review your project brief and reference samples. Within 24 hours, we will reach out to you via email or WhatsApp to schedule a brief kick-off call and align our timelines.\n\nWe are looking forward to bringing your project to life! If you have any questions, feel free to reply directly to this email or reach out on WhatsApp.\n\nBest regards,\nTV³ Studios Team`;
+    const adminSubject = `[New Lead] Service Booking: ${serviceName}`;
+    const adminBody = `New Service Booking Request\n---------------------\nService: ${serviceName}\nClient Email: ${email}\n\nProject Brief/Details:\n${details}\n\n${additionalData ? `Additional Specifications:\n${additionalData}\n` : ""}---------------------\nSubmitted via TV³ Studios Intake Gateway.`;
+
+    const clientSubject = `Welcome to TV³ Studios! Service Booking Request: ${serviceName}`;
+    const clientBody = `Hi,\n\nThank you for your service inquiry at TV³ Studios! We have received your booking request for the "${serviceName}" package.\n\nHere are the details you provided:\n---------------------\nSelected Service: ${serviceName}\nClient Contact Email: ${email}\n\nProject Brief & Intake Details:\n${details}\n\n${additionalData ? `Additional Specifications:\n${additionalData}\n` : ""}---------------------\n\nWhat happens next:\nOur production leads will review your project brief and reference samples. Within 24 hours, we will reach out to you via email or WhatsApp to schedule a brief kick-off call and align our timelines.\n\nWe are looking forward to bringing your project to life! If you have any questions, feel free to reply directly to this email or reach out on WhatsApp.\n\nBest regards,\nTV³ Studios Team`;
     
     const whatsappMessage = `Hi TV³ Studios,\n\nI want to book the *${serviceName}* service.\n\n*My Email:* ${email}\n*Project Details:* ${details}\n\n${additionalData}`;
 
@@ -215,8 +218,11 @@ const ServicesSection = () => {
         body: JSON.stringify({
           to: 'tv3studios@gmail.com',
           replyTo: email,
-          subject: emailSubject,
-          body: emailBody
+          subject: adminSubject,
+          body: adminBody,
+          clientEmail: email,
+          clientSubject: clientSubject,
+          clientBody: clientBody
         })
       });
     } catch (err) {

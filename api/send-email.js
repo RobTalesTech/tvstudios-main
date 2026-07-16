@@ -16,7 +16,15 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { to, replyTo, subject, body } = req.body || {};
+  const { 
+    to, 
+    replyTo, 
+    subject, 
+    body, 
+    clientEmail, 
+    clientSubject, 
+    clientBody 
+  } = req.body || {};
 
   if (!subject || !body) {
     return res.status(400).json({ error: 'Subject and body are required' });
@@ -29,15 +37,20 @@ export default async function handler(req, res) {
     });
   }
 
+  // Detect sandbox sender vs custom domain sender
+  const fromEmail = process.env.RESEND_FROM_EMAIL || 'TV3 Studios <onboarding@resend.dev>';
+  const isSandbox = fromEmail.includes('onboarding@resend.dev');
+
   try {
-    const response = await fetch('https://api.resend.com/emails', {
+    // 1. Send the primary notification email to admin (tv3studios@gmail.com)
+    const adminResponse = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${apiKey}`
       },
       body: JSON.stringify({
-        from: 'TV3 Studios <onboarding@resend.dev>',
+        from: fromEmail,
         to: to || 'tv3studios@gmail.com',
         reply_to: replyTo || undefined,
         subject: subject,
@@ -45,16 +58,54 @@ export default async function handler(req, res) {
       })
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      return res.status(response.status).json({ 
-        error: `Failed to send email via Resend: ${errorText}` 
+    if (!adminResponse.ok) {
+      const errorText = await adminResponse.text();
+      return res.status(adminResponse.status).json({ 
+        error: `Failed to send admin notification email: ${errorText}` 
       });
     }
 
-    const data = await response.json();
+    const adminData = await adminResponse.json();
+    let clientData = null;
+    let clientMailWarning = null;
 
-    // Forward notification to Discord Webhook if configured
+    // 2. If clientEmail is provided, attempt to send a friendly welcome receipt to the client
+    if (clientEmail && clientSubject && clientBody) {
+      if (isSandbox) {
+        // Skip sending in Sandbox mode to prevent Resend API 403 blocks, but log a helpful warning
+        clientMailWarning = "Skipped client confirmation email because Resend is in Sandbox mode. Set up a custom domain in Vercel to unlock client receipt delivery.";
+        console.warn(clientMailWarning);
+      } else {
+        // Send email confirmation directly to client using verified custom domain
+        try {
+          const clientResponse = await fetch('https://api.resend.com/emails', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${apiKey}`
+            },
+            body: JSON.stringify({
+              from: fromEmail,
+              to: clientEmail,
+              reply_to: to || 'tv3studios@gmail.com',
+              subject: clientSubject,
+              text: clientBody
+            })
+          });
+
+          if (clientResponse.ok) {
+            clientData = await clientResponse.json();
+          } else {
+            const clientErrText = await clientResponse.text();
+            console.error("Failed to deliver client confirmation email:", clientErrText);
+          }
+        } catch (clientErr) {
+          console.error("Client email connection failure:", clientErr);
+        }
+      }
+    }
+
+    // 3. Forward notification to Discord Webhook if configured
     const discordWebhookUrl = process.env.DISCORD_WEBHOOK_URL;
     if (discordWebhookUrl) {
       try {
@@ -70,7 +121,12 @@ export default async function handler(req, res) {
       }
     }
 
-    return res.status(200).json({ success: true, data });
+    return res.status(200).json({ 
+      success: true, 
+      adminMail: adminData,
+      clientMail: clientData,
+      warning: clientMailWarning 
+    });
   } catch (error) {
     return res.status(500).json({ error: error.message || 'Internal server error' });
   }
