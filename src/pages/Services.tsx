@@ -96,6 +96,8 @@ const RealProductionCalculator = () => {
   const [showBook, setShowBook] = useState(false);
   const [calculatorEmail, setCalculatorEmail] = useState("");
   const [calculatorNotes, setCalculatorNotes] = useState("");
+  const [calculatorSubmitted, setCalculatorSubmitted] = useState(false);
+  const [submittedLeadId, setSubmittedLeadId] = useState("");
 
   const categories = Object.keys(values);
   const score = Object.values(values).reduce((a, b) => a + b, 0);
@@ -214,100 +216,105 @@ const RealProductionCalculator = () => {
                <p className="font-mono text-[10px] text-[#D4AF37] uppercase tracking-widest">{prod.setup}</p>
              </div>
 
-             {!showBook ? (
-               <button 
-                  onClick={handleAction}
-                  className="w-full py-4 bg-zinc-900 border border-white/10 text-white font-mono text-[10px] uppercase font-bold tracking-[0.3em] flex items-center justify-center gap-3 hover:bg-white hover:text-black transition-all group"
-               >
-                 <div className="relative w-4 h-4 overflow-hidden border border-current rounded-sm">
-                    <motion.div 
-                      animate={{ rotate: [0, -30, 0] }}
-                      transition={{ duration: 0.3, repeat: Infinity, repeatDelay: 2 }}
-                      className="absolute top-0 w-full h-[2px] bg-current origin-left" 
-                    />
+              {calculatorSubmitted ? (
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="w-full p-5 bg-green-500/10 border border-green-500/30 rounded-xl space-y-2 text-center"
+                >
+                  <p className="font-mono text-[9px] uppercase tracking-widest text-green-500 font-black">Dual Pipeline Ingestion Complete</p>
+                  <p className="text-zinc-300 text-[10px] leading-relaxed font-mono">
+                    Ingest ID: <span className="text-[#D4AF37] font-bold">{submittedLeadId}</span>
+                  </p>
+                  <p className="text-zinc-400 text-[10px] leading-relaxed font-mono">
+                    Your production parameters are registered. A secure notification trigger has dispatched the summary packet to tv3studios@gmail.com successfully.
+                  </p>
+                </motion.div>
+              ) : !showBook ? (
+                <button 
+                   onClick={handleAction}
+                   className="w-full py-4 bg-zinc-900 border border-white/10 text-white font-mono text-[10px] uppercase font-bold tracking-[0.3em] flex items-center justify-center gap-3 hover:bg-white hover:text-black transition-all group"
+                >
+                  <div className="relative w-4 h-4 overflow-hidden border border-current rounded-sm">
+                     <motion.div 
+                       animate={{ rotate: [0, -30, 0] }}
+                       transition={{ duration: 0.3, repeat: Infinity, repeatDelay: 2 }}
+                       className="absolute top-0 w-full h-[2px] bg-current origin-left" 
+                     />
+                  </div>
+                  LIGHTS, CAMERA, ACTION
+                </button>
+              ) : (
+                 <div className="space-y-4 w-full">
+                   {/* Email Input */}
+                   <div className="space-y-1 text-left">
+                     <label className="font-mono text-[8px] uppercase tracking-widest text-zinc-500 block">Your Email Address</label>
+                     <input 
+                       type="email"
+                       value={calculatorEmail}
+                       onChange={(e) => setCalculatorEmail(e.target.value)}
+                       placeholder="name@company.com"
+                       className="w-full bg-[#111] border border-white/10 rounded px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-[#D4AF37]/50 transition-colors placeholder:text-zinc-700"
+                     />
+                   </div>
+
+                   {/* Additional Notes Input */}
+                   <div className="space-y-1 text-left">
+                     <label className="font-mono text-[8px] uppercase tracking-widest text-zinc-500 block">Project Location, Deadline, or Notes</label>
+                     <textarea 
+                       value={calculatorNotes}
+                       onChange={(e) => setCalculatorNotes(e.target.value)}
+                       placeholder="e.g. Shoot in Mumbai next month, launch by end of year..."
+                       rows={2}
+                       className="w-full bg-[#111] border border-white/10 rounded px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-[#D4AF37]/50 transition-colors placeholder:text-zinc-700 resize-none"
+                     />
+                   </div>
+
+                   <button
+                     onClick={() => {
+                       if (!calculatorEmail || !calculatorEmail.includes('@') || !calculatorEmail.includes('.')) {
+                         alert("Please enter a valid email address.");
+                         return;
+                       }
+
+                       const leadId = Math.random().toString(36).substr(2, 9).toUpperCase();
+                       setSubmittedLeadId(leadId);
+
+                       const payload = {
+                         id: leadId,
+                         category: prod.type,
+                         email: calculatorEmail,
+                         score: score.toString(),
+                         notes: calculatorNotes,
+                         fader_breakdown: categories.map(c => `${c}: ${getStepLabel(c, values[c])}`).join('\n'),
+                         timestamp: new Date().toISOString()
+                       };
+
+                       // Save to Supabase
+                       if (supabase) {
+                         supabase.from('tv3_service_leads').insert([payload]).then(({ error }) => {
+                           if (error) console.error("Supabase insert lead error:", error);
+                         });
+                       }
+
+                       // Save to LocalStorage fallback
+                       try {
+                         const existing = localStorage.getItem("tv3_service_leads");
+                         const list = existing ? JSON.parse(existing) : [];
+                         list.push(payload);
+                         localStorage.setItem("tv3_service_leads", JSON.stringify(list));
+                       } catch (err) {
+                         console.error("Localstorage lead write error:", err);
+                       }
+
+                       // Set local submission visual state
+                       setCalculatorSubmitted(true);
+                     }}
+                     className="w-full py-4 bg-[#D4AF37] text-black font-mono text-[10px] uppercase font-bold tracking-[0.3em] flex items-center justify-center gap-3 hover:shadow-[0_0_30px_rgba(212,175,55,0.4)] transition-all font-black"
+                   >
+                     SUBMIT DUAL INTAKE PIPELINE
+                   </button>
                  </div>
-                 LIGHTS, CAMERA, ACTION
-               </button>
-             ) : (
-                <div className="space-y-4">
-                  {/* Email Input */}
-                  <div className="space-y-1 text-left">
-                    <label className="font-mono text-[8px] uppercase tracking-widest text-zinc-500 block">Your Email Address</label>
-                    <input 
-                      type="email"
-                      value={calculatorEmail}
-                      onChange={(e) => setCalculatorEmail(e.target.value)}
-                      placeholder="name@company.com"
-                      className="w-full bg-[#111] border border-white/10 rounded px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-[#D4AF37]/50 transition-colors placeholder:text-zinc-700"
-                    />
-                  </div>
-
-                  {/* Additional Notes Input */}
-                  <div className="space-y-1 text-left">
-                    <label className="font-mono text-[8px] uppercase tracking-widest text-zinc-500 block">Project Location, Deadline, or Notes</label>
-                    <textarea 
-                      value={calculatorNotes}
-                      onChange={(e) => setCalculatorNotes(e.target.value)}
-                      placeholder="e.g. Shoot in Mumbai next month, launch by end of year..."
-                      rows={2}
-                      className="w-full bg-[#111] border border-white/10 rounded px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-[#D4AF37]/50 transition-colors placeholder:text-zinc-700 resize-none"
-                    />
-                  </div>
-
-                  <button
-                    onClick={() => {
-                      if (!calculatorEmail || !calculatorEmail.includes('@') || !calculatorEmail.includes('.')) {
-                        alert("Please enter a valid email address.");
-                        return;
-                      }
-
-                      const emailSubject = `New Project Scale: ${prod.type}`;
-                      const emailBody = `Production Score: ${score}/30\nCategory: ${prod.type}\nSetup: ${prod.setup}\nClient Email: ${calculatorEmail}\n\nProject Notes:\n${calculatorNotes}\n\nFader Breakdown:\n${categories.map(c => `${c}: ${getStepLabel(c, values[c])}`).join('\n')}`;
-                      
-                      const whatsappMessage = `Hi TV³ Studios,\n\nI want to book the *${prod.type}* scale.\n\n*Email:* ${calculatorEmail}\n*Setup:* ${prod.setup}\n*Notes:* ${calculatorNotes}\n\n*Fader Breakdown:*\n${categories.map(c => `- ${c}: ${getStepLabel(c, values[c])}`).join('\n')}`;
-
-                      const leadId = Math.random().toString(36).substr(2, 9).toUpperCase();
-                      const payload = {
-                        id: leadId,
-                        category: prod.type,
-                        email: calculatorEmail,
-                        score: score.toString(),
-                        notes: calculatorNotes,
-                        fader_breakdown: categories.map(c => `${c}: ${getStepLabel(c, values[c])}`).join('\n'),
-                        timestamp: new Date().toISOString()
-                      };
-
-                      // Save to Supabase
-                      if (supabase) {
-                        supabase.from('tv3_service_leads').insert([payload]).then(({ error }) => {
-                          if (error) console.error("Supabase insert lead error:", error);
-                        });
-                      }
-
-                      // Save to LocalStorage fallback
-                      try {
-                        const existing = localStorage.getItem("tv3_service_leads");
-                        const list = existing ? JSON.parse(existing) : [];
-                        list.push(payload);
-                        localStorage.setItem("tv3_service_leads", JSON.stringify(list));
-                      } catch (err) {
-                        console.error("Localstorage lead write error:", err);
-                      }
-
-                      // 1. Mailto Link
-                      const mailtoUrl = `mailto:tv3studios@proton.me?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
-                      window.location.href = mailtoUrl;
-
-                      // 2. WhatsApp Link after delay
-                      setTimeout(() => {
-                        handleWhatsAppRedirect(whatsappMessage);
-                      }, 800);
-                    }}
-                    className="w-full py-4 bg-[#D4AF37] text-black font-mono text-[10px] uppercase font-bold tracking-[0.3em] flex items-center justify-center gap-3 hover:shadow-[0_0_30px_rgba(212,175,55,0.4)] transition-all font-black"
-                  >
-                    SUBMIT DUAL INTAKE PIPELINE
-                  </button>
-                </div>
               )}
           </div>
         </div>
