@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle2, Film, MonitorPlay, ArrowRight, Mic2 } from "lucide-react";
 import { handleWhatsAppRedirect } from "@/utils/whatsapp";
+import { supabase } from "@/lib/supabase";
 
 type Category = "Visual Production" | "Video Production" | "Copywriting";
 
@@ -264,6 +265,34 @@ const RealProductionCalculator = () => {
                       const emailBody = `Production Score: ${score}/30\nCategory: ${prod.type}\nSetup: ${prod.setup}\nClient Email: ${calculatorEmail}\n\nProject Notes:\n${calculatorNotes}\n\nFader Breakdown:\n${categories.map(c => `${c}: ${getStepLabel(c, values[c])}`).join('\n')}`;
                       
                       const whatsappMessage = `Hi TV³ Studios,\n\nI want to book the *${prod.type}* scale.\n\n*Email:* ${calculatorEmail}\n*Setup:* ${prod.setup}\n*Notes:* ${calculatorNotes}\n\n*Fader Breakdown:*\n${categories.map(c => `- ${c}: ${getStepLabel(c, values[c])}`).join('\n')}`;
+
+                      const leadId = Math.random().toString(36).substr(2, 9).toUpperCase();
+                      const payload = {
+                        id: leadId,
+                        category: prod.type,
+                        email: calculatorEmail,
+                        score: score.toString(),
+                        notes: calculatorNotes,
+                        fader_breakdown: categories.map(c => `${c}: ${getStepLabel(c, values[c])}`).join('\n'),
+                        timestamp: new Date().toISOString()
+                      };
+
+                      // Save to Supabase
+                      if (supabase) {
+                        supabase.from('tv3_service_leads').insert([payload]).then(({ error }) => {
+                          if (error) console.error("Supabase insert lead error:", error);
+                        });
+                      }
+
+                      // Save to LocalStorage fallback
+                      try {
+                        const existing = localStorage.getItem("tv3_service_leads");
+                        const list = existing ? JSON.parse(existing) : [];
+                        list.push(payload);
+                        localStorage.setItem("tv3_service_leads", JSON.stringify(list));
+                      } catch (err) {
+                        console.error("Localstorage lead write error:", err);
+                      }
 
                       // 1. Mailto Link
                       const mailtoUrl = `mailto:tv3studios@proton.me?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
@@ -596,6 +625,34 @@ const Services = () => {
                   const emailBody = `Founder/Client: ${brandStoryName}\nCompany/Industry: ${brandStoryCompany}\nSelected Tier: ${brandStoryTier}\nClient Email: ${brandStoryEmail}\n\nGoals & Timeline:\n${brandStoryGoals}`;
                   
                   const whatsappMessage = `Hi TV³ Studios,\n\nI want to book a *Brand Story F2F* meeting.\n\n*Founder Name:* ${brandStoryName}\n*Company:* ${brandStoryCompany}\n*Email:* ${brandStoryEmail}\n*Tier:* ${brandStoryTier}\n\n*Goals & Timeline:*\n${brandStoryGoals}`;
+
+                  const leadId = Math.random().toString(36).substr(2, 9).toUpperCase();
+                  const payload = {
+                    id: leadId,
+                    category: `Brand Story F2F (${brandStoryTier})`,
+                    email: brandStoryEmail,
+                    score: "F2F",
+                    notes: brandStoryGoals,
+                    fader_breakdown: `Founder Name: ${brandStoryName} | Company: ${brandStoryCompany} | Selected Tier: ${brandStoryTier}`,
+                    timestamp: new Date().toISOString()
+                  };
+
+                  // Save to Supabase
+                  if (supabase) {
+                    supabase.from('tv3_service_leads').insert([payload]).then(({ error }) => {
+                      if (error) console.error("Supabase insert lead error:", error);
+                    });
+                  }
+
+                  // Save to LocalStorage fallback
+                  try {
+                    const existing = localStorage.getItem("tv3_service_leads");
+                    const list = existing ? JSON.parse(existing) : [];
+                    list.push(payload);
+                    localStorage.setItem("tv3_service_leads", JSON.stringify(list));
+                  } catch (err) {
+                    console.error("Localstorage lead write error:", err);
+                  }
 
                   // 1. Mailto Link
                   const mailtoUrl = `mailto:tv3studios@proton.me?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
