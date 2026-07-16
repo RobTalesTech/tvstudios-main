@@ -24,8 +24,28 @@ export default function BrandedContent() {
     // Voice the announcement aloud using Web Speech API
     try {
       const utterance = new SpeechSynthesisUtterance("I am currently in training. Coming soon to automate your brand's posting!");
-      utterance.rate = 1.0;
-      utterance.pitch = 1.1;
+      
+      const voices = window.speechSynthesis.getVoices();
+      // Look for a voice containing common male voice name indicators or designations
+      const maleVoice = voices.find(v => {
+        const name = v.name.toLowerCase();
+        return name.includes("male") || 
+               name.includes("david") || 
+               name.includes("mark") || 
+               name.includes("george") || 
+               name.includes("ravi") || 
+               name.includes("daniel");
+      });
+
+      if (maleVoice) {
+        utterance.voice = maleVoice;
+        utterance.pitch = 1.0;
+      } else {
+        // Fallback: Lower the pitch of the default voice to make it sound deeper
+        utterance.pitch = 0.8;
+      }
+      
+      utterance.rate = 0.95; // Slightly slower, more professional pacing
       window.speechSynthesis.cancel();
       window.speechSynthesis.speak(utterance);
     } catch (err) {
