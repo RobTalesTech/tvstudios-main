@@ -41,8 +41,11 @@ export default async function handler(req, res) {
   const fromEmail = process.env.RESEND_FROM_EMAIL || 'TV3 Studios <onboarding@resend.dev>';
   const isSandbox = fromEmail.includes('onboarding@resend.dev');
 
+  // Configure custom recipient email to hide tv3studios@gmail.com if desired
+  const defaultToEmail = process.env.RESEND_TO_EMAIL || 'tv3studios@gmail.com';
+
   try {
-    // 1. Send the primary notification email to admin (tv3studios@gmail.com)
+    // 1. Send the primary notification email to admin
     const adminResponse = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
@@ -51,7 +54,7 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         from: fromEmail,
-        to: to || 'tv3studios@gmail.com',
+        to: to || defaultToEmail,
         reply_to: replyTo || undefined,
         subject: subject,
         text: body
@@ -87,7 +90,7 @@ export default async function handler(req, res) {
             body: JSON.stringify({
               from: fromEmail,
               to: clientEmail,
-              reply_to: to || 'tv3studios@gmail.com',
+              reply_to: defaultToEmail,
               subject: clientSubject,
               text: clientBody
             })
