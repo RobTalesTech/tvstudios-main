@@ -13,6 +13,18 @@ export default function BrandedContent() {
   }>({ show: false, x: 0, y: 0, planId: "growth" });
 
   useEffect(() => {
+    // Warm up speech synthesis voices on mount for Safari/Chrome
+    if (typeof window !== "undefined" && window.speechSynthesis) {
+      window.speechSynthesis.getVoices();
+      if ('onvoiceschanged' in window.speechSynthesis) {
+        window.speechSynthesis.onvoiceschanged = () => {
+          window.speechSynthesis.getVoices();
+        };
+      }
+    }
+  }, []);
+
+  useEffect(() => {
     if (!mascotPopup.show) {
       window.speechSynthesis.cancel();
     }
@@ -45,26 +57,33 @@ export default function BrandedContent() {
       const utterance = new SpeechSynthesisUtterance(speechText);
       
       const voices = window.speechSynthesis.getVoices();
-      // Look for a voice containing common male voice name indicators or designations
-      const maleVoice = voices.find(v => {
-        const name = v.name.toLowerCase();
-        return name.includes("male") || 
-               name.includes("david") || 
-               name.includes("mark") || 
-               name.includes("george") || 
-               name.includes("ravi") || 
-               name.includes("daniel");
-      });
-
-      if (maleVoice) {
-        utterance.voice = maleVoice;
-        utterance.pitch = 1.0;
-      } else {
-        // Fallback: Lower the pitch of the default voice to make it sound deeper
-        utterance.pitch = 0.8;
+      
+      // Look for a high quality male or premium English voice matching our preference
+      const preferredKeywords = ["david", "daniel", "google us english male", "google male", "natural male", "neural male", "alex", "mark", "ravi", "en-us", "en-gb"];
+      let selectedVoice = null;
+      
+      for (const keyword of preferredKeywords) {
+        const found = voices.find(v => v.name.toLowerCase().includes(keyword) && v.lang.toLowerCase().startsWith("en"));
+        if (found) {
+          selectedVoice = found;
+          break;
+        }
       }
       
-      utterance.rate = 0.95; // Slightly slower, more professional pacing
+      if (!selectedVoice) {
+        // Fallback to any voice with "male" or just any English voice
+        selectedVoice = voices.find(v => v.name.toLowerCase().includes("male") && v.lang.toLowerCase().startsWith("en")) ||
+                        voices.find(v => v.lang.toLowerCase().startsWith("en"));
+      }
+
+      if (selectedVoice) {
+        utterance.voice = selectedVoice;
+      }
+
+      // Motivating, youth-uplifting pacing and pitch parameters (approx. 33 year old male voice feel)
+      utterance.pitch = 0.95; // Balanced, mature tone
+      utterance.rate = 1.05;  // Energetic and motivating pacing
+
       window.speechSynthesis.cancel();
       window.speechSynthesis.speak(utterance);
     } catch (err) {

@@ -3,7 +3,7 @@ import { useSearchParams, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 import Footer from "@/components/Footer";
-import { ArrowLeft, Check, Copy, Sparkles, Send, ShieldAlert, Cpu, Terminal } from "lucide-react";
+import { ArrowLeft, Check, Copy, Sparkles, Send, ShieldAlert, Cpu, Terminal, CheckCircle2, Clock } from "lucide-react";
 
 type PlanId = "starter" | "growth" | "agency";
 
@@ -107,8 +107,8 @@ export default function GetStarted() {
     }
 
     // 3. Send email details via serverless function
-    const emailSubject = `Branding Intake Submission [${subId}]: ${businessName}`;
-    const emailBody = `Branded Content Intake Submission\n---------------------\nIngest ID: ${subId}\nPlan: ${activePlan.name}\nBusiness Name: ${businessName}\nContact Email: ${contactEmail}\n\nBrand Colors:\n${brandColors || "N/A"}\n\nLogo Details:\n${logoDetails || "N/A"}\n\nProduct Details:\n${productDetails || "N/A"}\n\nAudience/Buyer Profile:\n${audienceDetails || "N/A"}\n\nUPI Payment Reference:\n${paymentRef}\n---------------------\nSubmitted via TV³ Studios Onboarding Portal.`;
+    const emailSubject = `Welcome to TV³ Studios! Brand Intake Received: ${businessName}`;
+    const emailBody = `Hi ${businessName},\n\nThank you for choosing TV³ Studios! Your brand profile and onboarding intake for the ${activePlan.name} plan have been successfully received.\n\nHere is a summary of what you pitched:\n---------------------\nPlan Tier: ${activePlan.name}\nClient Contact Email: ${contactEmail}\n\n1. Brand Colors:\n${brandColors || "Not specified"}\n\n2. Logo & Visual Details:\n${logoDetails || "Not specified"}\n\n3. Product/Service Description:\n${productDetails || "Not specified"}\n\n4. Target Audience:\n${audienceDetails || "Not specified"}\n\n5. UPI Subscription Payment Reference:\n${paymentRef}\n---------------------\n\nWhat happens next:\n1. Escrow Verification: Our operations team will verify your UPI transaction reference note.\n2. Design System Alignment: We will configure our custom creative models to match your logo, brand colors, and aesthetic notes.\n3. First Calendar Release: Within 24 to 48 hours, you will receive your first draft content calendar for review. No posts will go live on your socials without your explicit sign-off.\n\nWe are excited to build your brand's digital presence on autopilot! If you have any questions, feel free to reply directly to this email or reach out on WhatsApp.\n\nBest regards,\nTV³ Studios Ingestion Engine`;
 
     try {
       await fetch('/api/send-email', {
@@ -118,6 +118,7 @@ export default function GetStarted() {
         },
         body: JSON.stringify({
           to: 'tv3studios@gmail.com',
+          replyTo: contactEmail,
           subject: emailSubject,
           body: emailBody
         })
@@ -329,39 +330,98 @@ export default function GetStarted() {
               key="success-screen"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="max-w-xl mx-auto border border-primary/20 bg-zinc-950/40 p-8 md:p-10 rounded-3xl space-y-6 shadow-[0_0_50px_rgba(212,175,55,0.05)]"
+              className="max-w-xl mx-auto border border-[#D4AF37]/20 bg-[#070708] p-8 md:p-10 rounded-3xl space-y-6 shadow-[0_0_50px_rgba(212,175,55,0.08)]"
             >
-              <div className="w-16 h-16 rounded-full bg-primary/10 border border-primary/30 text-primary mx-auto flex items-center justify-center animate-pulse">
-                <Cpu className="w-7 h-7" />
+              <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 mx-auto flex items-center justify-center">
+                <CheckCircle2 className="w-7 h-7" />
               </div>
 
               <div className="text-center space-y-2">
                 <h1 className="font-display text-2xl md:text-3xl font-black uppercase tracking-wider text-white">
-                  Transmission Received
+                  Welcome to TV³ Studios!
                 </h1>
-                <p className="text-zinc-500 font-mono text-[9px] uppercase tracking-[0.2em]">Secure Ingestion Engine • TV³ Network</p>
+                <p className="text-zinc-500 font-mono text-[9px] uppercase tracking-[0.2em]">{activePlan.name} Subscription Intake Complete</p>
               </div>
 
               <div className="h-px bg-white/5 w-full" />
 
-              {/* Terminal Log */}
-              <div className="bg-black/60 border border-primary/10 p-5 rounded-2xl text-left space-y-2 relative overflow-hidden font-mono">
-                <div className="absolute top-3 right-3 flex items-center gap-1.5 text-primary/40">
-                  <Terminal className="w-3.5 h-3.5" />
-                  <span className="text-[7px] font-bold tracking-widest">TRANSMIT_LOG</span>
+              {/* Pitch Summary Receipt */}
+              <div className="bg-zinc-900/30 border border-white/5 p-6 rounded-2xl text-left space-y-4">
+                <h3 className="font-mono text-[10px] uppercase font-bold text-[#D4AF37] tracking-wider border-b border-white/5 pb-2">
+                  Brand Pitch Receipt
+                </h3>
+                <div className="grid grid-cols-2 gap-4 text-xs font-mono">
+                  <div>
+                    <span className="text-zinc-500 block uppercase text-[8px] tracking-wider">Business Name</span>
+                    <span className="text-white font-bold">{businessName}</span>
+                  </div>
+                  <div>
+                    <span className="text-zinc-500 block uppercase text-[8px] tracking-wider">Contact Email</span>
+                    <span className="text-white font-bold truncate block">{contactEmail}</span>
+                  </div>
+                  <div>
+                    <span className="text-zinc-500 block uppercase text-[8px] tracking-wider">Onboarding Plan</span>
+                    <span className="text-[#D4AF37] font-bold">{activePlan.name}</span>
+                  </div>
+                  <div>
+                    <span className="text-zinc-500 block uppercase text-[8px] tracking-wider">UPI Payment Ref</span>
+                    <span className="text-white font-bold">{paymentRef}</span>
+                  </div>
                 </div>
-                <div className="text-[8px] text-zinc-500 tracking-widest"><span className="text-primary/40">&gt;</span> INGEST ID: {submissionId}</div>
-                <div className="text-[8px] text-zinc-500 tracking-widest"><span className="text-primary/40">&gt;</span> ENCRYPTING BRAND KIT ENVELOPE...</div>
-                <div className="text-[8px] text-emerald-500 tracking-widest"><span className="text-primary/40">&gt;</span> STATUS: OK — PAYLOAD CACHED</div>
-                <div className="text-[8px] text-[#D4AF37] tracking-widest font-bold"><span className="text-primary/40">&gt;</span> REFERENCE: {paymentRef}</div>
-                <div className="text-[8px] text-zinc-500 tracking-widest"><span className="text-primary/40">&gt;</span> EST. GENERATION TIME: 24-48 HRS</div>
               </div>
 
-              <p className="text-zinc-400 text-xs leading-relaxed text-justify">
-                Thank you! Your brand profile and UPI reference note have been submitted successfully. Our team will verify the payment ref and align your design module now.
+              {/* Step-by-Step Onboarding Process Flow */}
+              <div className="space-y-4 text-left">
+                <h3 className="font-mono text-[10px] uppercase font-bold text-zinc-400 tracking-wider">
+                  What Happens Next
+                </h3>
+                
+                <div className="space-y-3">
+                  <div className="flex gap-4 items-start p-3 bg-zinc-900/20 rounded-xl border border-white/5">
+                    <div className="w-6 h-6 rounded bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 font-bold text-xs">
+                      1
+                    </div>
+                    <div className="space-y-0.5">
+                      <h4 className="text-xs font-bold text-white uppercase tracking-wider">Escrow Verification</h4>
+                      <p className="text-[10px] text-zinc-400 leading-normal">
+                        Our operations team will verify your UPI transaction reference note.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4 items-start p-3 bg-zinc-900/20 rounded-xl border border-white/5">
+                    <div className="w-6 h-6 rounded bg-[#D4AF37]/10 border border-[#D4AF37]/20 text-[#D4AF37] flex items-center justify-center shrink-0 font-bold text-xs">
+                      2
+                    </div>
+                    <div className="space-y-0.5">
+                      <h4 className="text-xs font-bold text-white uppercase tracking-wider">Creative Calibration</h4>
+                      <p className="text-[10px] text-zinc-400 leading-normal">
+                        We will calibrate our generative engines to align with your logo, brand colors, and aesthetic notes.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4 items-start p-3 bg-zinc-900/20 rounded-xl border border-white/5">
+                    <div className="w-6 h-6 rounded bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center shrink-0 font-bold text-xs">
+                      3
+                    </div>
+                    <div className="space-y-0.5">
+                      <h4 className="text-xs font-bold text-white uppercase tracking-wider">First Content Release</h4>
+                      <p className="text-[10px] text-zinc-400 leading-normal">
+                        Within 24 to 48 hours, you will receive your first week of custom-branded posts for review.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="h-px bg-white/5 w-full" />
+
+              <p className="text-zinc-500 text-[10px] font-mono leading-relaxed text-center italic">
+                Note: No posts will go live on your socials without your explicit sign-off.
               </p>
 
-              <div className="pt-4 flex gap-4">
+              <div className="pt-2 flex gap-4">
                 <Link 
                   to="/" 
                   className="w-full text-center py-3.5 bg-primary hover:bg-white text-black font-mono text-xs uppercase font-black tracking-widest rounded-xl transition-all shadow-[0_4px_15px_rgba(212,175,55,0.15)]"

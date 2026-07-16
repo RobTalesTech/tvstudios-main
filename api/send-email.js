@@ -16,7 +16,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { to, subject, body } = req.body || {};
+  const { to, replyTo, subject, body } = req.body || {};
 
   if (!subject || !body) {
     return res.status(400).json({ error: 'Subject and body are required' });
@@ -39,6 +39,7 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         from: 'TV3 Studios <onboarding@resend.dev>',
         to: to || 'tv3studios@gmail.com',
+        reply_to: replyTo || undefined,
         subject: subject,
         text: body
       })

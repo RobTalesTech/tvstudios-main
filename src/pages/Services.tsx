@@ -628,8 +628,8 @@ const Services = () => {
                     return;
                   }
 
-                  const emailSubject = `Brand Story F2F Intake: ${brandStoryCompany}`;
-                  const emailBody = `Founder/Client: ${brandStoryName}\nCompany/Industry: ${brandStoryCompany}\nSelected Tier: ${brandStoryTier}\nClient Email: ${brandStoryEmail}\n\nGoals & Timeline:\n${brandStoryGoals}`;
+                  const emailSubject = `Welcome to TV³ Studios! Face-to-Face Meeting Requested: ${brandStoryCompany}`;
+                  const emailBody = `Hi ${brandStoryName},\n\nThank you for requesting a Face-to-Face meeting with TV³ Studios! Your intake information has been received successfully.\n\nHere is a summary of what you pitched:\n---------------------\nFounder Name: ${brandStoryName}\nCompany/Industry: ${brandStoryCompany}\nSelected Package: Brand Story F2F (${brandStoryTier})\nClient Contact Email: ${brandStoryEmail}\n\nGoals & Timeline:\n${brandStoryGoals}\n---------------------\n\nWhat happens next:\nOur team will verify the details of your requested F2F tier. Within 24 hours, we will reach out to you via email or WhatsApp to schedule the calendar invite and coordinate the location/call link.\n\nWe are excited to help you tell your brand's story! If you have any questions, feel free to reply directly to this email or reach out on WhatsApp.\n\nBest regards,\nTV³ Studios Team`;
                   
                   const whatsappMessage = `Hi TV³ Studios,\n\nI want to book a *Brand Story F2F* meeting.\n\n*Founder Name:* ${brandStoryName}\n*Company:* ${brandStoryCompany}\n*Email:* ${brandStoryEmail}\n*Tier:* ${brandStoryTier}\n\n*Goals & Timeline:*\n${brandStoryGoals}`;
 
@@ -667,6 +667,7 @@ const Services = () => {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                       to: 'tv3studios@gmail.com',
+                      replyTo: brandStoryEmail,
                       subject: emailSubject,
                       body: emailBody
                     })
