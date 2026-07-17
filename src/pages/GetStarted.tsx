@@ -80,6 +80,7 @@ export default function GetStarted() {
       product_details: productDetails,
       audience_details: audienceDetails,
       payment_ref: paymentRef,
+      campaign_status: "BETA QUEUE",
       timestamp: new Date().toISOString()
     };
 

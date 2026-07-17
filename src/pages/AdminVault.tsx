@@ -689,7 +689,9 @@ const AdminVault = () => {
 
                         <div className="border-t border-white/5 pt-3 mt-3 flex justify-between items-center text-[8px] font-mono text-zinc-500 uppercase tracking-widest">
                           <span className="text-primary font-bold">UPI Note Reference: {intake.payment_ref}</span>
-                          <span>Ingestion Buffer Active</span>
+                          <span className="px-2.5 py-1 rounded bg-amber-500/10 border border-amber-500/30 text-amber-500 font-bold uppercase tracking-wider">
+                            PBI: {intake.campaign_status || "BETA QUEUE"}
+                          </span>
                         </div>
                       </div>
                     ))}
