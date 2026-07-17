@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
-import { Lock, ShieldAlert, Cpu, Database, Users, Banknote, Navigation, FileText, Trash2, MessageSquare, Sparkles, Terminal } from "lucide-react";
+import { Lock, ShieldAlert, Cpu, Database, Users, Banknote, Navigation, FileText, Trash2, MessageSquare, Sparkles, Terminal, Globe, Server, Mail, ExternalLink, Share2 } from "lucide-react";
 
 const AdminVault = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -457,25 +457,186 @@ const AdminVault = () => {
                    initial={{ opacity: 0, x: 20 }}
                    animate={{ opacity: 1, x: 0 }}
                    exit={{ opacity: 0, x: -20 }}
-                   className="bg-card/20 border border-white/10 rounded-2xl p-8"
+                   className="bg-card/20 border border-white/10 rounded-2xl p-8 space-y-6 text-left"
                 >
-                  <h2 className="text-2xl font-black uppercase tracking-widest mb-2">Tales Tech Company</h2>
-                  <p className="text-muted-foreground text-sm mb-8 border-b border-white/10 pb-4">MSME Platform Regulated by: Piyush (Tech Gig)</p>
-                  
-                  <div className="bg-primary/5 border border-primary/20 p-6 rounded-xl mb-6">
-                    <h3 className="text-xl font-bold mb-2">MBBSEEE Organization Backend</h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      Pansemal, MP Division. Managing local talent hunts, rapid app building pipelines, and scaling webspaces tailored for fast-growth markets.
-                    </p>
+                  <div className="border-b border-white/10 pb-4">
+                    <h2 className="text-2xl font-black uppercase tracking-widest text-primary">TV³ Infrastructure Pipeline</h2>
+                    <p className="text-muted-foreground text-xs uppercase tracking-[0.2em] mt-1">Live Connected Systems & Node Gateways</p>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-white/5 p-4 rounded-xl border border-white/10 text-center text-sm font-bold text-white/70">
-                      App Development Pipeline
+                  {/* Flow Map Visualisation Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    
+                    {/* Node 1: Hostinger */}
+                    <div className="bg-black/40 border border-white/5 hover:border-primary/20 p-5 rounded-2xl relative overflow-hidden group transition-all space-y-4">
+                      <div className="flex justify-between items-start">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400 font-bold">
+                            <Globe className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-sm text-white">Hostinger Node</h4>
+                            <span className="text-[8px] font-mono text-zinc-500 uppercase tracking-widest">Domain & DNS Control</span>
+                          </div>
+                        </div>
+                        <a 
+                          href="https://hpanel.hostinger.com" 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="p-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 hover:text-primary transition-all"
+                        >
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      </div>
+                      
+                      <div className="space-y-2.5 text-xs border-t border-white/5 pt-3 font-mono">
+                        <div>
+                          <span className="text-[8px] text-indigo-400 uppercase tracking-widest block font-bold">// Abhi kya hua</span>
+                          <p className="text-zinc-300 text-[11px] leading-relaxed">tvstudios.site Domain verification stable aur SSL active set up ho chuka hai.</p>
+                        </div>
+                        <div>
+                          <span className="text-[8px] text-zinc-500 uppercase tracking-widest block font-bold">// Aage kya target</span>
+                          <p className="text-zinc-400 text-[10px] leading-relaxed">PBI functions ke liye automated subdomain routing dynamic banana.</p>
+                        </div>
+                      </div>
                     </div>
-                    <div className="bg-white/5 p-4 rounded-xl border border-white/10 text-center text-sm font-bold text-white/70">
-                      Webspace CMS
+
+                    {/* Node 2: Vercel */}
+                    <div className="bg-black/40 border border-white/5 hover:border-primary/20 p-5 rounded-2xl relative overflow-hidden group transition-all space-y-4">
+                      <div className="flex justify-between items-start">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-lg bg-zinc-100/10 border border-zinc-100/30 flex items-center justify-center text-white font-bold">
+                            <Server className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-sm text-white">Vercel Production</h4>
+                            <span className="text-[8px] font-mono text-zinc-500 uppercase tracking-widest">Hosting & Serverless APIs</span>
+                          </div>
+                        </div>
+                        <a 
+                          href="https://vercel.com" 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="p-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 hover:text-primary transition-all"
+                        >
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      </div>
+                      
+                      <div className="space-y-2.5 text-xs border-t border-white/5 pt-3 font-mono">
+                        <div>
+                          <span className="text-[8px] text-zinc-300 uppercase tracking-widest block font-bold">// Abhi kya hua</span>
+                          <p className="text-zinc-300 text-[11px] leading-relaxed">Auto git pipeline set hai, push hotey hi changes live ho jate hain.</p>
+                        </div>
+                        <div>
+                          <span className="text-[8px] text-zinc-500 uppercase tracking-widest block font-bold">// Aage kya target</span>
+                          <p className="text-zinc-400 text-[10px] leading-relaxed">PBI script compiler aur dynamic voice synthesis APIs stabilize karna.</p>
+                        </div>
+                      </div>
                     </div>
+
+                    {/* Node 3: Supabase */}
+                    <div className="bg-black/40 border border-white/5 hover:border-primary/20 p-5 rounded-2xl relative overflow-hidden group transition-all space-y-4">
+                      <div className="flex justify-between items-start">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold">
+                            <Database className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-sm text-white">Supabase Cloud</h4>
+                            <span className="text-[8px] font-mono text-zinc-500 uppercase tracking-widest">DB & Asset Storage</span>
+                          </div>
+                        </div>
+                        <a 
+                          href="https://supabase.com/dashboard" 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="p-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 hover:text-primary transition-all"
+                        >
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      </div>
+                      
+                      <div className="space-y-2.5 text-xs border-t border-white/5 pt-3 font-mono">
+                        <div>
+                          <span className="text-[8px] text-emerald-400 uppercase tracking-widest block font-bold">// Abhi kya hua</span>
+                          <p className="text-zinc-300 text-[11px] leading-relaxed">Intake और leads database active hain. PBI Waitlist tag mapping configure kar di hai.</p>
+                        </div>
+                        <div>
+                          <span className="text-[8px] text-zinc-500 uppercase tracking-widest block font-bold">// Aage kya target</span>
+                          <p className="text-zinc-400 text-[10px] leading-relaxed">PBI generated videos storage bucket create karna aur policy lagana.</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Node 4: Resend */}
+                    <div className="bg-black/40 border border-white/5 hover:border-primary/20 p-5 rounded-2xl relative overflow-hidden group transition-all space-y-4">
+                      <div className="flex justify-between items-start">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-lg bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400 font-bold">
+                            <Mail className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-sm text-white">Resend Email Gateway</h4>
+                            <span className="text-[8px] font-mono text-zinc-500 uppercase tracking-widest">Email System</span>
+                          </div>
+                        </div>
+                        <a 
+                          href="https://resend.com" 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="p-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 hover:text-primary transition-all"
+                        >
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      </div>
+                      
+                      <div className="space-y-2.5 text-xs border-t border-white/5 pt-3 font-mono">
+                        <div>
+                          <span className="text-[8px] text-rose-400 uppercase tracking-widest block font-bold">// Abhi kya hua</span>
+                          <p className="text-zinc-300 text-[11px] leading-relaxed">Admin dual alerts chal rahe hain. Sandbox check mode fully functional hai.</p>
+                        </div>
+                        <div>
+                          <span className="text-[8px] text-zinc-500 uppercase tracking-widest block font-bold">// Aage kya target</span>
+                          <p className="text-zinc-400 text-[10px] leading-relaxed">Custom professional domain verified emails bypass enable karna.</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Node 5: Instagram Target */}
+                    <div className="bg-black/40 border border-white/5 hover:border-primary/20 p-5 rounded-2xl relative overflow-hidden group transition-all space-y-4">
+                      <div className="flex justify-between items-start">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-lg bg-pink-500/10 border border-pink-500/30 flex items-center justify-center text-pink-400 font-bold">
+                            <Share2 className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-sm text-white">Meta API Node</h4>
+                            <span className="text-[8px] font-mono text-zinc-500 uppercase tracking-widest">PBI Instagram Publisher</span>
+                          </div>
+                        </div>
+                        <a 
+                          href="https://developers.facebook.com" 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="p-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 hover:text-primary transition-all"
+                        >
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      </div>
+                      
+                      <div className="space-y-2.5 text-xs border-t border-white/5 pt-3 font-mono">
+                        <div>
+                          <span className="text-[8px] text-pink-400 uppercase tracking-widest block font-bold">// Abhi kya hua</span>
+                          <p className="text-zinc-300 text-[11px] leading-relaxed">Graph API console setups linked aur mock test accounts generate kar diye hain.</p>
+                        </div>
+                        <div>
+                          <span className="text-[8px] text-zinc-500 uppercase tracking-widest block font-bold">// Aage kya target</span>
+                          <p className="text-zinc-400 text-[10px] leading-relaxed">Auto reels validation and long-term user token generation scripts implement karna.</p>
+                        </div>
+                      </div>
+                    </div>
+
                   </div>
                 </motion.div>
               )}
