@@ -47,27 +47,15 @@ const TeamSection = () => {
              Built by independent filmmakers and technologists. We centralize creative power to architect unparalleled brand authority.
            </p>
 
-            <div className="flex flex-wrap gap-6 items-center">
-              <Link 
-                to="/services"
-                className="group flex items-center gap-4 text-[10px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/50 hover:text-white transition-colors"
-              >
-                Explore Our Services
-                <div className="relative flex items-center justify-center w-8 h-8 rounded-full border border-white/20 group-hover:border-white/50 group-hover:bg-white/10 transition-all">
-                   <ArrowUpRight className="w-3 h-3 transition-transform group-hover:scale-110 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                </div>
-              </Link>
-
-              <Link 
-                to="/founder-story"
-                className="group flex items-center gap-4 text-[10px] md:text-xs font-mono uppercase tracking-[0.2em] text-[hsl(43_72%_55%)] hover:text-white transition-colors"
-              >
-                Unlock Founder Wiki
-                <div className="relative flex items-center justify-center w-8 h-8 rounded-full border border-[hsl(43_72%_55%)]/20 group-hover:border-white group-hover:bg-white/10 transition-all">
-                   <ArrowUpRight className="w-3 h-3 text-[hsl(43_72%_55%)] transition-transform group-hover:scale-110 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                </div>
-              </Link>
-            </div>
+           <Link 
+             to="/services"
+             className="group flex items-center gap-4 text-[10px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/50 hover:text-white transition-colors"
+           >
+             Explore Our Services
+             <div className="relative flex items-center justify-center w-8 h-8 rounded-full border border-white/20 group-hover:border-white/50 group-hover:bg-white/10 transition-all">
+                <ArrowUpRight className="w-3 h-3 transition-transform group-hover:scale-110 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+             </div>
+           </Link>
         </motion.div>
       </div>
     </section>

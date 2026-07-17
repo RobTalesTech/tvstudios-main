@@ -2,9 +2,91 @@ import { motion } from "framer-motion";
 import TeamSection from "@/components/TeamSection";
 import AboutContact from "@/components/AboutContact";
 import Footer from "@/components/Footer";
-import { Mail, MapPin, Phone } from "lucide-react";
+import { Mail, MapPin, Phone, Sparkles, User } from "lucide-react";
+import FounderStory from "./FounderStory";
+import { useState } from "react";
+import { supabase } from "@/lib/supabase";
 
 const TeamContact = () => {
+  const [isUnlocked, setIsUnlocked] = useState(() => {
+    return localStorage.getItem("tv3_founder_unlocked") === "true";
+  });
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const blockedDomains = [
+    'tempmail', '10minutemail', 'mailinator', 'yopmail', 'dispostable', 
+    'sharklasers', 'guerrillamail', 'getairmail', 'burnermail', 'trashmail', 
+    'fakeinbox', 'temp-mail', 'tempmailaddress', 'fake', 'mailnesia', 
+    'maildrop', 'mintemail', 'discardmail', 'spambox'
+  ];
+
+  const handleUnlockSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name.trim() || !email.trim() || !email.includes('@')) {
+      alert("Please enter a valid name and email address.");
+      return;
+    }
+
+    const emailDomain = email.split('@')[1]?.toLowerCase() || '';
+    const isDisposable = blockedDomains.some(domain => emailDomain.includes(domain));
+    if (isDisposable) {
+      alert("Temporary or disposable email addresses are not allowed. Please enter your real work or personal email address.");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    const leadId = Math.random().toString(36).substr(2, 9).toUpperCase();
+    const payload = {
+      id: leadId,
+      category: "Founder Wiki Access",
+      email: email,
+      score: "Wiki",
+      notes: `Unlocked Founder Story. Client Name: ${name}`,
+      fader_breakdown: `Name: ${name} | Email: ${email}`,
+      timestamp: new Date().toISOString()
+    };
+
+    try {
+      if (supabase) {
+        await supabase.from('tv3_service_leads').insert([payload]);
+      }
+    } catch (err) {
+      console.error("Supabase insert lead error:", err);
+    }
+
+    // LocalStorage fallback
+    try {
+      const existing = localStorage.getItem("tv3_service_leads");
+      const list = existing ? JSON.parse(existing) : [];
+      list.push(payload);
+      localStorage.setItem("tv3_service_leads", JSON.stringify(list));
+    } catch (err) {
+      console.error("Localstorage lead write error:", err);
+    }
+
+    // Trigger a silent admin notification email
+    try {
+      await fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: 'tv3studios@gmail.com',
+          replyTo: email,
+          subject: `[Lead Alert] Founder Story Unlocked by ${name}`,
+          body: `Founder Story Wiki Access Granted\n---------------------\nName: ${name}\nEmail: ${email}\nLead ID: ${leadId}\nTimestamp: ${new Date().toISOString()}\n---------------------\nRegistered in TV³ database.`
+        })
+      });
+    } catch (emailErr) {
+      console.error("Email alert failed:", emailErr);
+    }
+
+    localStorage.setItem("tv3_founder_unlocked", "true");
+    setIsUnlocked(true);
+    setIsSubmitting(false);
+  };
   return (
     <div className="min-h-screen bg-background pt-20">
       {/* Background aesthetics */}
@@ -15,6 +97,95 @@ const TeamContact = () => {
       
       {/* Embedded Team Section from earlier */}
       <TeamSection />
+
+      <div className="line-thin mx-auto max-w-4xl" />
+
+      {/* Founder Story Wiki Gated Section */}
+      <section className="py-16 relative">
+        <div className="container px-4 mx-auto max-w-6xl">
+          {isUnlocked ? (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8 }}
+            >
+              <FounderStory />
+            </motion.div>
+          ) : (
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="bg-card/25 backdrop-blur-md border border-white/5 rounded-3xl p-8 max-w-md mx-auto text-center space-y-6 shadow-2xl relative"
+            >
+              <div className="flex flex-col items-center gap-2">
+                <span className="font-mono text-[9px] uppercase tracking-[0.25em] text-[hsl(43_72%_55%)] font-bold">
+                  Exclusive Access
+                </span>
+                <h3 className="font-display text-2xl font-black uppercase tracking-tight text-white">
+                  Unlock Founder Wiki
+                </h3>
+                <p className="text-zinc-400 text-xs leading-relaxed max-w-md font-light">
+                  Sign up to join our community. Instantly unlock full access to the Founder's wiki, filmography, design ethos, and private case studies.
+                </p>
+              </div>
+
+              {/* Simple Signup Form */}
+              <form onSubmit={handleUnlockSubmit} className="space-y-4 text-left max-w-sm mx-auto">
+                <div className="space-y-2">
+                  <label className="font-mono text-[8px] uppercase tracking-widest text-zinc-500 block">
+                    Your Name
+                  </label>
+                  <div className="relative">
+                    <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                    <input
+                      type="text"
+                      required
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="e.g. Rohit Badgujar"
+                      className="w-full bg-black/50 border border-white/10 focus:border-[hsl(43_72%_55%)] rounded-xl py-3 pl-10 pr-4 text-sm text-white placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-[hsl(43_72%_55%)]/20 transition-all font-mono"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="font-mono text-[8px] uppercase tracking-widest text-zinc-500 block">
+                    Work / Personal Email
+                  </label>
+                  <div className="relative">
+                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                    <input
+                      type="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="e.g. brand@tvstudios.site"
+                      className="w-full bg-black/50 border border-white/10 focus:border-[hsl(43_72%_55%)] rounded-xl py-3 pl-10 pr-4 text-sm text-white placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-[hsl(43_72%_55%)]/20 transition-all font-mono"
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full mt-2 py-3.5 rounded-xl bg-[hsl(43_72%_55%)] hover:bg-white text-black font-mono text-[10px] font-black uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-[0_4px_20px_rgba(212,175,55,0.25)]"
+                >
+                  {isSubmitting ? "Unlocking Access..." : "Sign Up & Unlock Wiki"}
+                </button>
+              </form>
+
+              {/* No Disposable Mails Notice */}
+              <div className="pt-4 border-t border-white/5 flex items-center justify-center gap-2">
+                <Sparkles className="w-3.5 h-3.5 text-[hsl(43_72%_55%)]/60" />
+                <span className="text-[8px] text-zinc-500 font-mono uppercase tracking-wide">
+                  Real emails only. Temporary domains are blocked.
+                </span>
+              </div>
+            </motion.div>
+          )}
+        </div>
+      </section>
 
       <div className="line-thin mx-auto max-w-4xl" />
 
