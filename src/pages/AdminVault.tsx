@@ -194,27 +194,53 @@ const AdminVault = () => {
     }
   };
 
-  const handleCompileVideo = () => {
+  const handleCompileVideo = async () => {
+    if (!pbiResponse) return;
+    
     setPbiCompiling(true);
     setPbiVideoUrl("");
-    setPbiCompileStep("[1/4] Rendering 9:16 SDXL Visual Frames...");
+    setPbiCompileStep("[1/4] Triggering Cloud Compiler...");
 
-    setTimeout(() => {
-      setPbiCompileStep("[2/4] Synthesizing Google Neural Host Voices (A: en-IN, B: hi-IN)...");
-    }, 2000);
+    try {
+      const res = await fetch('/api/pbi/compile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          businessName: brandingIntakes.find(i => i.id === pbiSelectedBrand)?.business_name || "TV³ Studios Pilot Node",
+          conversation: pbiResponse.conversation,
+          caption: pbiResponse.caption
+        })
+      });
 
-    setTimeout(() => {
-      setPbiCompileStep("[3/4] Muxing audio track and rendering background visual timeline...");
-    }, 4000);
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error(errText || "Compilation trigger failed.");
+      }
 
-    setTimeout(() => {
-      setPbiCompileStep("[4/4] Compiling master vertical MP4 file...");
-    }, 6000);
-
-    setTimeout(() => {
-      setPbiVideoUrl("https://assets.mixkit.co/videos/preview/mixkit-abstract-laser-lights-background-32115-large.mp4");
+      const result = await res.json();
+      
+      if (result.success) {
+        if (result.simulation) {
+          setPbiCompileStep("[2/4] Synthesizing Google Neural Host Voices (A: en-IN, B: hi-IN)...");
+          await new Promise(r => setTimeout(r, 2000));
+          setPbiCompileStep("[3/4] Muxing audio track and rendering background visual timeline...");
+          await new Promise(r => setTimeout(r, 2000));
+          setPbiCompileStep("[4/4] Compiling master vertical MP4 file...");
+          await new Promise(r => setTimeout(r, 2000));
+          setPbiVideoUrl("https://assets.mixkit.co/videos/preview/mixkit-abstract-laser-lights-background-32115-large.mp4");
+        } else {
+          setPbiCompileStep("Reel compiling in GitHub Actions... Check your Discord channel in ~30s!");
+          await new Promise(r => setTimeout(r, 4000));
+        }
+      } else {
+        throw new Error(result.error || "Failed to trigger PBI compile.");
+      }
+    } catch (err: any) {
+      console.error(err);
+      alert("Video Compiler Error: " + (err.message || "Failed to contact video node."));
+    } finally {
       setPbiCompiling(false);
-    }, 8000);
+    }
   };
 
   const clearBranding = async () => {
