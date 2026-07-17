@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
-import { Lock, ShieldAlert, Cpu, Database, Users, Banknote, Navigation, FileText, Trash2, MessageSquare, Sparkles } from "lucide-react";
+import { Lock, ShieldAlert, Cpu, Database, Users, Banknote, Navigation, FileText, Trash2, MessageSquare, Sparkles, Terminal } from "lucide-react";
 
 const AdminVault = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -334,12 +334,18 @@ const AdminVault = () => {
             >
               <Database className="w-5 h-5" /> Service Leads ({serviceLeads.length})
             </button>
-             <button 
-               onClick={() => setActiveTab("pbi_lab")}
-               className={`w-full flex items-center gap-3 p-4 rounded-xl text-sm font-bold uppercase tracking-widest transition-all ${activeTab === "pbi_lab" ? "bg-amber-500 text-black shadow-[0_0_15px_rgba(245,158,11,0.4)]" : "bg-white/5 text-amber-500 border border-amber-500/20 hover:bg-white/10"}`}
-             >
-               <Cpu className="w-5 h-5 animate-pulse" /> PBI Lab (Autopilot)
-             </button>
+              <button 
+                onClick={() => setActiveTab("pbi_lab")}
+                className={`w-full flex items-center gap-3 p-4 rounded-xl text-sm font-bold uppercase tracking-widest transition-all ${activeTab === "pbi_lab" ? "bg-amber-500 text-black shadow-[0_0_15px_rgba(245,158,11,0.4)]" : "bg-white/5 text-amber-500 border border-amber-500/20 hover:bg-white/10"}`}
+              >
+                <Cpu className="w-5 h-5 animate-pulse" /> PBI Lab (Autopilot)
+              </button>
+              <button 
+                onClick={() => setActiveTab("dev_logs")}
+                className={`w-full flex items-center gap-3 p-4 rounded-xl text-sm font-bold uppercase tracking-widest transition-all ${activeTab === "dev_logs" ? "bg-emerald-500 text-black shadow-[0_0_15px_rgba(16,185,129,0.4)]" : "bg-white/5 text-emerald-500 border border-emerald-500/20 hover:bg-white/10"}`}
+              >
+                <Terminal className="w-5 h-5" /> Development Logs
+              </button>
           </div>
 
           {/* Main Content Area */}
@@ -984,6 +990,129 @@ const AdminVault = () => {
                           <p className="text-[10px] text-zinc-500 max-w-[200px] leading-relaxed">Select a brand, configure variables, and run the simulator to preview output.</p>
                         </div>
                       )}
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {activeTab === "dev_logs" && (
+                <motion.div 
+                   key="dev_logs"
+                   initial={{ opacity: 0, x: 20 }}
+                   animate={{ opacity: 1, x: 0 }}
+                   exit={{ opacity: 0, x: -20 }}
+                   className="bg-card/20 border border-white/10 rounded-2xl p-8 space-y-6 text-left"
+                >
+                  <div className="border-b border-white/10 pb-4 flex justify-between items-center">
+                    <div>
+                      <h2 className="text-2xl font-black uppercase tracking-widest text-emerald-500">Development Logs</h2>
+                      <p className="text-muted-foreground text-xs uppercase tracking-[0.2em] mt-1">Workspace Status & System Deployment Log</p>
+                    </div>
+                    <span className="text-[10px] font-mono bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 px-3 py-1 rounded font-bold uppercase tracking-wider">
+                      Active: PBI Engine Build
+                    </span>
+                  </div>
+
+                  {/* Terminal Screen */}
+                  <div className="bg-[#050508] border border-white/5 rounded-2xl p-6 font-mono text-xs space-y-6 text-zinc-300 shadow-inner">
+                    
+                    {/* Workspace Info */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-b border-white/5 pb-4">
+                      <div>
+                        <span className="text-zinc-600 uppercase text-[9px] tracking-wider block font-bold">Node Version</span>
+                        <span className="text-emerald-400 font-bold">v24.14.1</span>
+                      </div>
+                      <div>
+                        <span className="text-zinc-600 uppercase text-[9px] tracking-wider block font-bold">Deployment Platform</span>
+                        <span className="text-white">Vercel Production</span>
+                      </div>
+                      <div>
+                        <span className="text-zinc-600 uppercase text-[9px] tracking-wider block font-bold">Active Branch</span>
+                        <span className="text-white">origin/main (Synced)</span>
+                      </div>
+                    </div>
+
+                    {/* Milestones Checklist */}
+                    <div className="space-y-3">
+                      <span className="text-[9px] text-zinc-500 uppercase tracking-widest block font-bold">// FEATURE DEPLOYMENT ROADMAP</span>
+                      
+                      <div className="space-y-2">
+                        {/* Completed */}
+                        <div className="flex items-start gap-2.5">
+                          <span className="text-emerald-500 font-bold shrink-0">[✔]</span>
+                          <div>
+                            <span className="text-white font-bold">Gated Founder Wiki Consolidation</span>
+                            <span className="text-[10px] text-zinc-500 block">Moved wiki inline on /team page with local storage persistence.</span>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-2.5">
+                          <span className="text-emerald-500 font-bold shrink-0">[✔]</span>
+                          <div>
+                            <span className="text-white font-bold">Disposable Email Blocker</span>
+                            <span className="text-[10px] text-zinc-500 block">Rejects temporary/burner email inputs to preserve intake database health.</span>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-2.5">
+                          <span className="text-emerald-500 font-bold shrink-0">[✔]</span>
+                          <div>
+                            <span className="text-white font-bold">PBI Waitlist DB Schema Tagging</span>
+                            <span className="text-[10px] text-zinc-500 block">Marks new intakes with status="BETA QUEUE" and displays colored waitlist badges.</span>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-2.5">
+                          <span className="text-emerald-500 font-bold shrink-0">[✔]</span>
+                          <div>
+                            <span className="text-white font-bold">PBI Scriptwriter Engine (Phase 1)</span>
+                            <span className="text-[10px] text-zinc-500 block">Developed /api/pbi/agent to generate double-host podcast dialogues in Hinglish.</span>
+                          </div>
+                        </div>
+
+                        {/* In Progress / Next */}
+                        <div className="flex items-start gap-2.5 pt-2 border-t border-white/5">
+                          <span className="text-amber-500 font-bold shrink-0">[/]</span>
+                          <div>
+                            <span className="text-white font-bold">Dual-Voice Audio Synthesizer (Phase 2)</span>
+                            <span className="text-[10px] text-zinc-500 block">Pitch/rate shifting to distinguish Host A and Host B audio generation.</span>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-2.5">
+                          <span className="text-zinc-600 font-bold shrink-0">[ ]</span>
+                          <div>
+                            <span className="text-zinc-400 font-bold">FFmpeg Serverless Reel Compiler (Phase 3)</span>
+                            <span className="text-[10px] text-zinc-500 block">Merging SDXL background visuals with podcast audio into vertical video.</span>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-2.5">
+                          <span className="text-zinc-600 font-bold shrink-0">[ ]</span>
+                          <div>
+                            <span className="text-zinc-400 font-bold">Discord Callback Approval Webhooks (Phase 4)</span>
+                            <span className="text-[10px] text-zinc-500 block">Enables draft publishing approvals with a single button click.</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Git Commit Log Timeline */}
+                    <div className="space-y-3 pt-4 border-t border-white/5">
+                      <span className="text-[9px] text-zinc-500 uppercase tracking-widest block font-bold">// RECENT ENVIRONMENT SHIPPINGS</span>
+                      
+                      <div className="space-y-2 text-[10px] font-mono">
+                        <div className="flex items-center gap-2">
+                          <span className="text-emerald-400">[fe7a96a]</span>
+                          <span className="text-zinc-500">2026-07-18</span>
+                          <span className="text-zinc-300">feat: implement private PBI Lab simulation tab inside AdminVault dashboard</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-emerald-400">[3b23511]</span>
+                          <span className="text-zinc-500">2026-07-18</span>
+                          <span className="text-zinc-300">feat: implement first backend agent module for PBI conversational scripting</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-emerald-400">[353f807]</span>
+                          <span className="text-zinc-500">2026-07-17</span>
+                          <span className="text-zinc-300">feat: track PBI queue onboarding status in Supabase and render beta badges</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </motion.div>
