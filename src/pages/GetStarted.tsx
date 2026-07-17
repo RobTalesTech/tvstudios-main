@@ -255,6 +255,18 @@ export default function GetStarted() {
                   </div>
                 </div>
 
+                <div className="bg-primary/10 border border-primary/30 rounded-xl p-4 mb-6 flex items-start gap-3">
+                  <Sparkles className="w-5 h-5 text-primary shrink-0 mt-0.5 animate-pulse" />
+                  <div className="space-y-1">
+                    <h4 className="font-mono text-[10px] uppercase tracking-wider text-primary font-bold">
+                      Poster Boy AI Autopilot Beta
+                    </h4>
+                    <p className="text-zinc-300 text-[11px] leading-relaxed font-light">
+                      We are currently building and co-creating this automated posting workflow. By submitting your brand profile today, you lock in early-bird beta privileges and will be the first to have the posting app unlocked for your channels.
+                    </p>
+                  </div>
+                </div>
+
                 <form onSubmit={handleSubmit} className="space-y-6 text-left">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div className="space-y-2">
