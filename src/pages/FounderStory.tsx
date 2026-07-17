@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Edit3, Film, MapPin, Award, BookOpen, GraduationCap, Languages } from "lucide-react";
+import { ArrowLeft, Edit3, Film, MapPin, Award, BookOpen, GraduationCap, Languages, Sparkles, Mail, User, Lock } from "lucide-react";
 import { Link } from "react-router-dom";
 import Footer from "../components/Footer";
+import { supabase } from "@/lib/supabase";
 
 const filmographyData = [
   { 
@@ -184,6 +185,13 @@ const FounderStory = () => {
   const [selectedType, setSelectedType] = useState<string>("All");
   const [activeVideo, setActiveVideo] = useState<string | null>(null);
 
+  const [isUnlocked, setIsUnlocked] = useState(() => {
+    return localStorage.getItem("tv3_founder_unlocked") === "true";
+  });
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const filteredProjects = filmographyData.filter((project) => {
     const matchesYear = selectedYear === "All" || project.year.toString() === selectedYear;
     const matchesType = selectedType === "All" || project.type === selectedType;
@@ -203,6 +211,160 @@ const FounderStory = () => {
     if (b === "All") return 1;
     return a.localeCompare(b);
   });
+
+  if (!isUnlocked) {
+    const handleUnlockSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!name || !email || !email.includes('@')) {
+        alert("Please enter a valid name and email address.");
+        return;
+      }
+      setIsSubmitting(true);
+
+      const leadId = Math.random().toString(36).substr(2, 9).toUpperCase();
+      const payload = {
+        id: leadId,
+        category: "Founder Wiki Access",
+        email: email,
+        score: "Wiki",
+        notes: `Unlocked Founder Story. Client Name: ${name}`,
+        fader_breakdown: `Name: ${name} | Email: ${email}`,
+        timestamp: new Date().toISOString()
+      };
+
+      try {
+        if (supabase) {
+          await supabase.from('tv3_service_leads').insert([payload]);
+        }
+      } catch (err) {
+        console.error("Supabase insert lead error:", err);
+      }
+
+      // LocalStorage fallback
+      try {
+        const existing = localStorage.getItem("tv3_service_leads");
+        const list = existing ? JSON.parse(existing) : [];
+        list.push(payload);
+        localStorage.setItem("tv3_service_leads", JSON.stringify(list));
+      } catch (err) {
+        console.error("Localstorage lead write error:", err);
+      }
+
+      // Trigger a silent admin notification email
+      try {
+        await fetch('/api/send-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            to: 'tv3studios@gmail.com',
+            replyTo: email,
+            subject: `[Lead Alert] Founder Story Unlocked by ${name}`,
+            body: `Founder Story Wiki Access Granted\n---------------------\nName: ${name}\nEmail: ${email}\nLead ID: ${leadId}\nTimestamp: ${new Date().toISOString()}\n---------------------\nRegistered in TV³ database.`
+          })
+        });
+      } catch (emailErr) {
+        console.error("Email alert failed:", emailErr);
+      }
+
+      localStorage.setItem("tv3_founder_unlocked", "true");
+      setIsUnlocked(true);
+      setIsSubmitting(false);
+    };
+
+    return (
+      <div className="min-h-screen bg-background flex flex-col justify-between pt-24 font-body text-foreground relative overflow-hidden font-light">
+        {/* Ambient background glows */}
+        <div className="fixed inset-0 bg-gradient-to-b from-transparent to-primary/5 pointer-events-none z-[-1]" />
+        <div className="fixed top-1/4 right-1/4 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[150px] pointer-events-none opacity-40 z-[-1]" />
+
+        <div className="container px-4 sm:px-8 mx-auto max-w-md pb-24 flex-1 flex flex-col justify-center relative z-10">
+          
+          <div className="mb-8">
+            <Link to="/team" className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors text-xs font-bold uppercase tracking-widest bg-white/5 px-4 py-2 rounded-lg border border-white/10">
+              <ArrowLeft className="w-3.5 h-3.5" /> Back to About
+            </Link>
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="border-2 border-double border-[#D4AF37]/30 bg-black/60 backdrop-blur-2xl rounded-3xl p-6 md:p-8 space-y-6 text-center shadow-[0_20px_50px_rgba(212,175,55,0.15)] relative border-4"
+          >
+            {/* Lock Icon and Header */}
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-12 h-12 rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/10 flex items-center justify-center text-[#D4AF37] animate-pulse">
+                <Lock className="w-5 h-5" />
+              </div>
+              <span className="font-mono text-[9px] uppercase tracking-[0.25em] text-[#D4AF37] font-bold">
+                Private Portal
+              </span>
+              <h1 className="font-display text-2xl font-black uppercase tracking-tight text-white">
+                Unlock Founder Wiki
+              </h1>
+              <p className="text-zinc-400 text-xs leading-relaxed max-w-sm font-light">
+                Get full access to the TV³ Studios Founder's wiki, filmography, design ethos, and private case studies. 
+              </p>
+            </div>
+
+            {/* Input Form */}
+            <form onSubmit={handleUnlockSubmit} className="space-y-4 text-left">
+              <div className="space-y-2">
+                <label className="font-mono text-[8px] uppercase tracking-widest text-zinc-500 block">
+                  Your Name
+                </label>
+                <div className="relative">
+                  <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                  <input
+                    type="text"
+                    required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="e.g. Rohit Badgujar"
+                    className="w-full bg-black/50 border border-white/10 focus:border-[#D4AF37] rounded-xl py-3 pl-10 pr-4 text-sm text-white placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#D4AF37]/20 transition-all font-mono"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="font-mono text-[8px] uppercase tracking-widest text-zinc-500 block">
+                  Work / Personal Email
+                </label>
+                <div className="relative">
+                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="e.g. brand@tvstudios.site"
+                    className="w-full bg-black/50 border border-white/10 focus:border-[#D4AF37] rounded-xl py-3 pl-10 pr-4 text-sm text-white placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#D4AF37]/20 transition-all font-mono"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full mt-2 py-3.5 rounded-xl bg-[#D4AF37] hover:bg-white text-black font-mono text-[10px] font-black uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-[0_4px_20px_rgba(212,175,55,0.25)]"
+              >
+                {isSubmitting ? "Unlocking Portal..." : "Unlock Founder Wiki"}
+              </button>
+            </form>
+
+            {/* Micro Benefits Disclaimer */}
+            <div className="pt-4 border-t border-white/5 flex items-center justify-center gap-2">
+              <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]/60" />
+              <span className="text-[8px] text-zinc-500 font-mono uppercase tracking-wide">
+                No Spam. Free updates on visual AI marketing.
+              </span>
+            </div>
+          </motion.div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background pt-24 font-body text-foreground">
       {/* Background aesthetics */}
