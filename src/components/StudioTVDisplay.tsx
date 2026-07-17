@@ -98,7 +98,7 @@ const DIRECT_ITEMS = [
   { id: "d9", name: "UNIT 05: FLAGSHIP OTT", category: "Studio Floor", type: "Unit", path: "/unit/05" },
   { id: "d10", name: "UNIT 06: AI LAB", category: "Studio Floor", type: "Unit", path: "/unit/06" },
   { id: "d11", name: "ABOUT & CONTACT", category: "Corporate", type: "Page", path: "/team" },
-  { id: "d12", name: "FOUNDER STORY", category: "Corporate", type: "Page", path: "/founder-story" },
+  { id: "d12", name: "SERVICES", category: "Corporate", type: "Page", path: "/services" },
   { id: "d13", name: "STUDIO WORK", category: "Corporate", type: "Page", path: "/studio-work" },
 ];
 

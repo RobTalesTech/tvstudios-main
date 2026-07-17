@@ -10,7 +10,6 @@ import Services from "./pages/Services";
 import BrandedContent from "./pages/BrandedContent";
 import GetStarted from "./pages/GetStarted";
 import StudioWork from "./pages/StudioWork";
-import FounderStory from "./pages/FounderStory";
 import AdminVault from "./pages/AdminVault";
 import Locked from "./pages/Locked";
 import Navbar from "./components/Navbar";
@@ -45,7 +44,6 @@ const AppContent = () => {
         <Route path="/branded-content" element={<BrandedContent />} />
         <Route path="/get-started" element={<GetStarted />} />
         <Route path="/studio-work" element={<StudioWork />} />
-        <Route path="/founder-story" element={<FounderStory />} />
         <Route path="/admin-vault" element={<AdminVault />} />
         <Route path="/unit/01" element={<Locked />} />
         <Route path="/unit/02" element={<Locked />} />

@@ -1,8 +1,6 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
 
 const DirectorTalk = () => {
-  const [storyClicked, setStoryClicked] = useState(false);
 
   return (
     <section className="relative w-full bg-[#030303] py-20 md:py-24 border-t border-white/5 overflow-hidden">
@@ -35,20 +33,7 @@ const DirectorTalk = () => {
             </p>
             <p className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold text-center mt-2">— By Founder</p>
           </div>
-          
-          <div className="mt-8">
-             <button 
-              onClick={() => setStoryClicked(true)}
-              disabled={storyClicked}
-              className={`px-6 py-2 rounded-full border text-font-mono text-[9px] uppercase tracking-widest transition-all ${
-                storyClicked 
-                  ? "bg-zinc-800 border-zinc-700 text-zinc-500 cursor-not-allowed" 
-                  : "bg-white/5 border-white/10 text-white hover:bg-white hover:text-black"
-              }`}
-             >
-                {storyClicked ? "No Story" : "Founder Story"}
-             </button>
-          </div>
+
         </motion.div>
       </div>
     </section>

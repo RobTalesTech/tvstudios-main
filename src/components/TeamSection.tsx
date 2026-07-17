@@ -48,10 +48,10 @@ const TeamSection = () => {
            </p>
 
            <Link 
-             to="/founder-story"
+             to="/services"
              className="group flex items-center gap-4 text-[10px] md:text-xs font-mono uppercase tracking-[0.2em] text-white/50 hover:text-white transition-colors"
            >
-             Read Origin Story
+             Explore Our Services
              <div className="relative flex items-center justify-center w-8 h-8 rounded-full border border-white/20 group-hover:border-white/50 group-hover:bg-white/10 transition-all">
                 <ArrowUpRight className="w-3 h-3 transition-transform group-hover:scale-110 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
              </div>
