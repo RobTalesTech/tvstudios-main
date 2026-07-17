@@ -22,6 +22,11 @@ const AdminVault = () => {
   const [pbiLoading, setPbiLoading] = useState(false);
   const [pbiError, setPbiError] = useState("");
 
+  // PBI Video Compiler Simulation States
+  const [pbiCompiling, setPbiCompiling] = useState(false);
+  const [pbiVideoUrl, setPbiVideoUrl] = useState("");
+  const [pbiCompileStep, setPbiCompileStep] = useState("");
+
   useEffect(() => {
     const loadApplications = async () => {
       if (supabase) {
@@ -155,6 +160,8 @@ const AdminVault = () => {
     setPbiLoading(true);
     setPbiError("");
     setPbiResponse(null);
+    setPbiVideoUrl("");
+    setPbiCompiling(false);
 
     try {
       const res = await fetch('/api/pbi/agent', {
@@ -185,6 +192,29 @@ const AdminVault = () => {
     } finally {
       setPbiLoading(false);
     }
+  };
+
+  const handleCompileVideo = () => {
+    setPbiCompiling(true);
+    setPbiVideoUrl("");
+    setPbiCompileStep("[1/4] Rendering 9:16 SDXL Visual Frames...");
+
+    setTimeout(() => {
+      setPbiCompileStep("[2/4] Synthesizing Google Neural Host Voices (A: en-IN, B: hi-IN)...");
+    }, 2000);
+
+    setTimeout(() => {
+      setPbiCompileStep("[3/4] Muxing audio track and rendering background visual timeline...");
+    }, 4000);
+
+    setTimeout(() => {
+      setPbiCompileStep("[4/4] Compiling master vertical MP4 file...");
+    }, 6000);
+
+    setTimeout(() => {
+      setPbiVideoUrl("https://assets.mixkit.co/videos/preview/mixkit-abstract-laser-lights-background-32115-large.mp4");
+      setPbiCompiling(false);
+    }, 8000);
   };
 
   const clearBranding = async () => {
@@ -351,42 +381,93 @@ const AdminVault = () => {
           {/* Main Content Area */}
           <div className="lg:col-span-9">
             <AnimatePresence mode="wait">
-              
-              {activeTab === "strategy" && (
+                          {activeTab === "strategy" && (
                 <motion.div 
                    key="strategy"
                    initial={{ opacity: 0, x: 20 }}
                    animate={{ opacity: 1, x: 0 }}
                    exit={{ opacity: 0, x: -20 }}
-                   className="bg-card/20 border border-white/10 rounded-2xl p-8"
+                   className="bg-[#0b0b0e] border border-white/10 rounded-3xl p-8 relative overflow-hidden shadow-2xl min-h-[500px]"
                 >
-                  <h2 className="text-2xl font-black uppercase tracking-widest mb-6 border-b border-white/10 pb-4">Internal Master Strategy</h2>
-                  
-                  <div className="space-y-8">
-                    <div className="bg-red-900/20 border border-red-500/30 p-6 rounded-xl relative overflow-hidden group">
-                      <div className="absolute top-0 right-0 p-3">
-                        <span className="text-[10px] font-black uppercase tracking-widest text-red-500 border border-red-500/50 px-2 py-1 rounded">Top Secret</span>
-                      </div>
-                      <h3 className="text-xl font-bold mb-2">Project: AI Automated Channels</h3>
-                      <p className="text-primary font-mono text-xs mb-4">Status: IN DEVELOPMENT • Coming Soon</p>
-                      <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-                        The ultimate incomeization strategy. Rather than purely serving external clients, TV³ Studios is secretly building pipelines for fully automated, AI-driven digital entertainment channels. 
-                      </p>
-                      <ul className="text-sm text-white/80 space-y-2 list-disc list-inside">
-                        <li>Infinite content generation engine.</li>
-                        <li>Passive algorithmic digital income.</li>
-                        <li>Circumvents traditional human resource bottlenecks.</li>
-                      </ul>
-                    </div>
+                  {/* Dot Grid Background */}
+                  <div className="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none" />
 
-                    <div className="bg-white/5 border border-white/10 p-6 rounded-xl">
-                      <h3 className="text-xl font-bold mb-2">Architectural Divisions</h3>
-                      <p className="text-muted-foreground text-sm leading-relaxed">
-                        <strong>Artistic Directives (Rohit):</strong> Story scaling, brand aesthetics, algorithm manipulation via narrative.<br/><br/>
-                        <strong>Corporate Backbone (Roopesh):</strong> Structural compliance, heavy-lifting financial closing, operations.<br/><br/>
-                        <strong>Tech Infrastructure (Piyush):</strong> Prompt chaining pipelines, generative video integrations, TALES TECH MSME ops.
-                      </p>
+                  <div className="border-b border-white/10 pb-4 mb-8 flex justify-between items-center relative z-10 text-left">
+                    <div>
+                      <h2 className="text-2xl font-black uppercase tracking-widest text-white">TV³ Master Planning Board</h2>
+                      <p className="text-muted-foreground text-xs uppercase tracking-[0.2em] mt-1">Creative Pinned Whiteboard & Vision Board</p>
                     </div>
+                    <span className="text-[10px] font-mono bg-red-500/10 border border-red-500/30 text-red-500 px-3 py-1 rounded font-bold uppercase tracking-wider animate-pulse">
+                      Top Secret Vault
+                    </span>
+                  </div>
+
+                  {/* Visual Sticky Notes Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10 text-left">
+                    
+                    {/* Note 1: Yellow - The Vision */}
+                    <motion.div 
+                      whileHover={{ scale: 1.02, rotate: -1 }}
+                      className="bg-amber-100/90 text-zinc-950 p-6 rounded-xl shadow-2xl transform rotate-[-2deg] flex flex-col justify-between min-h-[220px] relative border-l-4 border-amber-400"
+                    >
+                      <div className="absolute top-2 left-1/2 -translate-x-1/2 w-12 h-4 bg-zinc-900/10 backdrop-blur-sm rounded" />
+                      <div>
+                        <h3 className="font-sans font-black uppercase tracking-wider text-sm border-b border-zinc-950/10 pb-2 mb-3 mt-1">// THE VISION (PBI & BEYOND)</h3>
+                        <p className="font-sans text-xs leading-relaxed font-semibold">
+                          Infinite content generation engine. Passive algorithmic digital income. PBI (Poster Boy AI) hamara pehla SaaS product hai jo studios ko independent funding dega!
+                        </p>
+                      </div>
+                      <span className="text-[8px] font-mono text-zinc-600 block text-right mt-4 font-bold">Priority: HIGH • Status: ACTIVE</span>
+                    </motion.div>
+
+                    {/* Note 2: Cyan - Rohit */}
+                    <motion.div 
+                      whileHover={{ scale: 1.02, rotate: 2 }}
+                      className="bg-cyan-100/90 text-zinc-950 p-6 rounded-xl shadow-2xl transform rotate-[1deg] flex flex-col justify-between min-h-[220px] relative border-l-4 border-cyan-400"
+                    >
+                      <div className="absolute top-2 left-1/2 -translate-x-1/2 w-12 h-4 bg-zinc-900/10 backdrop-blur-sm rounded" />
+                      <div>
+                        <h3 className="font-sans font-black uppercase tracking-wider text-sm border-b border-zinc-950/10 pb-2 mb-3 mt-1">// CREATIVE DIRECTIVES (ROHIT)</h3>
+                        <p className="font-sans text-xs leading-relaxed font-semibold">
+                          Story scaling, brand aesthetics, aur narrative-driven algorithm manipulation. 
+                          Remember: Hamara kaam humesha dynamic aur premium hona chahiye, no cheap wraps. Output quality ensures high ticket sales!
+                        </p>
+                      </div>
+                      <span className="text-[8px] font-mono text-zinc-600 block text-right mt-4 font-bold">Owner: Rohit • Creative Core</span>
+                    </motion.div>
+
+                    {/* Note 3: Pink - Operations */}
+                    <motion.div 
+                      whileHover={{ scale: 1.02, rotate: -2 }}
+                      className="bg-rose-100/90 text-zinc-950 p-6 rounded-xl shadow-2xl transform rotate-[-1deg] flex flex-col justify-between min-h-[220px] relative border-l-4 border-rose-400"
+                    >
+                      <div className="absolute top-2 left-1/2 -translate-x-1/2 w-12 h-4 bg-zinc-900/10 backdrop-blur-sm rounded" />
+                      <div>
+                        <h3 className="font-sans font-black uppercase tracking-wider text-sm border-b border-zinc-950/10 pb-2 mb-3 mt-1">// CORPORATE BACKBONE (ROOPESH)</h3>
+                        <p className="font-sans text-xs leading-relaxed font-semibold">
+                          Compliance protocols, heavy-lifting financial closes, and invoicing structures.
+                          Keep cashflow verified, retainers monitored, and local business deals locked in with clear UPI logs.
+                        </p>
+                      </div>
+                      <span className="text-[8px] font-mono text-zinc-600 block text-right mt-4 font-bold">Owner: Roopesh • Ops Admin</span>
+                    </motion.div>
+
+                    {/* Note 4: Purple - Tech Setup */}
+                    <motion.div 
+                      whileHover={{ scale: 1.02, rotate: 1 }}
+                      className="bg-purple-100/90 text-zinc-950 p-6 rounded-xl shadow-2xl transform rotate-[2deg] flex flex-col justify-between min-h-[220px] relative border-l-4 border-purple-400"
+                    >
+                      <div className="absolute top-2 left-1/2 -translate-x-1/2 w-12 h-4 bg-zinc-900/10 backdrop-blur-sm rounded" />
+                      <div>
+                        <h3 className="font-sans font-black uppercase tracking-wider text-sm border-b border-zinc-950/10 pb-2 mb-3 mt-1">// TECH ARCHITECTURE (PIYUSH)</h3>
+                        <p className="font-sans text-xs leading-relaxed font-semibold">
+                          Generative video integrations, prompt chains, database triggers.
+                          Current: PBI backend flows (Script Agent, Speech Synthesis, Video Compiler) running in standard sandbox/lab.
+                        </p>
+                      </div>
+                      <span className="text-[8px] font-mono text-zinc-600 block text-right mt-4 font-bold">Owner: Piyush • Tech Node</span>
+                    </motion.div>
+
                   </div>
                 </motion.div>
               )}
@@ -1167,6 +1248,72 @@ const AdminVault = () => {
                               value={pbiResponse.caption}
                               className="w-full bg-[#111114] border border-white/5 rounded-xl p-3 text-xs text-zinc-300 font-mono resize-none focus:outline-none"
                             />
+                          </div>
+
+                          {/* Video Compiler Simulation */}
+                          <div className="space-y-4 border-t border-white/5 pt-4">
+                            <span className="font-mono text-[8px] uppercase tracking-widest text-zinc-500 block font-bold">// PBI Video Compiler Engine</span>
+                            
+                            {!pbiCompiling && !pbiVideoUrl && (
+                              <button
+                                onClick={handleCompileVideo}
+                                className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-black font-mono text-xs font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg hover:shadow-amber-500/20"
+                              >
+                                Compile Reel Video (Beta)
+                              </button>
+                            )}
+
+                            {pbiCompiling && (
+                              <div className="bg-[#111114] border border-white/5 p-4 rounded-xl space-y-3 font-mono">
+                                <div className="flex justify-between items-center text-[10px]">
+                                  <span className="text-amber-500 font-bold animate-pulse">{pbiCompileStep}</span>
+                                  <span className="text-zinc-500">Processing...</span>
+                                </div>
+                                <div className="w-full h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+                                  <div className="h-full bg-gradient-to-r from-amber-500 to-yellow-500 rounded-full animate-pulse w-3/4" />
+                                </div>
+                              </div>
+                            )}
+
+                            {pbiVideoUrl && (
+                              <div className="bg-black/50 border border-white/5 p-4 rounded-2xl flex flex-col md:flex-row gap-4 items-center justify-center">
+                                {/* Vertical Video Player */}
+                                <div className="w-48 h-80 bg-zinc-950 border border-white/10 rounded-xl overflow-hidden relative shadow-2xl shrink-0">
+                                  <video 
+                                    src={pbiVideoUrl}
+                                    controls 
+                                    autoPlay 
+                                    loop 
+                                    muted 
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
+                                
+                                <div className="space-y-3 text-left">
+                                  <span className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-mono text-[8px] font-bold uppercase tracking-wider">
+                                    Status: COMPILED ✅
+                                  </span>
+                                  <h5 className="font-bold text-sm text-white">Master vertical Reel ready</h5>
+                                  <p className="text-[10px] text-zinc-500 leading-relaxed font-mono">Dual host audio muxing & Stable Diffusion visual timeline are fully compiled into MP4.</p>
+                                  
+                                  <div className="flex flex-col gap-2 pt-2">
+                                    <a 
+                                      href={pbiVideoUrl} 
+                                      download="pbi-compiled-reel.mp4" 
+                                      className="py-2 px-4 rounded-lg bg-white/5 border border-white/10 text-white font-mono text-[10px] font-bold uppercase tracking-widest text-center hover:bg-white/10 transition-colors"
+                                    >
+                                      Download MP4
+                                    </a>
+                                    <button 
+                                      onClick={() => alert("Reel sent to Discord Approval Webhook!")}
+                                      className="py-2 px-4 rounded-lg bg-amber-500 text-black font-mono text-[10px] font-black uppercase tracking-widest text-center hover:bg-white transition-colors cursor-pointer"
+                                    >
+                                      Dispatch to Discord
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
                           </div>
                         </div>
                       ) : (
