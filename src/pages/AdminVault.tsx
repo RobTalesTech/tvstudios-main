@@ -13,6 +13,15 @@ const AdminVault = () => {
   const [brandingIntakes, setBrandingIntakes] = useState<any[]>([]);
   const [serviceLeads, setServiceLeads] = useState<any[]>([]);
 
+  // PBI Lab Tester Panel States
+  const [pbiSelectedBrand, setPbiSelectedBrand] = useState("");
+  const [pbiUpdateText, setPbiUpdateText] = useState("");
+  const [pbiContentType, setPbiContentType] = useState("Technical Share");
+  const [pbiLanguage, setPbiLanguage] = useState("Hinglish");
+  const [pbiResponse, setPbiResponse] = useState<any>(null);
+  const [pbiLoading, setPbiLoading] = useState(false);
+  const [pbiError, setPbiError] = useState("");
+
   useEffect(() => {
     const loadApplications = async () => {
       if (supabase) {
@@ -135,6 +144,46 @@ const AdminVault = () => {
       } catch (err) {
         console.error("Supabase leads delete error:", err);
       }
+    }
+  };
+
+  const handleRunPbiAgent = async () => {
+    if (!pbiSelectedBrand) {
+      alert("Please select a brand profile first.");
+      return;
+    }
+    setPbiLoading(true);
+    setPbiError("");
+    setPbiResponse(null);
+
+    try {
+      const res = await fetch('/api/pbi/agent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          brandId: pbiSelectedBrand,
+          updateText: pbiUpdateText,
+          contentType: pbiContentType,
+          language: pbiLanguage
+        })
+      });
+
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error(errText || "Failed to trigger PBI agent.");
+      }
+
+      const result = await res.json();
+      if (result.success) {
+        setPbiResponse(result.data);
+      } else {
+        throw new Error(result.error || "PBI Agent returned an error.");
+      }
+    } catch (err: any) {
+      console.error(err);
+      setPbiError(err.message || "An unexpected error occurred during execution.");
+    } finally {
+      setPbiLoading(false);
     }
   };
 
@@ -285,6 +334,12 @@ const AdminVault = () => {
             >
               <Database className="w-5 h-5" /> Service Leads ({serviceLeads.length})
             </button>
+             <button 
+               onClick={() => setActiveTab("pbi_lab")}
+               className={`w-full flex items-center gap-3 p-4 rounded-xl text-sm font-bold uppercase tracking-widest transition-all ${activeTab === "pbi_lab" ? "bg-amber-500 text-black shadow-[0_0_15px_rgba(245,158,11,0.4)]" : "bg-white/5 text-amber-500 border border-amber-500/20 hover:bg-white/10"}`}
+             >
+               <Cpu className="w-5 h-5 animate-pulse" /> PBI Lab (Autopilot)
+             </button>
           </div>
 
           {/* Main Content Area */}
@@ -774,6 +829,162 @@ const AdminVault = () => {
                         <p className="text-zinc-500 font-mono text-xs uppercase tracking-widest">No service leads available</p>
                       </div>
                     )}
+                  </div>
+                </motion.div>
+              )}
+
+              {activeTab === "pbi_lab" && (
+                <motion.div 
+                   key="pbi_lab"
+                   initial={{ opacity: 0, x: 20 }}
+                   animate={{ opacity: 1, x: 0 }}
+                   exit={{ opacity: 0, x: -20 }}
+                   className="bg-card/20 border border-white/10 rounded-2xl p-8 space-y-6"
+                >
+                  <div className="border-b border-white/10 pb-4 text-left">
+                    <h2 className="text-2xl font-black uppercase tracking-widest text-amber-500">PBI Lab Terminal</h2>
+                    <p className="text-muted-foreground text-xs uppercase tracking-[0.2em] mt-1">Autonomous Content Simulation & Pilot Engine</p>
+                  </div>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    {/* Left Panel: Configuration Form */}
+                    <div className="lg:col-span-5 space-y-4 text-left">
+                      <div className="space-y-2">
+                        <label className="font-mono text-[9px] uppercase tracking-widest text-zinc-500 block font-bold">Select Active Brand Profile</label>
+                        <select
+                          value={pbiSelectedBrand}
+                          onChange={(e) => setPbiSelectedBrand(e.target.value)}
+                          className="w-full bg-[#111114] border border-white/10 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500 transition-colors font-mono"
+                        >
+                          <option value="">-- CHOOSE BRAND --</option>
+                          <option value="MOCK-PILOT-99">TV³ Studios (Internal Pilot Node)</option>
+                          {brandingIntakes.map((intake) => (
+                            <option key={intake.id} value={intake.id}>
+                              {intake.business_name} ({intake.plan})
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <label className="font-mono text-[9px] uppercase tracking-widest text-zinc-500 block font-bold">Content Angle</label>
+                          <select
+                            value={pbiContentType}
+                            onChange={(e) => setPbiContentType(e.target.value)}
+                            className="w-full bg-[#111114] border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-500 transition-colors font-mono"
+                          >
+                            <option value="Technical Share">Technical Share</option>
+                            <option value="News">News & Updates</option>
+                            <option value="Achievement">Achievement</option>
+                            <option value="Q&A">Q&A Dialogue</option>
+                          </select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="font-mono text-[9px] uppercase tracking-widest text-zinc-500 block font-bold">Output Language</label>
+                          <select
+                            value={pbiLanguage}
+                            onChange={(e) => setPbiLanguage(e.target.value)}
+                            className="w-full bg-[#111114] border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-500 transition-colors font-mono"
+                          >
+                            <option value="Hinglish">Hinglish (HIN+ENG)</option>
+                            <option value="English">English</option>
+                            <option value="Hindi">Hindi (हिंदी)</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="font-mono text-[9px] uppercase tracking-widest text-zinc-500 block font-bold">Latest Company News / Update (Input Source)</label>
+                        <textarea
+                          rows={4}
+                          value={pbiUpdateText}
+                          onChange={(e) => setPbiUpdateText(e.target.value)}
+                          placeholder="What did the brand achieve or update? e.g. We just crossed 500 sales, or here is our website link Acme.com, or our founder just wrote a new book."
+                          className="w-full bg-[#111114] border border-white/10 rounded-xl p-4 text-sm text-white focus:outline-none focus:border-amber-500 transition-colors font-mono resize-none"
+                        />
+                      </div>
+
+                      <button
+                        onClick={handleRunPbiAgent}
+                        disabled={pbiLoading}
+                        className="w-full py-4 rounded-xl bg-amber-500 hover:bg-white text-black font-mono text-xs font-black uppercase tracking-widest transition-all shadow-[0_4px_25px_rgba(245,158,11,0.2)] flex items-center justify-center gap-2 hover:scale-[1.01] cursor-pointer"
+                      >
+                        {pbiLoading ? "Executing PBI Agent..." : "Run PBI Scriptwriter"}
+                        <Cpu className="w-4 h-4 animate-pulse" />
+                      </button>
+
+                      {pbiError && (
+                        <div className="bg-red-500/10 border border-red-500/30 text-red-500 rounded-xl p-4 text-xs font-mono text-center">
+                          {pbiError}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Right Panel: Output Generation Viewer */}
+                    <div className="lg:col-span-7 border border-white/5 bg-black/40 rounded-3xl p-6 flex flex-col justify-start space-y-6 min-h-[400px]">
+                      {pbiLoading ? (
+                        <div className="flex-grow flex flex-col items-center justify-center space-y-4">
+                          <Cpu className="w-10 h-10 text-amber-500 animate-spin" />
+                          <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-zinc-500 animate-pulse">Processing brand matrix dialogue...</span>
+                        </div>
+                      ) : pbiResponse ? (
+                        <div className="space-y-6 text-left overflow-y-auto max-h-[500px] pr-2 custom-scrollbar">
+                          {/* Reasoning Strategy */}
+                          <div className="bg-amber-500/5 border border-amber-500/20 rounded-xl p-4 space-y-2">
+                            <span className="font-mono text-[8px] uppercase tracking-widest text-amber-500 font-bold block">// Agentic Reasoning Decision</span>
+                            <p className="text-[11px] text-zinc-300 leading-relaxed font-mono">{pbiResponse.decisionLogic}</p>
+                          </div>
+
+                          {/* Interactive Conversation Transcript */}
+                          <div className="space-y-4">
+                            <span className="font-mono text-[8px] uppercase tracking-widest text-zinc-500 block font-bold">// Simulated Podcast Dialogue</span>
+                            
+                            {pbiResponse.conversation && pbiResponse.conversation.map((line: any, idx: number) => {
+                              const isHostA = line.host === "A";
+                              return (
+                                <div key={idx} className="space-y-1.5">
+                                  <div className={`flex items-start gap-2 ${isHostA ? '' : 'flex-row-reverse'}`}>
+                                    {/* Profile Icon */}
+                                    <div className={`w-6 h-6 rounded-full border flex items-center justify-center text-[10px] font-mono font-bold shrink-0 ${isHostA ? 'border-amber-500/30 bg-amber-500/10 text-amber-500' : 'border-zinc-500/30 bg-zinc-800 text-white'}`}>
+                                      {line.host}
+                                    </div>
+                                    {/* Text Balloon */}
+                                    <div className={`p-3 rounded-2xl text-xs max-w-[80%] font-body ${isHostA ? 'bg-amber-500/10 border border-amber-500/20 text-zinc-100 rounded-tl-none' : 'bg-zinc-900 border border-zinc-800 text-zinc-200 rounded-tr-none'}`}>
+                                      {line.dialogue}
+                                    </div>
+                                  </div>
+                                  
+                                  {/* Stable Diffusion Visual prompt matching this line */}
+                                  <div className={`text-[8px] text-zinc-500 font-mono italic max-w-[80%] ${isHostA ? 'pl-8' : 'pr-8 text-right ml-auto'}`}>
+                                    <span className="font-bold uppercase tracking-wider text-[7px] text-zinc-600 block not-italic">// Visual Frame SDXL Prompts</span>
+                                    "{line.imagePrompt}"
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+
+                          {/* Social media caption */}
+                          <div className="space-y-2 border-t border-white/5 pt-4">
+                            <span className="font-mono text-[8px] uppercase tracking-widest text-zinc-500 block font-bold">// Caption & Hashtags</span>
+                            <textarea
+                              readOnly
+                              rows={3}
+                              value={pbiResponse.caption}
+                              className="w-full bg-[#111114] border border-white/5 rounded-xl p-3 text-xs text-zinc-300 font-mono resize-none focus:outline-none"
+                            />
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex-grow flex flex-col items-center justify-center text-center space-y-2">
+                          <Cpu className="w-8 h-8 text-zinc-700 animate-pulse" />
+                          <span className="font-mono text-[10px] uppercase tracking-widest text-zinc-600">PBI Agent Inactive</span>
+                          <p className="text-[10px] text-zinc-500 max-w-[200px] leading-relaxed">Select a brand, configure variables, and run the simulator to preview output.</p>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </motion.div>
               )}
