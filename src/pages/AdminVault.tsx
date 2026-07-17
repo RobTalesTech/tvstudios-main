@@ -227,7 +227,7 @@ const AdminVault = () => {
           await new Promise(r => setTimeout(r, 2000));
           setPbiCompileStep("[4/4] Compiling master vertical MP4 file...");
           await new Promise(r => setTimeout(r, 2000));
-          setPbiVideoUrl("https://assets.mixkit.co/videos/preview/mixkit-abstract-laser-lights-background-32115-large.mp4");
+          setPbiVideoUrl("https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4");
         } else {
           setPbiCompileStep("Reel compiling in GitHub Actions... Check your Discord channel in ~30s!");
           await new Promise(r => setTimeout(r, 4000));
