@@ -950,7 +950,7 @@ const AdminVault = () => {
                             {pbiResponse.conversation && pbiResponse.conversation.map((line: any, idx: number) => {
                               const isHostA = line.host === "A";
                               return (
-                                <div key={idx} className="space-y-1.5">
+                                <div key={idx} className="space-y-2 border-b border-white/5 pb-3 last:border-0 last:pb-0">
                                   <div className={`flex items-start gap-2 ${isHostA ? '' : 'flex-row-reverse'}`}>
                                     {/* Profile Icon */}
                                     <div className={`w-6 h-6 rounded-full border flex items-center justify-center text-[10px] font-mono font-bold shrink-0 ${isHostA ? 'border-amber-500/30 bg-amber-500/10 text-amber-500' : 'border-zinc-500/30 bg-zinc-800 text-white'}`}>
@@ -962,10 +962,35 @@ const AdminVault = () => {
                                     </div>
                                   </div>
                                   
-                                  {/* Stable Diffusion Visual prompt matching this line */}
-                                  <div className={`text-[8px] text-zinc-500 font-mono italic max-w-[80%] ${isHostA ? 'pl-8' : 'pr-8 text-right ml-auto'}`}>
-                                    <span className="font-bold uppercase tracking-wider text-[7px] text-zinc-600 block not-italic">// Visual Frame SDXL Prompts</span>
-                                    "{line.imagePrompt}"
+                                  {/* Dynamic visual + audio asset generator inline previews */}
+                                  <div className={`flex items-start gap-3 ${isHostA ? 'pl-8' : 'pr-8 flex-row-reverse text-right'}`}>
+                                    {line.imageUrl && (
+                                      <a href={line.imageUrl} target="_blank" rel="noopener noreferrer" className="shrink-0 relative group block overflow-hidden rounded-lg">
+                                        <img 
+                                          src={line.imageUrl} 
+                                          alt="Visual Frame SDXL" 
+                                          className="w-14 h-24 object-cover rounded-lg border border-white/10 hover:border-amber-500/50 transition-all group-hover:scale-105 duration-300"
+                                        />
+                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                          <span className="text-[7px] font-mono text-white font-bold uppercase tracking-wider">HD</span>
+                                        </div>
+                                      </a>
+                                    )}
+                                    
+                                    <div className="space-y-2 max-w-[70%]">
+                                      <div className="text-[8px] text-zinc-500 font-mono italic">
+                                        <span className="font-bold uppercase tracking-wider text-[7px] text-zinc-600 block not-italic">// Visual Frame SDXL Prompt</span>
+                                        "{line.imagePrompt}"
+                                      </div>
+                                      
+                                      {line.audioUrl && (
+                                        <audio 
+                                          src={line.audioUrl} 
+                                          controls 
+                                          className="w-full max-w-[200px] h-6 rounded bg-[#111114] border border-white/5 opacity-70 hover:opacity-100 transition-opacity block"
+                                        />
+                                      )}
+                                    </div>
                                   </div>
                                 </div>
                               );

@@ -24,6 +24,18 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'brandId is required' });
   }
 
+  const enrichConversation = (conv, lang) => {
+    if (!Array.isArray(conv)) return conv;
+    return conv.map((line) => {
+      const seed = Math.floor(Math.random() * 1000000);
+      return {
+        ...line,
+        imageUrl: `https://image.pollinations.ai/prompt/${encodeURIComponent(line.imagePrompt)}?width=1080&height=1920&nologo=true&private=true&seed=${seed}`,
+        audioUrl: `/api/pbi/tts?host=${line.host}&lang=${encodeURIComponent(lang)}&text=${encodeURIComponent(line.dialogue)}`
+      };
+    });
+  };
+
   // Load API keys
   const geminiKey = process.env.GEMINI_API_KEY;
   const supabaseUrl = process.env.VITE_SUPABASE_URL;
@@ -143,6 +155,8 @@ You must return your output ONLY as a JSON object matching this structure:
       languageUsed: "Hinglish"
     };
 
+    mockJson.conversation = enrichConversation(mockJson.conversation, mockJson.languageUsed);
+
     return res.status(200).json({
       success: true,
       data: mockJson,
@@ -180,6 +194,7 @@ You must return your output ONLY as a JSON object matching this structure:
 
     // Parse the JSON output returned by Gemini
     const parsedData = JSON.parse(responseText);
+    parsedData.conversation = enrichConversation(parsedData.conversation, parsedData.languageUsed || targetLanguage);
 
     return res.status(200).json({
       success: true,
