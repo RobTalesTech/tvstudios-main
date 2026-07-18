@@ -243,6 +243,67 @@ const AdminVault = () => {
     }
   };
 
+  const handleDownloadBrandedPhoto = () => {
+    if (!pbiResponse) return;
+    
+    const activeBrandObj = brandingIntakes.find(i => i.id === pbiSelectedBrand) || { 
+      business_name: "TV³ Studios" 
+    };
+
+    const canvas = document.createElement("canvas");
+    canvas.width = 1080;
+    canvas.height = 1080;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.src = pbiResponse.imageUrl;
+    
+    // Show download indicator on console/alert
+    console.log("Compiling high-resolution branded poster canvas...");
+
+    img.onload = () => {
+      // Draw graphic background
+      ctx.drawImage(img, 0, 0, 1080, 1080);
+
+      // Gradient overlay footer
+      const gradient = ctx.createLinearGradient(0, 680, 0, 1080);
+      gradient.addColorStop(0, "rgba(0, 0, 0, 0)");
+      gradient.addColorStop(0.3, "rgba(0, 0, 0, 0.7)");
+      gradient.addColorStop(1, "rgba(0, 0, 0, 0.95)");
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 680, 1080, 400);
+
+      // Draw active brand accent line
+      const brandColors = activeBrandObj.brand_colors || "#D4AF37";
+      const primaryColor = brandColors.split(",")[0].trim() || "#D4AF37";
+      ctx.fillStyle = primaryColor;
+      ctx.fillRect(60, 830, 200, 6);
+
+      // Draw Brand text
+      ctx.fillStyle = primaryColor;
+      ctx.font = "bold 28px monospace";
+      ctx.fillText(activeBrandObj.business_name.toUpperCase(), 60, 890);
+
+      // Title header
+      ctx.fillStyle = "#FFFFFF";
+      ctx.font = "950 56px sans-serif";
+      ctx.fillText((pbiResponse.title || "NEWS UPDATE").toUpperCase(), 60, 965);
+
+      // Tagline subheader
+      ctx.fillStyle = "#A1A1AA";
+      ctx.font = "300 28px sans-serif";
+      ctx.fillText(pbiResponse.tagline || "Powered by TV³ Studios Autopilot", 60, 1015);
+
+      // Trigger instant anchor click download
+      const link = document.createElement("a");
+      link.download = `${activeBrandObj.business_name.replace(/\s+/g, "_")}_branded_post.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    };
+  };
+
   const clearBranding = async () => {
     localStorage.removeItem("tv3_branding_intake");
     setBrandingIntakes([]);
@@ -1142,16 +1203,14 @@ const AdminVault = () => {
 
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <label className="font-mono text-[9px] uppercase tracking-widest text-zinc-500 block font-bold">Content Angle</label>
+                          <label className="font-mono text-[9px] uppercase tracking-widest text-zinc-500 block font-bold">Content Format</label>
                           <select
                             value={pbiContentType}
                             onChange={(e) => setPbiContentType(e.target.value)}
                             className="w-full bg-[#111114] border border-white/10 text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-500 transition-colors font-mono"
                           >
-                            <option value="Technical Share">Technical Share</option>
-                            <option value="News">News & Updates</option>
-                            <option value="Achievement">Achievement</option>
-                            <option value="Q&A">Q&A Dialogue</option>
+                            <option value="Podcast Reel (Video)">Podcast Reel (Video)</option>
+                            <option value="Branded Photo Post">Branded Photo Post</option>
                           </select>
                         </div>
 
@@ -1212,58 +1271,60 @@ const AdminVault = () => {
                           </div>
 
                           {/* Interactive Conversation Transcript */}
-                          <div className="space-y-4">
-                            <span className="font-mono text-[8px] uppercase tracking-widest text-zinc-500 block font-bold">// Simulated Podcast Dialogue</span>
-                            
-                            {pbiResponse.conversation && pbiResponse.conversation.map((line: any, idx: number) => {
-                              const isHostA = line.host === "A";
-                              return (
-                                <div key={idx} className="space-y-2 border-b border-white/5 pb-3 last:border-0 last:pb-0">
-                                  <div className={`flex items-start gap-2 ${isHostA ? '' : 'flex-row-reverse'}`}>
-                                    {/* Profile Icon */}
-                                    <div className={`w-6 h-6 rounded-full border flex items-center justify-center text-[10px] font-mono font-bold shrink-0 ${isHostA ? 'border-amber-500/30 bg-amber-500/10 text-amber-500' : 'border-zinc-500/30 bg-zinc-800 text-white'}`}>
-                                      {line.host}
-                                    </div>
-                                    {/* Text Balloon */}
-                                    <div className={`p-3 rounded-2xl text-xs max-w-[80%] font-body ${isHostA ? 'bg-amber-500/10 border border-amber-500/20 text-zinc-100 rounded-tl-none' : 'bg-zinc-900 border border-zinc-800 text-zinc-200 rounded-tr-none'}`}>
-                                      {line.dialogue}
-                                    </div>
-                                  </div>
-                                  
-                                  {/* Dynamic visual + audio asset generator inline previews */}
-                                  <div className={`flex items-start gap-3 ${isHostA ? 'pl-8' : 'pr-8 flex-row-reverse text-right'}`}>
-                                    {line.imageUrl && (
-                                      <a href={line.imageUrl} target="_blank" rel="noopener noreferrer" className="shrink-0 relative group block overflow-hidden rounded-lg">
-                                        <img 
-                                          src={line.imageUrl} 
-                                          alt="Visual Frame SDXL" 
-                                          className="w-14 h-24 object-cover rounded-lg border border-white/10 hover:border-amber-500/50 transition-all group-hover:scale-105 duration-300"
-                                        />
-                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                                          <span className="text-[7px] font-mono text-white font-bold uppercase tracking-wider">HD</span>
-                                        </div>
-                                      </a>
-                                    )}
-                                    
-                                    <div className="space-y-2 max-w-[70%]">
-                                      <div className="text-[8px] text-zinc-500 font-mono italic">
-                                        <span className="font-bold uppercase tracking-wider text-[7px] text-zinc-600 block not-italic">// Visual Frame SDXL Prompt</span>
-                                        "{line.imagePrompt}"
+                          {pbiResponse.contentType !== "Branded Photo Post" && (
+                            <div className="space-y-4">
+                              <span className="font-mono text-[8px] uppercase tracking-widest text-zinc-500 block font-bold">// Simulated Podcast Dialogue</span>
+                              
+                              {pbiResponse.conversation && pbiResponse.conversation.map((line: any, idx: number) => {
+                                const isHostA = line.host === "A";
+                                return (
+                                  <div key={idx} className="space-y-2 border-b border-white/5 pb-3 last:border-0 last:pb-0">
+                                    <div className={`flex items-start gap-2 ${isHostA ? '' : 'flex-row-reverse'}`}>
+                                      {/* Profile Icon */}
+                                      <div className={`w-6 h-6 rounded-full border flex items-center justify-center text-[10px] font-mono font-bold shrink-0 ${isHostA ? 'border-amber-500/30 bg-amber-500/10 text-amber-500' : 'border-zinc-500/30 bg-zinc-800 text-white'}`}>
+                                        {line.host}
                                       </div>
-                                      
-                                      {line.audioUrl && (
-                                        <audio 
-                                          src={line.audioUrl} 
-                                          controls 
-                                          className="w-full max-w-[200px] h-6 rounded bg-[#111114] border border-white/5 opacity-70 hover:opacity-100 transition-opacity block"
-                                        />
+                                      {/* Text Balloon */}
+                                      <div className={`p-3 rounded-2xl text-xs max-w-[80%] font-body ${isHostA ? 'bg-amber-500/10 border border-amber-500/20 text-zinc-100 rounded-tl-none' : 'bg-zinc-900 border border-zinc-800 text-zinc-200 rounded-tr-none'}`}>
+                                        {line.dialogue}
+                                      </div>
+                                    </div>
+                                    
+                                    {/* Dynamic visual + audio asset generator inline previews */}
+                                    <div className={`flex items-start gap-3 ${isHostA ? 'pl-8' : 'pr-8 flex-row-reverse text-right'}`}>
+                                      {line.imageUrl && (
+                                        <a href={line.imageUrl} target="_blank" rel="noopener noreferrer" className="shrink-0 relative group block overflow-hidden rounded-lg">
+                                          <img 
+                                            src={line.imageUrl} 
+                                            alt="Visual Frame SDXL" 
+                                            className="w-14 h-24 object-cover rounded-lg border border-white/10 hover:border-amber-500/50 transition-all group-hover:scale-105 duration-300"
+                                          />
+                                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                            <span className="text-[7px] font-mono text-white font-bold uppercase tracking-wider">HD</span>
+                                          </div>
+                                        </a>
                                       )}
+                                      
+                                      <div className="space-y-2 max-w-[70%]">
+                                        <div className="text-[8px] text-zinc-500 font-mono italic">
+                                          <span className="font-bold uppercase tracking-wider text-[7px] text-zinc-600 block not-italic">// Visual Frame SDXL Prompt</span>
+                                          "{line.imagePrompt}"
+                                        </div>
+                                        
+                                        {line.audioUrl && (
+                                          <audio 
+                                            src={line.audioUrl} 
+                                            controls 
+                                            className="w-full max-w-[200px] h-6 rounded bg-[#111114] border border-white/5 opacity-70 hover:opacity-100 transition-opacity block"
+                                          />
+                                        )}
+                                      </div>
                                     </div>
                                   </div>
-                                </div>
-                              );
-                            })}
-                          </div>
+                                );
+                              })}
+                            </div>
+                          )}
 
                           {/* Social media caption */}
                           <div className="space-y-2 border-t border-white/5 pt-4">
@@ -1274,70 +1335,115 @@ const AdminVault = () => {
                               value={pbiResponse.caption}
                               className="w-full bg-[#111114] border border-white/5 rounded-xl p-3 text-xs text-zinc-300 font-mono resize-none focus:outline-none"
                             />
-                          </div>
 
-                          {/* Video Compiler Simulation */}
-                          <div className="space-y-4 border-t border-white/5 pt-4">
-                            <span className="font-mono text-[8px] uppercase tracking-widest text-zinc-500 block font-bold">// PBI Video Compiler Engine</span>
-                            
-                            {!pbiCompiling && !pbiVideoUrl && (
-                              <button
-                                onClick={handleCompileVideo}
-                                className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-black font-mono text-xs font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg hover:shadow-amber-500/20"
-                              >
-                                Compile Reel Video (Beta)
-                              </button>
-                            )}
+                            {/* Video Compiler Simulation */}
+                            {pbiResponse.contentType !== "Branded Photo Post" && (
+                              <div className="space-y-4 border-t border-white/5 pt-4">
+                                <span className="font-mono text-[8px] uppercase tracking-widest text-zinc-500 block font-bold">// PBI Video Compiler Engine</span>
+                                
+                                {!pbiCompiling && !pbiVideoUrl && (
+                                  <button
+                                    onClick={handleCompileVideo}
+                                    className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-black font-mono text-xs font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg hover:shadow-amber-500/20"
+                                  >
+                                    Compile Reel Video (Beta)
+                                  </button>
+                                )}
 
-                            {pbiCompiling && (
-                              <div className="bg-[#111114] border border-white/5 p-4 rounded-xl space-y-3 font-mono">
-                                <div className="flex justify-between items-center text-[10px]">
-                                  <span className="text-amber-500 font-bold animate-pulse">{pbiCompileStep}</span>
-                                  <span className="text-zinc-500">Processing...</span>
-                                </div>
-                                <div className="w-full h-1.5 bg-zinc-800 rounded-full overflow-hidden">
-                                  <div className="h-full bg-gradient-to-r from-amber-500 to-yellow-500 rounded-full animate-pulse w-3/4" />
-                                </div>
+                                {pbiCompiling && (
+                                  <div className="bg-[#111114] border border-white/5 p-4 rounded-xl space-y-3 font-mono">
+                                    <div className="flex justify-between items-center text-[10px]">
+                                      <span className="text-amber-500 font-bold animate-pulse">{pbiCompileStep}</span>
+                                      <span className="text-zinc-500">Processing...</span>
+                                    </div>
+                                    <div className="w-full h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+                                      <div className="h-full bg-gradient-to-r from-amber-500 to-yellow-500 rounded-full animate-pulse w-3/4" />
+                                    </div>
+                                  </div>
+                                )}
+
+                                {pbiVideoUrl && (
+                                  <div className="bg-black/50 border border-white/5 p-4 rounded-2xl flex flex-col md:flex-row gap-4 items-center justify-center">
+                                    {/* Vertical Video Player */}
+                                    <div className="w-48 h-80 bg-zinc-950 border border-white/10 rounded-xl overflow-hidden relative shadow-2xl shrink-0">
+                                      <video 
+                                        src={pbiVideoUrl}
+                                        controls 
+                                        autoPlay 
+                                        loop 
+                                        muted 
+                                        className="w-full h-full object-cover"
+                                      />
+                                    </div>
+                                    
+                                    <div className="space-y-3 text-left">
+                                      <span className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-mono text-[8px] font-bold uppercase tracking-wider">
+                                        Status: COMPILED ✅
+                                      </span>
+                                      <h5 className="font-bold text-sm text-white">Master vertical Reel ready</h5>
+                                      <p className="text-[10px] text-zinc-500 leading-relaxed font-mono">Dual host audio muxing & Stable Diffusion visual timeline are fully compiled into MP4.</p>
+                                      
+                                      <div className="flex flex-col gap-2 pt-2">
+                                        <a 
+                                          href={pbiVideoUrl} 
+                                          download="pbi-compiled-reel.mp4" 
+                                          className="py-2 px-4 rounded-lg bg-white/5 border border-white/10 text-white font-mono text-[10px] font-bold uppercase tracking-widest text-center hover:bg-white/10 transition-colors"
+                                        >
+                                          Download MP4
+                                        </a>
+                                        <button 
+                                          onClick={() => alert("Reel sent to Discord Approval Webhook!")}
+                                          className="py-2 px-4 rounded-lg bg-amber-500 text-black font-mono text-[10px] font-black uppercase tracking-widest text-center hover:bg-white transition-colors cursor-pointer"
+                                        >
+                                          Dispatch to Discord
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
                               </div>
                             )}
 
-                            {pbiVideoUrl && (
-                              <div className="bg-black/50 border border-white/5 p-4 rounded-2xl flex flex-col md:flex-row gap-4 items-center justify-center">
-                                {/* Vertical Video Player */}
-                                <div className="w-48 h-80 bg-zinc-950 border border-white/10 rounded-xl overflow-hidden relative shadow-2xl shrink-0">
-                                  <video 
-                                    src={pbiVideoUrl}
-                                    controls 
-                                    autoPlay 
-                                    loop 
-                                    muted 
-                                    className="w-full h-full object-cover"
-                                  />
-                                </div>
+                            {/* Branded Graphic Poster Preview */}
+                            {pbiResponse.contentType === "Branded Photo Post" && (
+                              <div className="space-y-4 border-t border-white/5 pt-4">
+                                <span className="font-mono text-[8px] uppercase tracking-widest text-zinc-500 block font-bold">// Branded Graphic Post Preview</span>
                                 
-                                <div className="space-y-3 text-left">
-                                  <span className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-mono text-[8px] font-bold uppercase tracking-wider">
-                                    Status: COMPILED ✅
-                                  </span>
-                                  <h5 className="font-bold text-sm text-white">Master vertical Reel ready</h5>
-                                  <p className="text-[10px] text-zinc-500 leading-relaxed font-mono">Dual host audio muxing & Stable Diffusion visual timeline are fully compiled into MP4.</p>
+                                {/* 1:1 Aspect Ratio Card Preview */}
+                                <div className="w-full max-w-sm mx-auto aspect-square bg-[#111114] border border-white/10 rounded-2xl overflow-hidden relative shadow-2xl group">
+                                  <img 
+                                    src={pbiResponse.imageUrl} 
+                                    alt="AI Branded Post Graphic" 
+                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                  />
                                   
-                                  <div className="flex flex-col gap-2 pt-2">
-                                    <a 
-                                      href={pbiVideoUrl} 
-                                      download="pbi-compiled-reel.mp4" 
-                                      className="py-2 px-4 rounded-lg bg-white/5 border border-white/10 text-white font-mono text-[10px] font-bold uppercase tracking-widest text-center hover:bg-white/10 transition-colors"
-                                    >
-                                      Download MP4
-                                    </a>
-                                    <button 
-                                      onClick={() => alert("Reel sent to Discord Approval Webhook!")}
-                                      className="py-2 px-4 rounded-lg bg-amber-500 text-black font-mono text-[10px] font-black uppercase tracking-widest text-center hover:bg-white transition-colors cursor-pointer"
-                                    >
-                                      Dispatch to Discord
-                                    </button>
+                                  {/* Overlay Bottom Banner */}
+                                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/75 to-transparent p-6 text-left flex flex-col justify-end">
+                                    {/* Brand Accent Bar */}
+                                    <div className="w-16 h-1 bg-amber-500 rounded mb-2" style={{
+                                      backgroundColor: (brandingIntakes.find(i => i.id === pbiSelectedBrand)?.brand_colors?.split(",")[0]?.trim() || "#D4AF37")
+                                    }} />
+                                    <span className="text-[9px] font-mono font-bold tracking-widest uppercase mb-1" style={{
+                                      color: (brandingIntakes.find(i => i.id === pbiSelectedBrand)?.brand_colors?.split(",")[0]?.trim() || "#D4AF37")
+                                    }}>
+                                      {brandingIntakes.find(i => i.id === pbiSelectedBrand)?.business_name || "TV³ Studios"}
+                                    </span>
+                                    <h4 className="text-xl font-black text-white uppercase tracking-wide leading-tight mb-1">
+                                      {pbiResponse.title || "ANNOUNCEMENT"}
+                                    </h4>
+                                    <p className="text-[10px] text-zinc-400 font-mono italic">
+                                      {pbiResponse.tagline || "Powered by TV³ Studios"}
+                                    </p>
                                   </div>
                                 </div>
+
+                                {/* Download trigger */}
+                                <button
+                                  onClick={handleDownloadBrandedPhoto}
+                                  className="w-full py-4 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-black font-mono text-xs font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 cursor-pointer shadow-[0_4px_25px_rgba(245,158,11,0.2)] hover:scale-[1.01]"
+                                >
+                                  Download Branded Photo Post (PNG)
+                                </button>
                               </div>
                             )}
                           </div>
