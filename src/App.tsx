@@ -11,6 +11,7 @@ import BrandedContent from "./pages/BrandedContent";
 import GetStarted from "./pages/GetStarted";
 import StudioWork from "./pages/StudioWork";
 import AdminVault from "./pages/AdminVault";
+import CreatorStudio from "./pages/CreatorStudio";
 import Locked from "./pages/Locked";
 import Navbar from "./components/Navbar";
 import TVIntro from "./components/TVIntro";
@@ -45,6 +46,7 @@ const AppContent = () => {
         <Route path="/get-started" element={<GetStarted />} />
         <Route path="/studio-work" element={<StudioWork />} />
         <Route path="/admin-vault" element={<AdminVault />} />
+        <Route path="/creator-studio" element={<CreatorStudio />} />
         <Route path="/unit/01" element={<Locked />} />
         <Route path="/unit/02" element={<Locked />} />
         <Route path="/unit/03" element={<Locked />} />
