@@ -26,6 +26,8 @@ const AdminVault = () => {
   const [pbiCompiling, setPbiCompiling] = useState(false);
   const [pbiVideoUrl, setPbiVideoUrl] = useState("");
   const [pbiCompileStep, setPbiCompileStep] = useState("");
+  const [reelPlaying, setReelPlaying] = useState(false);
+  const [currentReelIndex, setCurrentReelIndex] = useState(0);
 
   useEffect(() => {
     const loadApplications = async () => {
@@ -162,6 +164,8 @@ const AdminVault = () => {
     setPbiResponse(null);
     setPbiVideoUrl("");
     setPbiCompiling(false);
+    setReelPlaying(false);
+    setCurrentReelIndex(0);
 
     try {
       const res = await fetch('/api/pbi/agent', {
@@ -227,7 +231,7 @@ const AdminVault = () => {
           await new Promise(r => setTimeout(r, 2000));
           setPbiCompileStep("[4/4] Compiling master vertical MP4 file...");
           await new Promise(r => setTimeout(r, 2000));
-          setPbiVideoUrl("https://www.w3schools.com/html/mov_bbb.mp4");
+          setPbiVideoUrl("interactive");
         } else {
           setPbiCompileStep("Reel compiling in GitHub Actions... Check your Discord channel in ~30s!");
           await new Promise(r => setTimeout(r, 4000));
@@ -1363,37 +1367,104 @@ const AdminVault = () => {
                                 )}
 
                                 {pbiVideoUrl && (
-                                  <div className="bg-black/50 border border-white/5 p-4 rounded-2xl flex flex-col md:flex-row gap-4 items-center justify-center">
-                                    {/* Vertical Video Player */}
-                                    <div className="w-48 h-80 bg-zinc-950 border border-white/10 rounded-xl overflow-hidden relative shadow-2xl shrink-0">
-                                      <video 
-                                        src={pbiVideoUrl}
-                                        controls 
-                                        autoPlay 
-                                        loop 
-                                        muted 
-                                        className="w-full h-full object-cover"
-                                      />
-                                    </div>
+                                  <div className="bg-black/50 border border-white/5 p-5 rounded-2xl flex flex-col md:flex-row gap-6 items-center justify-center w-full">
                                     
-                                    <div className="space-y-3 text-left">
-                                      <span className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-mono text-[8px] font-bold uppercase tracking-wider">
-                                        Status: COMPILED ✅
+                                    {/* 9:16 Vertical Interactive Reel Simulator Screen */}
+                                    <div className="w-52 h-88 bg-zinc-950 border-2 border-white/20 rounded-[24px] overflow-hidden relative shadow-2xl shrink-0 flex flex-col justify-between group">
+                                      {/* Background Image of the active conversation turn */}
+                                      <img 
+                                        src={pbiResponse.conversation[currentReelIndex]?.imageUrl} 
+                                        alt="Reel active visual frame" 
+                                        className="absolute inset-0 w-full h-full object-cover transition-all duration-700"
+                                      />
+                                      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/80 pointer-events-none" />
+
+                                      {/* Top Row: Brand Info & Active Host Badge */}
+                                      <div className="relative z-10 p-3 flex justify-between items-center w-full">
+                                        <span className="text-[7px] font-mono bg-black/60 text-amber-500 font-bold px-2 py-0.5 rounded border border-amber-500/20 uppercase tracking-widest">
+                                          PBI Simulator
+                                        </span>
+                                        <span className={`text-[7px] font-mono font-black px-2 py-0.5 rounded-full uppercase tracking-wider ${pbiResponse.conversation[currentReelIndex]?.host === "A" ? 'bg-amber-500 text-black' : 'bg-white text-black'}`}>
+                                          Host {pbiResponse.conversation[currentReelIndex]?.host}
+                                        </span>
+                                      </div>
+
+                                      {/* Audio playback engine speeded up to 1.2x for natural fast pacing */}
+                                      <audio 
+                                        src={pbiResponse.conversation[currentReelIndex]?.audioUrl} 
+                                        autoPlay={reelPlaying}
+                                        ref={(el) => {
+                                          if (el) {
+                                            el.playbackRate = 1.2; // Speed up Google Translate voice by 20% to sound natural
+                                            if (reelPlaying) {
+                                              el.play().catch(() => {});
+                                            } else {
+                                              el.pause();
+                                            }
+                                          }
+                                        }}
+                                        onEnded={() => {
+                                          if (currentReelIndex < pbiResponse.conversation.length - 1) {
+                                            setCurrentReelIndex(prev => prev + 1);
+                                          } else {
+                                            setCurrentReelIndex(0);
+                                            setReelPlaying(false);
+                                          }
+                                        }}
+                                      />
+
+                                      {/* Center: Play/Pause Big overlay state button */}
+                                      <button 
+                                        onClick={() => setReelPlaying(!reelPlaying)}
+                                        className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity z-20"
+                                      >
+                                        <div className="w-12 h-12 rounded-full bg-black/60 border border-white/20 flex items-center justify-center text-white text-xs font-mono font-bold uppercase tracking-wider hover:bg-amber-500 hover:text-black transition-colors cursor-pointer">
+                                          {reelPlaying ? "Pause" : "Play"}
+                                        </div>
+                                      </button>
+
+                                      {/* Bottom Overlay Subtitles (captions) */}
+                                      <div className="relative z-10 p-3 mb-3 w-full text-center">
+                                        <div className="bg-black/60 backdrop-blur-md border border-white/5 p-2 rounded-xl text-center shadow-lg">
+                                          <p className="text-[9px] text-white font-extrabold font-sans leading-relaxed tracking-wide">
+                                            {pbiResponse.conversation[currentReelIndex]?.dialogue}
+                                          </p>
+                                        </div>
+                                      </div>
+
+                                      {/* Audio progress segment indicators */}
+                                      <div className="absolute top-1 inset-x-2 flex gap-1 z-20">
+                                        {pbiResponse.conversation.map((_: any, idx: number) => (
+                                          <div 
+                                            key={idx} 
+                                            className={`h-0.5 rounded-full flex-grow transition-all duration-300 ${idx === currentReelIndex ? 'bg-amber-500' : idx < currentReelIndex ? 'bg-zinc-400' : 'bg-zinc-800'}`}
+                                          />
+                                        ))}
+                                      </div>
+                                    </div>
+
+                                    {/* Sidebar: Details & Webhook trigger control */}
+                                    <div className="space-y-4 text-left flex-grow">
+                                      <span className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-mono text-[8px] font-bold uppercase tracking-wider block w-fit">
+                                        Status: SIMULATOR ACTIVE 🎥
                                       </span>
-                                      <h5 className="font-bold text-sm text-white">Master vertical Reel ready</h5>
-                                      <p className="text-[10px] text-zinc-500 leading-relaxed font-mono">Dual host audio muxing & Stable Diffusion visual timeline are fully compiled into MP4.</p>
+                                      <h5 className="font-bold text-sm text-white">Reel Timeline Compiled</h5>
+                                      <p className="text-[10px] text-zinc-400 leading-relaxed font-mono">
+                                        * **Visual Generation**: Flux model square-vertical ratio.<br/>
+                                        * **Speech Pace**: Accelerated by 1.20x to sound natural.<br/>
+                                        * **Overlay subtitles**: Synced dialogue captions.
+                                      </p>
                                       
                                       <div className="flex flex-col gap-2 pt-2">
-                                        <a 
-                                          href={pbiVideoUrl} 
-                                          download="pbi-compiled-reel.mp4" 
-                                          className="py-2 px-4 rounded-lg bg-white/5 border border-white/10 text-white font-mono text-[10px] font-bold uppercase tracking-widest text-center hover:bg-white/10 transition-colors"
+                                        <button 
+                                          onClick={() => setReelPlaying(!reelPlaying)}
+                                          className="py-2.5 px-4 rounded-lg bg-white/5 border border-white/10 text-white font-mono text-[10px] font-bold uppercase tracking-widest text-center hover:bg-white/10 transition-colors cursor-pointer"
                                         >
-                                          Download MP4
-                                        </a>
+                                          {reelPlaying ? "Pause Playback" : "Play Reel (Simulate)"}
+                                        </button>
                                         <button 
                                           onClick={() => alert("Reel sent to Discord Approval Webhook!")}
-                                          className="py-2 px-4 rounded-lg bg-amber-500 text-black font-mono text-[10px] font-black uppercase tracking-widest text-center hover:bg-white transition-colors cursor-pointer"
+                                          className="py-2.5 px-4 rounded-lg bg-amber-500 text-black font-mono text-[10px] font-black uppercase tracking-widest text-center hover:bg-white transition-colors cursor-pointer"
                                         >
                                           Dispatch to Discord
                                         </button>
