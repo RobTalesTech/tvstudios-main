@@ -30,7 +30,7 @@ export default async function handler(req, res) {
       const seed = Math.floor(Math.random() * 1000000);
       return {
         ...line,
-        imageUrl: `https://image.pollinations.ai/prompt/${encodeURIComponent(line.imagePrompt)}?width=1080&height=1920&nologo=true&private=true&seed=${seed}`,
+        imageUrl: `https://image.pollinations.ai/prompt/${encodeURIComponent(line.imagePrompt)}?width=1080&height=1920&nologo=true&private=true&seed=${seed}&model=flux`,
         audioUrl: `/api/pbi/tts?host=${line.host}&lang=${encodeURIComponent(lang)}&text=${encodeURIComponent(line.dialogue)}`
       };
     });
@@ -170,7 +170,7 @@ You must return your output ONLY as a JSON object matching this structure:
         contentType: "Branded Photo Post",
         decisionLogic: "Designing a sleek dark banner to showcase automation authority. Highlighting the scale of autopilot posting.",
         imagePrompt: "Sleek luxury black marble background with golden geometric shapes, studio ambient lighting, clean composition, high-end design visual, 8k.",
-        imageUrl: `https://image.pollinations.ai/prompt/${encodeURIComponent("Sleek luxury black marble background with golden geometric shapes, studio ambient lighting, clean composition, high-end design visual, 8k")}?width=1080&height=1080&nologo=true&private=true&seed=${seed}`,
+        imageUrl: `https://image.pollinations.ai/prompt/${encodeURIComponent("Sleek luxury black marble background with golden geometric shapes, studio ambient lighting, clean composition, high-end design visual, 8k")}?width=1080&height=1080&nologo=true&private=true&seed=${seed}&model=flux`,
         title: "AUTOMATION IS HERE",
         tagline: "Your Brand's Autopilot Content Stream",
         caption: "Daily social posting ka stress ab humesha ke liye khatam! 🚀 Custom graphics and content captions tailored for your target audience, generated and published automatically. Connect today! #BrandedContent #Automation #TV3Studios #PosterBoyAI",
@@ -247,7 +247,7 @@ You must return your output ONLY as a JSON object matching this structure:
     
     if (isPhotoPost) {
       const seed = Math.floor(Math.random() * 1000000);
-      parsedData.imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(parsedData.imagePrompt)}?width=1080&height=1080&nologo=true&private=true&seed=${seed}`;
+      parsedData.imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(parsedData.imagePrompt)}?width=1080&height=1080&nologo=true&private=true&seed=${seed}&model=flux`;
     } else {
       parsedData.conversation = enrichConversation(parsedData.conversation, parsedData.languageUsed || targetLanguage);
     }
