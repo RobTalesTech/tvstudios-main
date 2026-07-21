@@ -122,21 +122,23 @@ Your goal is to design a high-converting, highly professional Branded Photo Post
 - Update Text: ${updateText || "Introducing PBI (Poster Boy AI) autonomous content posting engine."}
 - Target Language: ${targetLanguage}
 
-[MANDATORY SCENE STYLE FOR THIS GENERATION RUN]
+[MANDATORY TOPIC & SCENE VISUAL INTEGRATION]
 - Scene Style Type: ${selectedScene.type}
 - Visual Guidance: ${selectedScene.promptGuidance}
-- Instructed Rule: You MUST design the imagePrompt specifically around this required Scene Style (${selectedScene.type}), incorporating the brand's colors (${brandData.brand_colors}) and topic context (${updateText}). DO NOT default to a generic marble texture. Ensure strong visual variety! No text on the image itself.
+- CRITICAL VISUAL RULE: You MUST design the imagePrompt specifically to visually illustrate the topic/update (${updateText}) for ${brandData.business_name}.
+- Examples: If the topic is about beverages/food, depict fresh ingredients and luxury packaging. If about software/AI, depict glowing modern UI screens. If about growth/awards, depict high-end trophies or studio milestones.
+- DO NOT generate generic abstract marble backgrounds unless the topic is specifically about marble! Add photorealistic details: "photorealistic 8k, sharp focus, studio lighting". No text on the image itself.
 
 [PHOTO POST STRUCTURING RULES]
-1. Recommend a highly detailed visual image generation prompt (imagePrompt) matching the required Scene Style (${selectedScene.type}).
-2. Write a short, highly-aesthetic Title (title) of 3-5 words max (e.g., "WE ARE GROWING", "AUTOMATION IS HERE", "500 CLIENTS LOCKED").
-3. Write a sub-headline Tagline (tagline) of 5-8 words max (e.g., "Autopilot posting for local brands", "Zero-stress daily marketing channels").
+1. Recommend a highly detailed visual image generation prompt (imagePrompt) matching the topic (${updateText}) and required Scene Style (${selectedScene.type}).
+2. Write a short, highly-aesthetic Title (title) of 3-5 words max (e.g., "WE ARE GROWING", "I AM HERE TO POST FOR YOU.", "NEW LAUNCH").
+3. Write a sub-headline Tagline (tagline) of 5-8 words max (e.g., "Coming soon to post for you.", "Zero-stress daily marketing channels").
 4. Write a structured social media description caption (caption) with matching #hashtags matching the brand.
 
 You must return your output ONLY as a JSON object matching this structure:
 {
   "contentType": "Branded Photo Post",
-  "decisionLogic": "Brief explanation of why this ${selectedScene.type} design choice was selected.",
+  "decisionLogic": "Brief explanation of why this ${selectedScene.type} design choice was selected for ${updateText}.",
   "sceneType": "${selectedScene.type}",
   "imagePrompt": "Detailed Flux image generator prompt here...",
   "title": "Aesthetic Overlay Title",
@@ -194,20 +196,25 @@ You must return your output ONLY as a JSON object matching this structure:
     let mockJson = {};
     if (isPhotoPost) {
       const seed = Math.floor(Math.random() * 1000000);
+      const topicSubject = updateText && updateText.trim().length > 3 
+        ? updateText 
+        : `innovative update for ${brandData.business_name}`;
+
       const mockPrompts = [
-        `High-end cinematic product showcase of ${brandData.business_name} on a sleek pedestal, dark studio ambient lighting, brand metallic accents, 8k photorealistic render.`,
-        `Authentic realistic lifestyle shot of a young founder reviewing analytics for ${brandData.business_name} on a laptop in a modern studio, warm atmospheric lighting, 8k camera shot.`,
-        `Sleek 3D geometric abstract architectural textures, high-contrast dark metallic surface, ${brandData.brand_colors} accent lines, vector geometry render.`,
-        `Cinematic behind-the-scenes shot of a designer studio workstation desk for ${brandData.business_name} with dual monitors glowing, creative tools, warm moody studio lighting, 8k photo.`
+        `High-end cinematic photography illustrating ${topicSubject} for ${brandData.business_name}, luxury studio ambient lighting, sharp focus, 8k photorealistic render`,
+        `Authentic realistic lifestyle photography depicting ${topicSubject} at ${brandData.business_name}, warm atmospheric lighting, shallow depth of field, 8k camera detail`,
+        `Modern sleek promotional graphic banner for ${topicSubject}, crisp geometry, rich textures, high-contrast composition, 8k render`,
+        `Cinematic behind-the-scenes photography depicting ${topicSubject} work at ${brandData.business_name}, moody ambient lighting, 8k camera detail`
       ];
-      const mockPrompt = mockPrompts[randomSceneIndex];
+      const selectedPrompt = mockPrompts[randomSceneIndex];
+      const fullPrompt = `${selectedPrompt}, ultra-detailed, photorealistic 8k, sharp focus, professional studio photography, award-winning lighting`;
 
       mockJson = {
         contentType: "Branded Photo Post",
-        decisionLogic: `Designing a ${selectedScene.type} post for ${brandData.business_name} to ensure visual variety.`,
+        decisionLogic: `Designing a ${selectedScene.type} post for ${brandData.business_name} focused on ${topicSubject}.`,
         sceneType: selectedScene.type,
-        imagePrompt: mockPrompt,
-        imageUrl: `https://image.pollinations.ai/prompt/${encodeURIComponent(mockPrompt)}?width=1080&height=1080&nologo=true&private=true&seed=${seed}&model=flux`,
+        imagePrompt: selectedPrompt,
+        imageUrl: `https://image.pollinations.ai/prompt/${encodeURIComponent(fullPrompt)}?width=1280&height=1280&nologo=true&private=true&enhance=true&seed=${seed}&model=flux`,
         title: "I AM HERE TO POST FOR YOU.",
         tagline: "Coming soon to post for you.",
         caption: `Daily social posting ka stress ab humesha ke liye khatam! 🚀 Custom graphics and content captions tailored for ${brandData.business_name}, generated and published automatically. Connect today! #BrandedContent #${brandData.business_name.replace(/\s+/g, "")} #TV3Studios #PosterBoyAI`,
@@ -284,7 +291,8 @@ You must return your output ONLY as a JSON object matching this structure:
     
     if (isPhotoPost) {
       const seed = Math.floor(Math.random() * 1000000);
-      parsedData.imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(parsedData.imagePrompt)}?width=1080&height=1080&nologo=true&private=true&seed=${seed}&model=flux`;
+      const fullPrompt = `${parsedData.imagePrompt}, ultra-detailed, photorealistic 8k, sharp focus, professional studio photography, award-winning lighting`;
+      parsedData.imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(fullPrompt)}?width=1280&height=1280&nologo=true&private=true&enhance=true&seed=${seed}&model=flux`;
     } else {
       parsedData.conversation = enrichConversation(parsedData.conversation, parsedData.languageUsed || targetLanguage);
     }
