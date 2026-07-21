@@ -208,8 +208,8 @@ You must return your output ONLY as a JSON object matching this structure:
         sceneType: selectedScene.type,
         imagePrompt: mockPrompt,
         imageUrl: `https://image.pollinations.ai/prompt/${encodeURIComponent(mockPrompt)}?width=1080&height=1080&nologo=true&private=true&seed=${seed}&model=flux`,
-        title: "AUTOMATION IS HERE",
-        tagline: "Your Brand's Autopilot Content Stream",
+        title: "I AM HERE TO POST FOR YOU.",
+        tagline: "Coming soon to post for you.",
         caption: `Daily social posting ka stress ab humesha ke liye khatam! 🚀 Custom graphics and content captions tailored for ${brandData.business_name}, generated and published automatically. Connect today! #BrandedContent #${brandData.business_name.replace(/\s+/g, "")} #TV3Studios #PosterBoyAI`,
         languageUsed: targetLanguage
       };
