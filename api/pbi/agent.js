@@ -85,6 +85,28 @@ export default async function handler(req, res) {
   const isPhotoPost = selectedType === "Branded Photo Post";
   let promptText = "";
 
+  const SCENE_TYPES = [
+    { 
+      type: "Product Showcase & Hardware Focus", 
+      promptGuidance: "High-end cinematic product showcase on a sleek pedestal, luxury studio lighting, shallow depth of field, photorealistic 8k render. Focus on hardware texture, metallic finish, and brand color accents." 
+    },
+    { 
+      type: "Lifestyle & Human Context", 
+      promptGuidance: "Authentic realistic lifestyle photography of a creative founder or customer in a modern studio space, warm atmospheric lighting, candid shot, professional depth of field, 8k camera detail." 
+    },
+    { 
+      type: "Quote Card & Abstract Geometry", 
+      promptGuidance: "Sleek 3D geometric abstract architectural textures, dark metallic surface, minimal high-contrast composition, subtle brand color lighting line accents, vector geometry render." 
+    },
+    { 
+      type: "Behind-the-Scenes & Studio Mood", 
+      promptGuidance: "Cinematic behind-the-scenes shot of a designer studio desk, workstation, creative tools, monitors with glowing code/design UI, warm moody ambient studio lighting, 8k photo." 
+    }
+  ];
+
+  const randomSceneIndex = Math.floor(Math.random() * SCENE_TYPES.length);
+  const selectedScene = SCENE_TYPES[randomSceneIndex];
+
   if (isPhotoPost) {
     promptText = `
 You are PBI (Poster Boy AI), an autonomous content creation agentic brain.
@@ -100,8 +122,13 @@ Your goal is to design a high-converting, highly professional Branded Photo Post
 - Update Text: ${updateText || "Introducing PBI (Poster Boy AI) autonomous content posting engine."}
 - Target Language: ${targetLanguage}
 
+[MANDATORY SCENE STYLE FOR THIS GENERATION RUN]
+- Scene Style Type: ${selectedScene.type}
+- Visual Guidance: ${selectedScene.promptGuidance}
+- Instructed Rule: You MUST design the imagePrompt specifically around this required Scene Style (${selectedScene.type}), incorporating the brand's colors (${brandData.brand_colors}) and topic context (${updateText}). DO NOT default to a generic marble texture. Ensure strong visual variety! No text on the image itself.
+
 [PHOTO POST STRUCTURING RULES]
-1. Recommend a highly detailed visual image generation prompt (imagePrompt) that will be fed to Stable Diffusion to render a premium background graphic. It should match the brand colors and look like a high-fidelity photographic scene, abstract design backdrop, or premium tech hardware visual (e.g. "Sleek dark gold abstract geometry, studio lighting, photorealistic background vector graphics"). No text on the image itself.
+1. Recommend a highly detailed visual image generation prompt (imagePrompt) matching the required Scene Style (${selectedScene.type}).
 2. Write a short, highly-aesthetic Title (title) of 3-5 words max (e.g., "WE ARE GROWING", "AUTOMATION IS HERE", "500 CLIENTS LOCKED").
 3. Write a sub-headline Tagline (tagline) of 5-8 words max (e.g., "Autopilot posting for local brands", "Zero-stress daily marketing channels").
 4. Write a structured social media description caption (caption) with matching #hashtags matching the brand.
@@ -109,8 +136,9 @@ Your goal is to design a high-converting, highly professional Branded Photo Post
 You must return your output ONLY as a JSON object matching this structure:
 {
   "contentType": "Branded Photo Post",
-  "decisionLogic": "Brief explanation of the strategy behind this graphic design choice.",
-  "imagePrompt": "Detailed Stable Diffusion image generator prompt here...",
+  "decisionLogic": "Brief explanation of why this ${selectedScene.type} design choice was selected.",
+  "sceneType": "${selectedScene.type}",
+  "imagePrompt": "Detailed Flux image generator prompt here...",
   "title": "Aesthetic Overlay Title",
   "tagline": "Aesthetic Overlay Subheadline Tagline",
   "caption": "Social media description caption text with #hashtags matching the brand.",
@@ -166,15 +194,24 @@ You must return your output ONLY as a JSON object matching this structure:
     let mockJson = {};
     if (isPhotoPost) {
       const seed = Math.floor(Math.random() * 1000000);
+      const mockPrompts = [
+        `High-end cinematic product showcase of ${brandData.business_name} on a sleek pedestal, dark studio ambient lighting, brand metallic accents, 8k photorealistic render.`,
+        `Authentic realistic lifestyle shot of a young founder reviewing analytics for ${brandData.business_name} on a laptop in a modern studio, warm atmospheric lighting, 8k camera shot.`,
+        `Sleek 3D geometric abstract architectural textures, high-contrast dark metallic surface, ${brandData.brand_colors} accent lines, vector geometry render.`,
+        `Cinematic behind-the-scenes shot of a designer studio workstation desk for ${brandData.business_name} with dual monitors glowing, creative tools, warm moody studio lighting, 8k photo.`
+      ];
+      const mockPrompt = mockPrompts[randomSceneIndex];
+
       mockJson = {
         contentType: "Branded Photo Post",
-        decisionLogic: "Designing a sleek dark banner to showcase automation authority. Highlighting the scale of autopilot posting.",
-        imagePrompt: "Sleek luxury black marble background with golden geometric shapes, studio ambient lighting, clean composition, high-end design visual, 8k.",
-        imageUrl: `https://image.pollinations.ai/prompt/${encodeURIComponent("Sleek luxury black marble background with golden geometric shapes, studio ambient lighting, clean composition, high-end design visual, 8k")}?width=1080&height=1080&nologo=true&private=true&seed=${seed}&model=flux`,
+        decisionLogic: `Designing a ${selectedScene.type} post for ${brandData.business_name} to ensure visual variety.`,
+        sceneType: selectedScene.type,
+        imagePrompt: mockPrompt,
+        imageUrl: `https://image.pollinations.ai/prompt/${encodeURIComponent(mockPrompt)}?width=1080&height=1080&nologo=true&private=true&seed=${seed}&model=flux`,
         title: "AUTOMATION IS HERE",
         tagline: "Your Brand's Autopilot Content Stream",
-        caption: "Daily social posting ka stress ab humesha ke liye khatam! 🚀 Custom graphics and content captions tailored for your target audience, generated and published automatically. Connect today! #BrandedContent #Automation #TV3Studios #PosterBoyAI",
-        languageUsed: "Hinglish"
+        caption: `Daily social posting ka stress ab humesha ke liye khatam! 🚀 Custom graphics and content captions tailored for ${brandData.business_name}, generated and published automatically. Connect today! #BrandedContent #${brandData.business_name.replace(/\s+/g, "")} #TV3Studios #PosterBoyAI`,
+        languageUsed: targetLanguage
       };
     } else {
       mockJson = {
