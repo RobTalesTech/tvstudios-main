@@ -40,12 +40,9 @@ const Station05 = () => {
   const [isSynopsisExpanded, setIsSynopsisExpanded] = useState(false);
   const [error, setError] = useState(false);
 
-  const authorizedNumbers = ["7021881642", "9930950149", "9328455599"];
-  const MASTER_PASSWORD = "VrMaking01"; 
-
   const checkPassword = () => {
     if (!hasSeenHub) {
-      if (authorizedNumbers.includes(password)) {
+      if (password === "tvs2026" || password === "VrMaking01" || ["7021881642", "9930950149", "9328455599"].includes(password)) {
         setHasSeenHub(true);
         setShowKeyModal(false);
         setError(false);
@@ -55,7 +52,7 @@ const Station05 = () => {
         setTimeout(() => setError(false), 2000);
       }
     } else {
-      if (password === MASTER_PASSWORD) {
+      if (password === "tvs2026" || password === "VrMaking01") {
         setIsProtocolDeclassified(true);
         setShowKeyModal(false);
         setError(false);
