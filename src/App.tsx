@@ -12,6 +12,7 @@ import GetStarted from "./pages/GetStarted";
 import StudioWork from "./pages/StudioWork";
 import AdminVault from "./pages/AdminVault";
 import CreatorStudio from "./pages/CreatorStudio";
+import ProjectPlanner from "./pages/ProjectPlanner";
 import Locked from "./pages/Locked";
 import Navbar from "./components/Navbar";
 import TVIntro from "./components/TVIntro";
@@ -51,7 +52,7 @@ const AppContent = () => {
         <Route path="/unit/02" element={<Locked />} />
         <Route path="/unit/03" element={<Locked />} />
         <Route path="/unit/04" element={<Locked />} />
-        <Route path="/unit/05" element={<Locked />} />
+        <Route path="/unit/05" element={<ProjectPlanner />} />
         <Route path="/unit/06" element={<Locked />} />
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<NotFound />} />
