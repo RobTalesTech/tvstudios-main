@@ -4,6 +4,7 @@ import Footer from "@/components/Footer";
 import { ArrowLeft, Zap, Sparkles, ShieldCheck, Star, Smartphone, Play, Camera, PenTool, MessageSquare, CheckCircle2, Cpu, Eye, EyeOff } from "lucide-react";
 import { useState, useEffect } from "react";
 import StationHeader from "@/components/StationHeader";
+import posterImg from "../assets/ABHInaiKABHInai.png";
 
 const FilmReelStrip = ({ position }: { position: 'top' | 'bottom' }) => {
   const [digits, setDigits] = useState("000000");
@@ -30,37 +31,65 @@ const FilmReelStrip = ({ position }: { position: 'top' | 'bottom' }) => {
 };
 
 const Station05 = () => {
-  const [hasSeenHub, setHasSeenHub] = useState(false);
+  const [hasSeenHub, setHasSeenHub] = useState(() => {
+    return localStorage.getItem("unit_05_auth") === "true";
+  });
   const [isZoomed, setIsZoomed] = useState(false);
   const [showKeyModal, setShowKeyModal] = useState(false);
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [zoomScale, setZoomScale] = useState(1);
-  const [isProtocolDeclassified, setIsProtocolDeclassified] = useState(false);
+  const [isProtocolDeclassified, setIsProtocolDeclassified] = useState(() => {
+    return localStorage.getItem("unit_05_auth") === "true";
+  });
   const [isSynopsisExpanded, setIsSynopsisExpanded] = useState(false);
   const [error, setError] = useState(false);
 
+  // Admin OTP States
+  const [otpSent, setOtpSent] = useState(false);
+  const [generatedOtp, setGeneratedOtp] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [successMsg, setSuccessMsg] = useState("");
+
+  const triggerSendOtp = async () => {
+    setLoading(true);
+    setError(false);
+    setSuccessMsg("");
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    setGeneratedOtp(code);
+
+    try {
+      const res = await fetch("/api/send-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          subject: "🔑 TVS OTT Production Hub - Admin Access OTP",
+          body: `📡 SECURITY ALERT: OTP requested for TVS OTT Production Hub (Unit 05) bypass.\n\nTarget Mobile Node: 8149981660\nGenerated OTP Code: ${code}\n\nPlease enter this code on the verification screen to unlock Unit 05.`
+        })
+      });
+
+      if (!res.ok) throw new Error("Failed to dispatch OTP");
+      setOtpSent(true);
+      setSuccessMsg("OTP sent to your verified admin devices!");
+    } catch (err) {
+      console.error(err);
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const checkPassword = () => {
-    if (!hasSeenHub) {
-      if (password === "tvs2026" || password === "VrMaking01" || ["7021881642", "9930950149", "9328455599"].includes(password)) {
-        setHasSeenHub(true);
-        setShowKeyModal(false);
-        setError(false);
-        setPassword("");
-      } else {
-        setError(true);
-        setTimeout(() => setError(false), 2000);
-      }
+    if (password === generatedOtp || password === "tvs2026" || password === "VrMaking01" || ["7021881642", "9930950149", "9328455599"].includes(password)) {
+      setHasSeenHub(true);
+      setIsProtocolDeclassified(true);
+      localStorage.setItem("unit_05_auth", "true");
+      setShowKeyModal(false);
+      setError(false);
+      setPassword("");
     } else {
-      if (password === "tvs2026" || password === "VrMaking01") {
-        setIsProtocolDeclassified(true);
-        setShowKeyModal(false);
-        setError(false);
-        setPassword("");
-      } else {
-        setError(true);
-        setTimeout(() => setError(false), 2000);
-      }
+      setError(true);
+      setTimeout(() => setError(false), 2000);
     }
   };
 
@@ -141,7 +170,7 @@ const Station05 = () => {
                    <div className="w-full flex flex-col items-center">
                       <h4 className="font-display text-2xl md:text-3xl font-black text-[#f7d08a] uppercase tracking-[0.2em] italic mb-12">Master Production Poster</h4>
                       <motion.div onClick={() => setIsZoomed(true)} className="relative cursor-zoom-in w-full max-w-lg aspect-[2/3] rounded-[3rem] overflow-hidden border border-white/10 shadow-[0_60px_120px_rgba(0,0,0,1)] group">
-                         <img src="/src/assets/ABHInaiKABHInai.png" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="Poster" />
+                         <img src={posterImg} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="Poster" />
                          <div className="absolute inset-0 bg-gradient-to-r from-[#f7d08a]/10 via-transparent to-[#f7d08a]/5 opacity-0 group-hover:opacity-100 transition-opacity" />
                       </motion.div>
                       <div className="mt-12 flex flex-col items-center gap-4 bg-white/[0.02] border border-white/5 px-6 py-2 rounded-full">
@@ -151,21 +180,12 @@ const Station05 = () => {
                    </div>
 
                     {/* THE COLLECTIVE DUMP SECTION */}
-                    <div className="w-full flex flex-col items-center">
-                      {!isProtocolDeclassified ? (
-                        <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} className="mt-20 p-12 bg-white/[0.02] border border-white/10 rounded-[4rem] text-center space-y-8 max-w-2xl">
-                           <ShieldCheck className="w-12 h-12 text-[#f7d08a] mx-auto opacity-30" />
-                           <h4 className="text-2xl font-black text-white italic tracking-tighter uppercase leading-none">Deep Protocol Locked</h4>
-                           <p className="font-serif text-sm text-zinc-500 italic leading-relaxed">System boards, technical reports, and Director's collectives are currently encrypted. Provide password to declassify.</p>
-                           <button onClick={() => { setShowKeyModal(true); setShowPassword(false); }} className="px-10 py-5 bg-white text-black font-black uppercase tracking-[0.4em] text-[10px] rounded-full hover:bg-[#f7d08a] transition-all">Declassify Full Report</button>
-                        </motion.div>
-                      ) : (
-                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full space-y-48 pt-20 pb-40">
-                           
-                           {/* SECTION 1: THE CORE COLLABORATION (HKD SIGNATURE) */}
-                           <div className="max-w-6xl mx-auto px-6 relative">
-                              <span className="font-mono text-[8px] text-[#f7d08a] uppercase tracking-[1em] block text-center mb-16 animate-pulse">Foundation // Core Collaboration</span>
-                              <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+                     <div className="w-full flex flex-col items-center">
+                       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full space-y-48 pt-20 pb-40">
+                          {/* SECTION 1: THE CORE COLLABORATION (HKD SIGNATURE) */}
+                          <div className="max-w-6xl mx-auto px-6 relative">
+                             <span className="font-mono text-[8px] text-[#f7d08a] uppercase tracking-[1em] block text-center mb-16 animate-pulse">Foundation // Core Collaboration</span>
+                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
                                  <div className="space-y-10">
                                     <h2 className="text-5xl md:text-8xl font-black text-white italic uppercase tracking-tighter leading-[0.85]">
                                        ROHIT <br/>
@@ -315,10 +335,9 @@ const Station05 = () => {
                            </div>
 
                         </motion.div>
-                     )}
+                     </div>
                   </div>
                 </div>
-              </div>
             </motion.section>
           )}
         </AnimatePresence>
@@ -326,26 +345,68 @@ const Station05 = () => {
       <AnimatePresence>
         {showKeyModal && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[3000] bg-black/98 backdrop-blur-3xl flex items-center justify-center p-6 text-center">
-            <div className="max-w-md w-full p-12 bg-white/[0.02] border border-white/5 rounded-[4rem] space-y-10 flex flex-col items-center">
+            <div className="max-w-md w-full p-12 bg-white/[0.02] border border-white/5 rounded-[4rem] space-y-8 flex flex-col items-center relative">
+               <button 
+                 onClick={() => setShowKeyModal(false)}
+                 className="absolute top-6 right-8 text-zinc-500 hover:text-white font-mono text-xs uppercase tracking-widest"
+               >
+                 [ Close ]
+               </button>
+               
                <ShieldCheck className="w-12 h-12 text-[#f7d08a] opacity-40" />
-               <h3 className="text-2xl font-black text-white italic tracking-tighter uppercase">{hasSeenHub ? 'Deep Protocol Authorization' : 'Authorized Access Only'}</h3>
-               <div className="relative w-full">
-                 <input 
-                   type={showPassword ? "text" : "password"} 
-                   value={password} 
-                   onChange={(e) => setPassword(e.target.value)} 
-                   placeholder="Entry Protocol..." 
-                   className="w-full bg-black border border-white/10 p-6 pl-16 pr-16 rounded-2xl text-center font-mono text-[#f7d08a] focus:border-[#f7d08a] transition-all" 
-                 />
-                 <button 
-                   type="button" 
-                   onClick={() => setShowPassword(!showPassword)} 
-                   className="absolute right-6 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white transition-colors focus:outline-none"
-                 >
-                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                 </button>
+               
+               <div className="space-y-2">
+                 <h3 className="text-2xl font-black text-white italic tracking-tighter uppercase">TVS OPERATIONS</h3>
+                 <p className="text-zinc-500 font-mono text-[9px] uppercase tracking-widest">Unit 05 Access Control</p>
                </div>
-               <div className="flex gap-4 w-full"><button onClick={checkPassword} className="flex-1 py-5 bg-white text-black font-black uppercase tracking-[0.4em] text-[10px] rounded-full hover:bg-[#f7d08a] transition-all">Authenticate</button></div>
+
+               <div className="relative w-full space-y-4">
+                 <div className="relative">
+                   <input 
+                     type={showPassword ? "text" : "password"} 
+                     value={password} 
+                     onChange={(e) => setPassword(e.target.value)} 
+                     placeholder={otpSent ? "Enter 6-Digit OTP Code..." : "Enter Passcode or OTP..."} 
+                     className="w-full bg-black border border-white/10 p-6 pl-12 pr-12 rounded-2xl text-center font-mono text-[#f7d08a] focus:border-[#f7d08a] transition-all text-sm" 
+                   />
+                   <button 
+                     type="button" 
+                     onClick={() => setShowPassword(!showPassword)} 
+                     className="absolute right-6 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white transition-colors focus:outline-none"
+                   >
+                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                   </button>
+                 </div>
+
+                 {error && (
+                   <p className="text-red-500 font-mono text-[9px] uppercase tracking-widest animate-pulse">
+                     Invalid authorization code. Access Denied.
+                   </p>
+                 )}
+
+                 {successMsg && (
+                   <p className="text-emerald-500 font-mono text-[9px] uppercase tracking-widest">
+                     {successMsg}
+                   </p>
+                 )}
+
+                 <div className="flex flex-col gap-2 pt-2">
+                   <button 
+                     onClick={checkPassword} 
+                     className="w-full py-4 bg-white text-black font-black uppercase tracking-[0.4em] text-[10px] rounded-xl hover:bg-[#f7d08a] transition-all cursor-pointer"
+                   >
+                     Authenticate Access
+                   </button>
+                   
+                   <button 
+                     onClick={triggerSendOtp}
+                     disabled={loading}
+                     className="w-full py-3 bg-white/5 border border-white/10 text-[#f7d08a] hover:bg-white/10 font-mono uppercase tracking-widest text-[8px] rounded-xl transition-all cursor-pointer disabled:opacity-50"
+                   >
+                     {loading ? "Requesting OTP..." : "Send OTP to Admin Device"}
+                   </button>
+                 </div>
+               </div>
             </div>
           </motion.div>
         )}
@@ -362,7 +423,7 @@ const Station05 = () => {
                 <button onClick={() => { setIsZoomed(false); setZoomScale(1); }} className="w-12 h-12 bg-white text-black rounded-full flex items-center justify-center font-black uppercase text-[10px] hover:bg-[#f7d08a] transition-all">Close</button>
              </div>
              <motion.div onWheel={(e) => setZoomScale(s => Math.min(3, Math.max(0.5, s + (e.deltaY < 0 ? 0.1 : -0.1))))} animate={{ scale: zoomScale }} transition={{ type: "spring", damping: 20 }}>
-                <img src="/src/assets/ABHInaiKABHInai.png" className="max-w-2xl w-full h-auto grayscale hover:grayscale-0 transition-all duration-700 cursor-crosshair shadow-[0_0_100px_rgba(247,208,138,0.1)]" alt="Zoomed Poster" />
+                <img src={posterImg} className="max-w-2xl w-full h-auto grayscale hover:grayscale-0 transition-all duration-700 cursor-crosshair shadow-[0_0_100px_rgba(247,208,138,0.1)]" alt="Zoomed Poster" />
              </motion.div>
           </motion.div>
         )}
