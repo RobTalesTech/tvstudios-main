@@ -31,17 +31,13 @@ const FilmReelStrip = ({ position }: { position: 'top' | 'bottom' }) => {
 };
 
 const Station05 = () => {
-  const [hasSeenHub, setHasSeenHub] = useState(() => {
-    return localStorage.getItem("unit_05_auth") === "true";
-  });
+  const [hasSeenHub, setHasSeenHub] = useState(false);
   const [isZoomed, setIsZoomed] = useState(false);
   const [showKeyModal, setShowKeyModal] = useState(false);
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [zoomScale, setZoomScale] = useState(1);
-  const [isProtocolDeclassified, setIsProtocolDeclassified] = useState(() => {
-    return localStorage.getItem("unit_05_auth") === "true";
-  });
+  const [isProtocolDeclassified, setIsProtocolDeclassified] = useState(false);
   const [isSynopsisExpanded, setIsSynopsisExpanded] = useState(false);
   const [error, setError] = useState(false);
 
@@ -92,7 +88,6 @@ const Station05 = () => {
     if (password === generatedOtp || password === "tvs2026" || password === "VrMaking01" || ["7021881642", "9930950149", "9328455599"].includes(password)) {
       setHasSeenHub(true);
       setIsProtocolDeclassified(true);
-      localStorage.setItem("unit_05_auth", "true");
       setShowKeyModal(false);
       setError(false);
       setPassword("");
@@ -104,6 +99,7 @@ const Station05 = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    localStorage.removeItem("unit_05_auth");
   }, []);
 
   // Audio synchronization effect
