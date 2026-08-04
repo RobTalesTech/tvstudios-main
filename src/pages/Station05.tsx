@@ -52,6 +52,7 @@ const Station05 = () => {
   const [volume, setVolume] = useState(0.8);
   const [enableLighting, setEnableLighting] = useState(true);
   const [visualizerBars, setVisualizerBars] = useState<number[]>(new Array(16).fill(15));
+  const [vuLevel, setVuLevel] = useState(-20);
 
   // Admin OTP States
   const [otpSent, setOtpSent] = useState(false);
@@ -151,8 +152,10 @@ const Station05 = () => {
         setVisualizerBars(
           Array.from({ length: 16 }, () => Math.floor(Math.random() * 45) + 8)
         );
+        setVuLevel(Math.floor(Math.random() * 60) - 30); // bounds: -30deg to +30deg
       } else {
         setVisualizerBars(new Array(16).fill(15));
+        setVuLevel(-40);
       }
       animationFrameId = requestAnimationFrame(animate);
     };
@@ -161,6 +164,7 @@ const Station05 = () => {
       animationFrameId = requestAnimationFrame(animate);
     } else {
       setVisualizerBars(new Array(16).fill(15));
+      setVuLevel(-40);
     }
 
     return () => cancelAnimationFrame(animationFrameId);
@@ -218,62 +222,115 @@ const Station05 = () => {
         .beam-gold { background: #f7d08a; top: 30%; left: 25%; animation: drift 18s infinite alternate-reverse; opacity: 0.08; }
         @keyframes drift { 0% { transform: translate(0,0); } 100% { transform: translate(20%, 20%); } }
         
-        .cylinder-speaker {
-          width: 140px;
-          height: 240px;
-          background: linear-gradient(180deg, #18181b 0%, #09090b 100%);
-          border: 1px solid rgba(247, 208, 138, 0.15);
-          border-radius: 70px / 20px;
+        .speaker-cabinet {
+          width: 320px;
+          height: 480px;
+          background: linear-gradient(135deg, #18181b 0%, #0e0e11 100%);
+          border: 8px solid #27272a;
+          border-radius: 36px;
+          box-shadow: 0 40px 80px rgba(0,0,0,0.8), inset 0 2px 5px rgba(255,255,255,0.05);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: space-between;
+          padding: 28px 24px;
           position: relative;
-          box-shadow: 0 30px 60px rgba(0,0,0,0.8), inset 0 1px 2px rgba(255,255,255,0.05);
+          transition: border-color 0.5s ease;
+        }
+        .speaker-cabinet.playing {
+          border-color: #3f3f46;
+          box-shadow: 0 40px 80px rgba(247, 208, 138, 0.1), 0 0 40px rgba(0, 0, 0, 0.9);
+        }
+        .speaker-tweeter {
+          width: 90px;
+          height: 90px;
+          border-radius: 50%;
+          background: radial-gradient(circle, #27272a 0%, #09090b 100%);
+          border: 4px solid #18181b;
+          box-shadow: inset 0 6px 12px rgba(0,0,0,0.8);
           display: flex;
           align-items: center;
           justify-content: center;
-          transition: border-color 0.5s ease, box-shadow 0.5s ease;
         }
-        .cylinder-speaker.playing {
-          border-color: rgba(247, 208, 138, 0.5);
-          box-shadow: 0 30px 60px rgba(247, 208, 138, 0.12), 0 0 25px rgba(247, 208, 138, 0.08);
-        }
-        .cylinder-top {
-          width: 140px;
-          height: 40px;
-          background: radial-gradient(circle at center, #f7d08a 0%, #c1923d 70%, #6b4c15 100%);
+        .tweeter-dome {
+          width: 36px;
+          height: 36px;
           border-radius: 50%;
-          position: absolute;
-          top: -20px;
-          left: -1px;
-          border: 1px solid rgba(247, 208, 138, 0.3);
-          box-shadow: inset 0 2px 4px rgba(255,255,255,0.3);
+          background: radial-gradient(circle at 35% 35%, #f7d08a 0%, #c1923d 60%, #6b4c15 100%);
+          box-shadow: 0 3px 6px rgba(0,0,0,0.6);
         }
-        .cylinder-bottom {
-          width: 140px;
-          height: 40px;
+        .speaker-woofer-rim {
+          width: 200px;
+          height: 200px;
+          border-radius: 50%;
           background: #09090b;
-          border-radius: 50%;
-          position: absolute;
-          bottom: -20px;
-          left: -1px;
-          border: 1px solid rgba(247, 208, 138, 0.2);
-          box-shadow: 0 15px 30px rgba(0,0,0,0.8);
+          border: 6px solid #1c1c21;
+          box-shadow: inset 0 8px 16px rgba(0,0,0,0.9);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: relative;
         }
-        .cylinder-glow {
+        .speaker-woofer-cone {
+          width: 154px;
+          height: 154px;
+          border-radius: 50%;
+          background: radial-gradient(circle, #2d2d35 0%, #16161b 80%, #09090b 100%);
+          box-shadow: 0 2px 4px rgba(255,255,255,0.05);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: transform 0.05s ease-out;
+        }
+        .woofer-vibrating {
+          animation: woofer-bounce 0.12s infinite alternate ease-in-out;
+        }
+        @keyframes woofer-bounce {
+          0% { transform: scale(0.99); }
+          100% { transform: scale(1.03); }
+        }
+        .woofer-dustcap {
+          width: 60px;
+          height: 60px;
+          border-radius: 50%;
+          background: radial-gradient(circle at 35% 35%, #f7d08a 0%, #c1923d 50%, #876121 80%, #302107 100%);
+          box-shadow: 0 5px 12px rgba(0,0,0,0.8), inset 0 -4px 8px rgba(0,0,0,0.4);
+        }
+        .speaker-reflex-port {
+          width: 48px;
+          height: 48px;
+          border-radius: 50%;
+          background: #050507;
+          border: 3px solid #18181b;
+          box-shadow: inset 0 6px 12px rgba(0,0,0,0.95);
+        }
+        .vu-meter {
+          width: 100px;
+          height: 50px;
+          background: #1c1917;
+          border: 2px solid #292524;
+          border-radius: 8px 8px 0 0;
+          overflow: hidden;
+          position: relative;
+          box-shadow: inset 0 2px 6px rgba(0,0,0,0.8);
+        }
+        .vu-dial {
+          position: absolute;
+          bottom: -10px;
+          left: 50%;
+          width: 2px;
+          height: 48px;
+          background: #ea580c;
+          transform-origin: bottom center;
+          transition: transform 0.1s ease-out;
+          box-shadow: 0 0 4px rgba(234,88,12,0.8);
+          z-index: 10;
+        }
+        .vu-bg {
           position: absolute;
           inset: 0;
-          border-radius: 70px / 20px;
-          background: radial-gradient(circle at center, rgba(247, 208, 138, 0.04) 0%, transparent 70%);
-          opacity: 0;
-          transition: opacity 0.5s ease;
-        }
-        .cylinder-speaker.playing .cylinder-glow {
-          opacity: 1;
-        }
-        .visualizer-bar {
-          width: 3px;
-          background: linear-gradient(180deg, #f7d08a 0%, #c1923d 100%);
-          border-radius: 2px;
-          transition: height 0.08s ease-in-out;
-          box-shadow: 0 0 6px rgba(247, 208, 138, 0.4);
+          opacity: 0.15;
+          background-image: radial-gradient(circle at bottom center, transparent 40%, #f7d08a 80%);
         }
       `}</style>
 
@@ -345,132 +402,164 @@ const Station05 = () => {
                       </div>
                    </motion.div>
 
-                    <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center my-16">
+                    {/* CENTERED MASTER POSTER SHOWCASE */}
+                    <div className="w-full flex flex-col items-center my-16 select-none">
+                       <h4 className="font-display text-2xl md:text-3xl font-black text-[#f7d08a] uppercase tracking-[0.2em] italic mb-12">Master Production Poster</h4>
                        
-                       {/* Left Column: Poster Showcase */}
-                       <div className="lg:col-span-6 flex flex-col items-center">
-                          <h4 className="font-display text-sm md:text-md font-black text-[#f7d08a]/60 uppercase tracking-[0.2em] italic mb-8">// Title Canvas</h4>
-                          <motion.div 
-                             onClick={() => setIsZoomed(true)} 
-                             className="relative cursor-zoom-in w-full max-w-[340px] aspect-[2/3] rounded-[3rem] overflow-hidden border border-white/10 shadow-[0_50px_100px_rgba(0,0,0,0.9)] group"
-                             animate={isPlaying ? {
-                               boxShadow: [
-                                 "0 50px 100px rgba(0,0,0,0.9)",
-                                 "0 50px 100px rgba(247,208,138,0.18)",
-                                 "0 50px 100px rgba(0,0,0,0.9)"
-                               ]
-                             } : {}}
-                             transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-                          >
-                             <img src={posterImg} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="Poster" />
-                             <div className="absolute inset-0 bg-gradient-to-r from-[#f7d08a]/10 via-transparent to-[#f7d08a]/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-                          </motion.div>
-                          
-                          <div className="mt-8 flex items-center gap-3 bg-white/[0.02] border border-white/5 px-6 py-2 rounded-full">
-                             <div className="w-2 h-2 rounded-full bg-[#f7d08a] animate-pulse" />
-                             <span className="font-mono text-[8px] text-[#f7d08a] tracking-[0.6em] uppercase font-black">Cinema Canvas Sync</span>
-                          </div>
+                       <motion.div 
+                          onClick={() => setIsZoomed(true)} 
+                          className="relative cursor-zoom-in w-full max-w-lg aspect-[2/3] rounded-[3.5rem] overflow-hidden border border-white/10 shadow-[0_60px_120px_rgba(0,0,0,1)] group"
+                          animate={isPlaying ? {
+                            boxShadow: [
+                              "0 60px 120px rgba(0,0,0,1)",
+                              "0 60px 120px rgba(247,208,138,0.22)",
+                              "0 60px 120px rgba(0,0,0,1)"
+                            ]
+                          } : {}}
+                          transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+                       >
+                          <img src={posterImg} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="Poster" />
+                          <div className="absolute inset-0 bg-gradient-to-r from-[#f7d08a]/10 via-transparent to-[#f7d08a]/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                       </motion.div>
+                       
+                       <div className="mt-12 flex flex-col items-center gap-4 bg-white/[0.02] border border-white/5 px-6 py-2 rounded-full">
+                          <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                          <span className="font-mono text-[10px] text-emerald-500 tracking-[0.6em] uppercase font-black">Interactive Canvas Active</span>
+                       </div>
+                    </div>
+
+                    {/* SEPARATE CINEMATIC AUDIO SHOWCASE */}
+                    <div className="w-full flex flex-col items-center mt-32 mb-20">
+                       <div className="text-center max-w-lg mx-auto mb-12 space-y-3">
+                          <span className="font-mono text-[8px] text-[#f7d08a] uppercase tracking-[1em] block font-black">// AUDIO BROADCAST CORE</span>
+                          <h2 className="text-3xl md:text-4xl font-black text-white italic uppercase tracking-tighter">THE TITLE SOUNDTRACK</h2>
+                          <p className="font-serif text-xs text-zinc-500 italic">Play the exclusive demo track with dynamic haptic simulation & retro acoustics.</p>
                        </div>
 
-                       {/* Right Column: 3D Cylinder Speaker & Controls */}
-                       <div className="lg:col-span-6 flex flex-col items-center justify-center p-8 bg-zinc-950/40 border border-white/5 rounded-[4rem] relative overflow-hidden backdrop-blur-md min-h-[460px] shadow-2xl">
-                          <span className="font-mono text-[8px] text-[#f7d08a] uppercase tracking-[0.4em] block mb-8 font-black">// CYLINDER AUDIO CORE v1.0</span>
-                          
-                          {/* Hidden Audio Player */}
-                          <audio 
-                            id="title-song-audio" 
-                            src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" 
-                            preload="auto"
-                          />
+                       {/* Audio Player Core Tag */}
+                       <audio 
+                         id="title-song-audio" 
+                         src="/title-song-demo.mp3" 
+                         preload="auto"
+                       />
 
-                          {/* 3D Speaker Cylinder */}
-                          <div className={`cylinder-speaker ${isPlaying ? 'playing' : ''}`}>
-                             {/* Brushed Top Cap */}
-                             <div className="cylinder-top" />
-                             
-                             {/* Glow Effect */}
-                             <div className="cylinder-glow" />
-                             
-                             {/* Central Visualizer Column */}
-                             <div className="flex items-end justify-center gap-1.5 h-[120px] w-full px-6 z-10">
-                               {visualizerBars.map((barHeight, idx) => (
-                                 <div 
-                                   key={idx}
-                                   className="visualizer-bar"
-                                   style={{ height: `${barHeight}px` }}
-                                 />
-                               ))}
+                       <div className="flex flex-col lg:flex-row items-center gap-12 bg-zinc-950/40 border border-white/5 p-10 rounded-[4rem] backdrop-blur-md max-w-3xl w-full shadow-2xl relative">
+                          
+                          {/* Left: Skeuomorphic Speaker Cabinet */}
+                          <div className={`speaker-cabinet ${isPlaying ? 'playing' : ''}`}>
+                             {/* High-Range Tweeter */}
+                             <div className="speaker-tweeter">
+                                <div className="tweeter-dome" />
                              </div>
 
-                             {/* Brushed Bottom Cap */}
-                             <div className="cylinder-bottom" />
+                             {/* Low-Range Bass Woofer (Vibrates dynamically) */}
+                             <div className="speaker-woofer-rim">
+                                <div className={`speaker-woofer-cone ${isPlaying ? 'woofer-vibrating' : ''}`}>
+                                   <div className="woofer-dustcap" />
+                                </div>
+                             </div>
+
+                             {/* Bottom Panel with VU Meter & Bass Port */}
+                             <div className="w-full flex items-center justify-between px-2 pt-2">
+                                {/* Vintage VU Meter */}
+                                <div className="vu-meter" title="Acoustic VU Level">
+                                   <div className="vu-bg" />
+                                   {/* Dial scale markings */}
+                                   <div className="absolute inset-x-0 top-1.5 flex justify-between px-2 text-[6px] font-mono text-zinc-600 select-none">
+                                      <span>-20</span>
+                                      <span>0</span>
+                                      <span>+3dB</span>
+                                   </div>
+                                   {/* Moving needle */}
+                                   <div 
+                                      className="vu-dial" 
+                                      style={{ transform: `rotate(${vuLevel}deg)` }}
+                                   />
+                                </div>
+
+                                {/* Bass reflex sound hole */}
+                                <div className="speaker-reflex-port" />
+                             </div>
                           </div>
 
-                          {/* Audio Metadata */}
-                          <div className="text-center space-y-2 mb-6">
-                             <span className="font-mono text-[9px] uppercase tracking-widest text-[#f7d08a]/50 block font-bold">DEMO SOUNDTRACK</span>
-                             <h4 className="text-lg font-black tracking-tight text-white uppercase italic">ABHI NAI, KABHI NAI</h4>
-                             <p className="text-[10px] text-zinc-500 font-mono">Title Song Demo Pitch</p>
-                          </div>
+                          {/* Right: Brushed Metal Amplifier Control Panel */}
+                          <div className="flex-grow flex flex-col justify-between h-full w-full space-y-8 text-left">
+                             <div className="space-y-2 border-b border-white/5 pb-4">
+                                <span className="font-mono text-[9px] text-[#f7d08a] uppercase tracking-widest block font-bold">NOW BROADCASTING</span>
+                                <h3 className="text-2xl font-black text-white italic tracking-tight uppercase">ABHI NAI, KABHI NAI</h3>
+                                <p className="text-xs text-zinc-500 font-mono">Status: {isPlaying ? '🟢 ONLINE (Excursion Active)' : '🔴 PAUSED'}</p>
+                             </div>
 
-                          {/* Audio Controls */}
-                          <div className="w-full max-w-xs space-y-4">
-                             {/* Scrubber */}
-                             <div className="flex items-center justify-between gap-4">
-                                <span className="font-mono text-[9px] text-zinc-500">{formatTime(audioProgress)}</span>
+                             {/* Audio Scrubber */}
+                             <div className="space-y-2">
+                                <div className="flex justify-between items-center text-[10px] font-mono text-zinc-500">
+                                   <span>Time: {formatTime(audioProgress)}</span>
+                                   <span>Duration: {formatTime(audioDuration)}</span>
+                                </div>
                                 <input 
                                   type="range"
                                   min="0"
                                   max={audioDuration || 100}
                                   value={audioProgress}
                                   onChange={(e) => handleProgressChange(parseFloat(e.target.value))}
-                                  className="flex-grow h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#f7d08a]"
+                                  className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#f7d08a]"
                                 />
-                                <span className="font-mono text-[9px] text-zinc-500">{formatTime(audioDuration)}</span>
                              </div>
 
-                             {/* Buttons */}
-                             <div className="flex items-center justify-between gap-6 pt-2">
-                                {/* Ambient Lighting Toggle */}
-                                <button 
-                                  onClick={() => setEnableLighting(!enableLighting)}
-                                  className={`p-3 rounded-full border transition-all cursor-pointer ${
-                                    enableLighting ? 'bg-[#f7d08a]/10 border-[#f7d08a]/40 text-[#f7d08a]' : 'bg-transparent border-white/5 text-zinc-600 hover:text-white'
-                                  }`}
-                                  title="Toggle Ambient Scene Lighting"
-                                >
-                                  <Sparkles className="w-4 h-4 animate-pulse" />
-                                </button>
+                             {/* Amp Panel Controls */}
+                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                                {/* Toggle & Volume */}
+                                <div className="space-y-2">
+                                   <span className="font-mono text-[8px] text-zinc-600 uppercase tracking-widest block">Output Level</span>
+                                   <div className="flex items-center gap-3 bg-black/40 border border-white/5 px-4 py-2.5 rounded-xl">
+                                      <Volume2 className="w-4 h-4 text-zinc-500" />
+                                      <input 
+                                        type="range"
+                                        min="0"
+                                        max="1"
+                                        step="0.05"
+                                        value={volume}
+                                        onChange={(e) => setVolume(parseFloat(e.target.value))}
+                                        className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#f7d08a]"
+                                      />
+                                   </div>
+                                </div>
 
-                                {/* Play/Pause Cylinder Base */}
-                                <button 
-                                  onClick={togglePlay}
-                                  className="w-14 h-14 bg-[#f7d08a] hover:bg-white text-black rounded-full flex items-center justify-center font-black transition-all shadow-[0_10px_25px_rgba(247,208,138,0.25)] hover:scale-105 cursor-pointer"
-                                >
-                                  {isPlaying ? (
-                                    <div className="flex gap-1"><div className="w-1.5 h-4 bg-black rounded-sm" /><div className="w-1.5 h-4 bg-black rounded-sm" /></div>
-                                  ) : (
-                                    <Play className="w-5 h-5 fill-black pl-0.5" />
-                                  )}
-                                </button>
-
-                                {/* Volume Slider */}
-                                <div className="flex items-center gap-2">
-                                  <Volume2 className="w-4 h-4 text-zinc-500" />
-                                  <input 
-                                    type="range"
-                                    min="0"
-                                    max="1"
-                                    step="0.05"
-                                    value={volume}
-                                    onChange={(e) => setVolume(parseFloat(e.target.value))}
-                                    className="w-16 h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#f7d08a]"
-                                  />
+                                <div className="space-y-2">
+                                   <span className="font-mono text-[8px] text-zinc-600 uppercase tracking-widest block">Stage Lighting</span>
+                                   <button 
+                                     onClick={() => setEnableLighting(!enableLighting)}
+                                     className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border text-xs font-mono tracking-widest transition-all uppercase cursor-pointer ${
+                                       enableLighting ? 'bg-[#f7d08a]/10 border-[#f7d08a]/40 text-[#f7d08a]' : 'bg-transparent border-white/5 text-zinc-500 hover:text-white'
+                                     }`}
+                                   >
+                                     <Sparkles className="w-3.5 h-3.5 animate-pulse" /> {enableLighting ? 'Light Sync ON' : 'Light Sync OFF'}
+                                   </button>
                                 </div>
                              </div>
+
+                             {/* Playback Base Trigger */}
+                             <div className="pt-4 flex justify-center md:justify-start">
+                                <button 
+                                  onClick={togglePlay}
+                                  className="px-10 py-4 bg-[#f7d08a] hover:bg-white text-black font-black uppercase tracking-[0.4em] text-xs rounded-full flex items-center gap-4 transition-all shadow-[0_15px_30px_rgba(247,208,138,0.2)] hover:scale-102 cursor-pointer"
+                                >
+                                  {isPlaying ? (
+                                    <>
+                                       <div className="flex gap-1"><div className="w-1.5 h-4 bg-black rounded-sm" /><div className="w-1.5 h-4 bg-black rounded-sm" /></div>
+                                       <span>Pause Broadcast</span>
+                                    </>
+                                  ) : (
+                                    <>
+                                       <Play className="w-3.5 h-3.5 fill-black pl-0.5" />
+                                       <span>Play Soundtrack</span>
+                                    </>
+                                  )}
+                                </button>
+                             </div>
+
                           </div>
                        </div>
-
                     </div>
 
                     {/* THE COLLECTIVE DUMP SECTION */}
