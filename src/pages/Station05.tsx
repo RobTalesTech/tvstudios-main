@@ -439,7 +439,7 @@ const Station05 = () => {
                           preload="auto"
                         />
 
-                       <div className="flex flex-col lg:flex-row items-center gap-12 bg-zinc-950/40 border border-white/5 p-10 rounded-[4rem] backdrop-blur-md max-w-3xl w-full shadow-2xl relative">
+                       <div className="flex flex-col lg:flex-row items-stretch gap-12 bg-zinc-950/40 border border-white/5 p-10 rounded-[4rem] backdrop-blur-md max-w-4xl w-full shadow-2xl relative">
                           
                           {/* Left: Skeuomorphic Speaker Cabinet */}
                           <div className={`speaker-cabinet ${isPlaying ? 'playing' : ''}`}>
@@ -559,26 +559,68 @@ const Station05 = () => {
                                  </div>
                               </div>
 
-                              {/* Track Production Memo Card */}
-                              <div className="bg-black/40 border border-white/5 p-5 rounded-3xl space-y-4 mt-6">
-                                 <span className="font-mono text-[8px] text-[#f7d08a] uppercase tracking-widest block font-bold">// PRODUCTION MEMORANDUM</span>
-                                 <div className="space-y-3.5 text-xs">
-                                    <div className="flex gap-3 items-start">
-                                       <div className="w-1.5 h-1.5 rounded-full bg-[#f7d08a] mt-1 shrink-0 animate-pulse" />
-                                       <div>
-                                          <span className="font-mono text-[9px] text-[#f7d08a] uppercase block font-bold">18 July 2026 • Song Demo Creation</span>
-                                          <p className="text-[10px] text-zinc-400 font-serif italic mt-0.5 leading-relaxed">First bounce of the title track demo. Synthesizer composition & vocal arrangement locked at TV³ Studios.</p>
+                              {/* Bottom Details Grid: Specs & Timeline */}
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 w-full">
+                                 
+                                 {/* Column 1: Detailed Track Specification */}
+                                 <div className="bg-black/40 border border-white/5 p-5 rounded-3xl space-y-4">
+                                    <span className="font-mono text-[8px] text-[#f7d08a] uppercase tracking-widest block font-bold">// TECHNICAL SPECIFICATION</span>
+                                    <div className="space-y-2 text-[10px] font-mono text-zinc-400">
+                                       <div className="flex justify-between border-b border-white/5 pb-1 gap-2">
+                                          <span className="text-zinc-500 shrink-0">SONG NAME:</span>
+                                          <span className="text-white font-bold text-right">TITLE SONG ABHI NAHI KABHI NAHI</span>
+                                       </div>
+                                       <div className="flex justify-between border-b border-white/5 pb-1 gap-2">
+                                          <span className="text-zinc-500 shrink-0">WEBSERIES:</span>
+                                          <span className="text-[#f7d08a] font-bold text-right">ABHI NAI KABHI NAI</span>
+                                       </div>
+                                       <div className="flex justify-between border-b border-white/5 pb-1 gap-2">
+                                          <span className="text-zinc-500 shrink-0">LABEL:</span>
+                                          <span className="text-white text-right">TVCUBE EMPD</span>
+                                       </div>
+                                       <div className="flex justify-between border-b border-white/5 pb-1 gap-2">
+                                          <span className="text-zinc-500 shrink-0">CREATOR:</span>
+                                          <span className="text-white font-bold text-right">GKR</span>
                                        </div>
                                     </div>
-                                    <div className="h-[1px] bg-white/5" />
-                                    <div className="flex gap-3 items-start">
-                                       <div className="w-1.5 h-1.5 rounded-full bg-zinc-700 mt-1 shrink-0" />
-                                       <div>
-                                          <span className="font-mono text-[9px] text-[#f7d08a]/70 uppercase block font-bold">27 March 2026 • Song Details Lockdown</span>
-                                          <p className="text-[10px] text-zinc-500 font-serif italic mt-0.5 leading-relaxed font-semibold">Soundtrack sync session. Lyrics finalized & calibrated with regional youth drama narration parameters.</p>
+                                    
+                                    <div className="pt-1">
+                                       <span className="font-mono text-[8px] text-zinc-500 uppercase tracking-wider block mb-1">Acoustic Purpose:</span>
+                                       <p className="text-[10px] text-zinc-400 font-serif italic leading-relaxed">
+                                          This song is a theme song which will set the mood for many different genres throughout the webseries.
+                                       </p>
+                                    </div>
+
+                                    <div className="pt-2 border-t border-white/5">
+                                       <span className="font-mono text-[7px] text-[#ff2e63] uppercase tracking-wider block font-bold">OG Production Notice:</span>
+                                       <p className="text-[9px] text-zinc-500 font-mono mt-0.5 leading-tight">
+                                          Subject to lyric variations & musical bar-count adjustments based on script locking & scene pacing. Current status: LOCKED TILL DATE.
+                                       </p>
+                                    </div>
+                                 </div>
+
+                                 {/* Column 2: Production Memorandum */}
+                                 <div className="bg-black/40 border border-white/5 p-5 rounded-3xl space-y-4">
+                                    <span className="font-mono text-[8px] text-[#f7d08a] uppercase tracking-widest block font-bold">// PRODUCTION MEMORANDUM</span>
+                                    <div className="space-y-3.5 text-xs">
+                                       <div className="flex gap-3 items-start">
+                                          <div className="w-1.5 h-1.5 rounded-full bg-[#f7d08a] mt-1 shrink-0 animate-pulse" />
+                                          <div>
+                                             <span className="font-mono text-[9px] text-[#f7d08a] uppercase block font-bold">18 July 2026 • Song Demo Creation</span>
+                                             <p className="text-[10px] text-zinc-400 font-serif italic mt-0.5 leading-relaxed">First bounce of the title track demo. Synthesizer composition & vocal arrangement locked at TV³ Studios.</p>
+                                          </div>
+                                       </div>
+                                       <div className="h-[1px] bg-white/5" />
+                                       <div className="flex gap-3 items-start">
+                                          <div className="w-1.5 h-1.5 rounded-full bg-zinc-700 mt-1 shrink-0" />
+                                          <div>
+                                             <span className="font-mono text-[9px] text-[#f7d08a]/70 uppercase block font-bold">27 March 2026 • Song Details Lockdown</span>
+                                             <p className="text-[10px] text-zinc-500 font-serif italic mt-0.5 leading-relaxed font-semibold">Soundtrack sync session. Lyrics finalized & calibrated with regional youth drama narration parameters.</p>
+                                          </div>
                                        </div>
                                     </div>
                                  </div>
+
                               </div>
 
                           </div>
