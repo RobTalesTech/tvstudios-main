@@ -534,25 +534,52 @@ const Station05 = () => {
                                 </div>
                              </div>
 
-                             {/* Playback Base Trigger */}
-                             <div className="pt-4 flex justify-center md:justify-start">
-                                <button 
-                                  onClick={togglePlay}
-                                  className="px-10 py-4 bg-[#f7d08a] hover:bg-white text-black font-black uppercase tracking-[0.4em] text-xs rounded-full flex items-center gap-4 transition-all shadow-[0_15px_30px_rgba(247,208,138,0.2)] hover:scale-102 cursor-pointer"
-                                >
-                                  {isPlaying ? (
-                                    <>
-                                       <div className="flex gap-1"><div className="w-1.5 h-4 bg-black rounded-sm" /><div className="w-1.5 h-4 bg-black rounded-sm" /></div>
-                                       <span>Pause Broadcast</span>
-                                    </>
-                                  ) : (
-                                    <>
-                                       <Play className="w-3.5 h-3.5 fill-black pl-0.5" />
-                                       <span>Play Soundtrack</span>
-                                    </>
-                                  )}
-                                </button>
-                             </div>
+                              {/* Playback Base Trigger */}
+                              <div className="pt-4 flex flex-col md:flex-row gap-6 items-center justify-between">
+                                 <button 
+                                   onClick={togglePlay}
+                                   className="px-10 py-4 bg-[#f7d08a] hover:bg-white text-black font-black uppercase tracking-[0.4em] text-xs rounded-full flex items-center gap-4 transition-all shadow-[0_15px_30px_rgba(247,208,138,0.2)] hover:scale-102 cursor-pointer shrink-0"
+                                 >
+                                   {isPlaying ? (
+                                     <>
+                                        <div className="flex gap-1"><div className="w-1.5 h-4 bg-black rounded-sm" /><div className="w-1.5 h-4 bg-black rounded-sm" /></div>
+                                        <span>Pause Broadcast</span>
+                                     </>
+                                   ) : (
+                                     <>
+                                        <Play className="w-3.5 h-3.5 fill-black pl-0.5" />
+                                        <span>Play Soundtrack</span>
+                                     </>
+                                   )}
+                                 </button>
+
+                                 <div className="flex items-center gap-2">
+                                    <div className={`w-2 h-2 rounded-full ${isPlaying ? 'bg-[#f7d08a] animate-pulse shadow-[0_0_8px_#f7d08a]' : 'bg-zinc-700'}`} />
+                                    <span className="font-mono text-[8px] text-zinc-500 uppercase tracking-wider">{isPlaying ? 'Analog Sync Locked' : 'Engine Ready'}</span>
+                                 </div>
+                              </div>
+
+                              {/* Track Production Memo Card */}
+                              <div className="bg-black/40 border border-white/5 p-5 rounded-3xl space-y-4 mt-6">
+                                 <span className="font-mono text-[8px] text-[#f7d08a] uppercase tracking-widest block font-bold">// PRODUCTION MEMORANDUM</span>
+                                 <div className="space-y-3.5 text-xs">
+                                    <div className="flex gap-3 items-start">
+                                       <div className="w-1.5 h-1.5 rounded-full bg-[#f7d08a] mt-1 shrink-0 animate-pulse" />
+                                       <div>
+                                          <span className="font-mono text-[9px] text-[#f7d08a] uppercase block font-bold">18 July 2026 • Song Demo Creation</span>
+                                          <p className="text-[10px] text-zinc-400 font-serif italic mt-0.5 leading-relaxed">First bounce of the title track demo. Synthesizer composition & vocal arrangement locked at TV³ Studios.</p>
+                                       </div>
+                                    </div>
+                                    <div className="h-[1px] bg-white/5" />
+                                    <div className="flex gap-3 items-start">
+                                       <div className="w-1.5 h-1.5 rounded-full bg-zinc-700 mt-1 shrink-0" />
+                                       <div>
+                                          <span className="font-mono text-[9px] text-[#f7d08a]/70 uppercase block font-bold">27 March 2026 • Song Details Lockdown</span>
+                                          <p className="text-[10px] text-zinc-500 font-serif italic mt-0.5 leading-relaxed font-semibold">Soundtrack sync session. Lyrics finalized & calibrated with regional youth drama narration parameters.</p>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
 
                           </div>
                        </div>
